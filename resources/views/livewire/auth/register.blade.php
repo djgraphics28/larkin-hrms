@@ -45,7 +45,7 @@
                 Register
             </button>
 
-            <a href="{{ route('login') }}" wire:navigate>Already have an account? Login</a>
+            <a href="{{ route('login') }}">Already have an account? Login</a>
 
         </form>
     </div>

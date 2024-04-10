@@ -7,7 +7,7 @@
         </li>
 
         {{-- <li class="nav-item d-none d-sm-inline-block">
-            <a href="{{ route('dashboard') }}" wire:navigate class="nav-link">Home</a>
+            <a href="{{ route('dashboard') }}" class="nav-link">Home</a>
         </li>
 
         <li class="nav-item d-none d-sm-inline-block">
@@ -20,6 +20,7 @@
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 <button class="dropdown-item" type="button"><i class="far fa fa-plus nav-icon"></i> Branch</button>
+                <button class="dropdown-item" type="button"><i class="far fa fa-plus nav-icon"></i> Department</button>
                 <button class="dropdown-item" type="button"><i class="far fa fa-plus nav-icon"></i>
                     Designation</button>
                 <button class="dropdown-item" type="button"><i class="far fa fa-plus nav-icon"></i> Employee

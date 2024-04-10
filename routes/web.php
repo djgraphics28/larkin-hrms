@@ -7,6 +7,7 @@ use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
+use App\Livewire\Department\DepartmentComponent;
 use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
@@ -35,6 +36,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     // Apps routes
     Route::group(['prefix' => 'apps'], function () {
         Route::get('/business', BusinessComponent::class)->name('business');
+        Route::get('/department', DepartmentComponent::class)->name('department');
     });
 
     // Employee routes

@@ -20,15 +20,18 @@ return new class extends Migration
             $table->string('ext_name', 10)->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('phone')->nullable();
+            $table->enum('marital_status',['Single', 'Married', 'Divorced', 'Widowed'])->nullable();
             $table->date('birth_date')->nullable();
-            $table->date('date_started');
-            $table->date('date_end');
+            $table->date('joining_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->date('deployment_date_home_country')->nullable();
             $table->enum('label', ['National','Expatriate']);
             $table->enum('gender', ['Male','Female']);
             $table->string('image')->nullable();
             $table->unsignedBigInteger('designation_id');
             $table->unsignedBigInteger('employee_status_id');
             $table->unsignedBigInteger('business_id');
+            $table->unsignedBigInteger('department_id');
             $table
                 ->foreign('designation_id')
                 ->references('id')
@@ -40,6 +43,13 @@ return new class extends Migration
                 ->foreign('employee_status_id')
                 ->references('id')
                 ->on('employee_statuses')
+                ->onUpdate('CASCADE')
+                ->onDelete('CASCADE');
+
+            $table
+                ->foreign('department_id')
+                ->references('id')
+                ->on('departments')
                 ->onUpdate('CASCADE')
                 ->onDelete('CASCADE');
 

@@ -23,7 +23,7 @@
            with font-awesome or any other icon font library -->
 
                 <li class="nav-item">
-                    <a wire:navigate href="{{ route('dashboard') }}"
+                    <a href="{{ route('dashboard') }}"
                         class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
@@ -41,18 +41,18 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a wire:navigate href="{{ route('business') }}"
+                            <a href="{{ route('business') }}"
                                 class="nav-link {{ request()->is('apps/business') ? 'active' : '' }}">
                                 <i class="far fa-building nav-icon"></i>
                                 <p>
-                                    Business
+                                    Businesses
                                 </p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Create New</p>
+                            <a href="{{ route('department') }}" class="nav-link {{ request()->is('apps/department') ? 'active' : '' }}">
+                                <i class="far fa-user-circle nav-icon"></i>
+                                <p>Departments</p>
                             </a>
                         </li>
                     </ul>
@@ -69,14 +69,14 @@
                     </a>
                     <ul class="nav nav-treeview">
                         {{-- <li class="nav-item">
-                            <a wire:navigate href="{{ route('employee.create') }}"
+                            <a href="{{ route('employee.create') }}"
                                 class="nav-link {{ request()->is('employee/create') ? 'active' : '' }}">
                                 <i class="far fa fa-plus nav-icon"></i>
                                 <p>Create New</p>
                             </a>
                         </li> --}}
                         <li class="nav-item">
-                            <a wire:navigate href="{{ route('employee.index','all') }}"
+                            <a href="{{ route('employee.index','all') }}"
                                 class="nav-link {{ request()->is('employee/all/employees') || request()->is('employee/all/create') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>
@@ -85,7 +85,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a wire:navigate href="{{ route('employee.index','national') }}"
+                            <a href="{{ route('employee.index','national') }}"
                                 class="nav-link {{ request()->is('employee/national/employees') || request()->is('employee/national/create') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>
@@ -94,7 +94,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a wire:navigate href="{{ route('employee.index','expatriate') }}"
+                            <a href="{{ route('employee.index','expatriate') }}"
                                 class="nav-link {{ request()->is('employee/expatriate/employees') || request()->is('employee/expatriate/create') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>
@@ -103,14 +103,14 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a wire:navigate href="{{ route('designation') }}"
+                            <a href="{{ route('designation') }}"
                                 class="nav-link {{ request()->is('employee/designation') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Designation/Position</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a wire:navigate href="{{ route('employee-status') }}"
+                            <a href="{{ route('employee-status') }}"
                                 class="nav-link {{ request()->is('employee/status') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Employee Status</p>
@@ -129,7 +129,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a wire:navigate href="{{ route('employee.index') }}"
+                            <a href="{{ route('employee.index') }}"
                                 class="nav-link {{ request()->is('employee/all') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>
@@ -138,21 +138,21 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a wire:navigate href="{{ route('employee.create') }}"
+                            <a href="{{ route('employee.create') }}"
                                 class="nav-link {{ request()->is('employee/create') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Create New</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a wire:navigate href="{{ route('designation.index') }}"
+                            <a href="{{ route('designation.index') }}"
                                 class="nav-link {{ request()->is('employee/designation') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Designation</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a wire:navigate href="{{ route('employee_status.index') }}"
+                            <a href="{{ route('employee_status.index') }}"
                                 class="nav-link {{ request()->is('employee/status') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Employee Status</p>

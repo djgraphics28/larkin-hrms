@@ -34,7 +34,7 @@
                 Login
             </button>
 
-            <a href="{{ route('forgot-password') }}" wire:navigate>Forgot password?</a>
+            <a href="{{ route('forgot-password') }}">Forgot password?</a>
         </form>
     </div>
 </div>

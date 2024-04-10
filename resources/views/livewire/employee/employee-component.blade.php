@@ -31,7 +31,7 @@
                                         aria-hidden="true"></i> Export</button>
                                 <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
                                         aria-hidden="true"></i> PDF</button>
-                                <a wire:navigate href="{{ route('employee.create',$label) }}" type="button" class="btn btn-primary btn-sm mr-2"><i
+                                <a href="{{ route('employee.create',$label) }}" type="button" class="btn btn-primary btn-sm mr-2"><i
                                         class="fa fa-plus" aria-hidden="true"></i> Add New</a>
                             </div>
                         </div>

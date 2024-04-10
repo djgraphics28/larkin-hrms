@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Business extends Model
+class Department extends Model
 {
     use HasFactory;
 
@@ -18,13 +18,13 @@ class Business extends Model
     ];
 
     /**
-     * The departments that belong to the Business
+     * The businesses that belong to the Department
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function departments(): BelongsToMany
+    public function businesses(): BelongsToMany
     {
-        return $this->belongsToMany(Department::class);
+        return $this->belongsToMany(Business::class);
     }
 
     /**
@@ -34,7 +34,7 @@ class Business extends Model
      */
     public function employees(): HasMany
     {
-        return $this->hasMany(Employee::class, 'business_id', 'id');
+        return $this->hasMany(Employee::class, 'department_id', 'id');
     }
 
     public function scopeSearch($query, $searchTerm)

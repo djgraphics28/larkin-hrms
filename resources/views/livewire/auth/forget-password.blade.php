@@ -21,7 +21,7 @@
                 Reset Password
             </button>
 
-            <a href="{{ route('login') }}" wire:navigate>Return login.</a>
+            <a href="{{ route('login') }}">Return login.</a>
         </form>
     </div>
 </div>
