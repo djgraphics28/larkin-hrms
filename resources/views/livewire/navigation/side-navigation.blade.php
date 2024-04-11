@@ -11,7 +11,7 @@
                 <img src="{{ asset('assets/images/user.png') }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">{{ Auth::user()->name }}</a>
+                <span class="d-block text-white">{{ Auth::user()->name }}</span>
             </div>
         </div>
 
@@ -53,6 +53,12 @@
                             <a href="{{ route('department') }}" class="nav-link {{ request()->is('apps/department') ? 'active' : '' }}">
                                 <i class="far fa-user-circle nav-icon"></i>
                                 <p>Departments</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('fortnight-generator') }}" class="nav-link {{ request()->is('apps/fortnight-generator') ? 'active' : '' }}">
+                                <i class="far fa-user-circle nav-icon"></i>
+                                <p>Fortnight Generator</p>
                             </a>
                         </li>
                     </ul>
