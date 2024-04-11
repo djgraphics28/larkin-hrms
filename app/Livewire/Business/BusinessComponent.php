@@ -4,6 +4,7 @@ namespace App\Livewire\Business;
 
 use Livewire\Component;
 use App\Models\Business;
+use App\Models\Department;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
@@ -34,12 +35,22 @@ class BusinessComponent extends Component
     public $selectAll = false;
     public $selectedRows = [];
 
+    public $selectAllDepartment = false;
+    public $selectedDepartmentRows = [];
+
+    public $departments = [];
+
     #[Title('Business')]
     public function render()
     {
         return view('livewire.business.business-component',[
             'records' => $this->records
         ]);
+    }
+
+    public function mount()
+    {
+        $this->departments = Department::where('is_active',1)->get();
     }
 
     public function getRecordsProperty()
@@ -54,6 +65,15 @@ class BusinessComponent extends Component
             $this->selectedRows = $this->records->pluck('id');
         }else{
             $this->selectedRows = [];
+        }
+    }
+
+    public function updatedSelectAllDepartment($value)
+    {
+        if($value){
+            $this->selectedDepartmentRows = $this->departments->pluck('id');
+        }else{
+            $this->selectedDepartmentRows = [];
         }
     }
 
@@ -76,6 +96,8 @@ class BusinessComponent extends Component
             'contact_number' => $this->contact_number,
             'address' => $this->address,
         ]);
+
+        $data->departments()->sync($this->selectedDepartmentRows);
 
         if($create){
             $this->resetInputFields();
@@ -104,6 +126,7 @@ class BusinessComponent extends Component
         $this->name = $data->name;
         $this->contact_number = $data->contact_number;
         $this->address = $data->address;
+        $this->selectedDepartmentRows = $data->departments()->pluck('department_id')->toArray();
         $this->modalTitle = 'Edit Data';
         $this->updateMode = true;
     }
@@ -120,6 +143,8 @@ class BusinessComponent extends Component
             'contact_number' => $this->contact_number,
             'address' => $this->address
         ]);
+
+        $data->departments()->sync($this->selectedDepartmentRows);
 
         if($data) {
             $this->dispatch('hide-add-modal');
