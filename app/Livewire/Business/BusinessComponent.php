@@ -7,6 +7,8 @@ use App\Models\Business;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
+use App\Exports\BusinessExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 class BusinessComponent extends Component
@@ -146,5 +148,10 @@ class BusinessComponent extends Component
         if($delete){
             $this->alert('success', $name.' has been removed!');
         }
+    }
+
+    public function export()
+    {
+        return Excel::download(new BusinessExport, 'business.xlsx');
     }
 }

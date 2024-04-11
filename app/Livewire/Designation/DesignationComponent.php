@@ -7,6 +7,8 @@ use App\Models\Designation;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
+use App\Exports\DesignationExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 class DesignationComponent extends Component
@@ -138,5 +140,10 @@ class DesignationComponent extends Component
         if($delete){
             $this->alert('success', $name.' has been removed!');
         }
+    }
+
+    public function export()
+    {
+        return Excel::download(new DesignationExport, 'designation.xlsx');
     }
 }

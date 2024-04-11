@@ -27,7 +27,7 @@
                             <div class="btn-group float-right" role="group" aria-label="Groups">
                                 <button type="button" class="btn btn-warning btn-sm mr-2"><i class="fa fa-upload"
                                         aria-hidden="true"></i> Import</button>
-                                <button type="button" class="btn btn-success btn-sm mr-2"><i class="fa fa-file-excel"
+                                <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i class="fa fa-file-excel"
                                         aria-hidden="true"></i> Export</button>
                                 <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
                                         aria-hidden="true"></i> PDF</button>

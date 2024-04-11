@@ -9,6 +9,8 @@ use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use App\Models\EmployeeStatus;
 use Livewire\Attributes\Title;
+use App\Exports\EmployeeExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 class EmployeeComponent extends Component
@@ -169,5 +171,10 @@ class EmployeeComponent extends Component
         if($delete){
             $this->alert('success', $name.' has been removed!');
         }
+    }
+
+    public function export()
+    {
+        return Excel::download(new EmployeeExport, 'employee.xlsx');
     }
 }
