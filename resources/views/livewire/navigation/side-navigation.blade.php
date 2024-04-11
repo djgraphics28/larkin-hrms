@@ -124,6 +124,35 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item {{ request()->is('attendance/*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('attendance/*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-business-time"></i>
+                        <p>
+                            Attendance
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('attendance-logs') }}" class="nav-link {{ request()->is('attendance/logs') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Logs</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('attendance-import') }}" class="nav-link {{ request()->is('attendance/import') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Import</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('attendance-adjustment') }}" class="nav-link {{ request()->is('attendance/adjustment') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Adjustment</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
                 {{-- <li class="nav-item {{ request()->is('employee/*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('employee/*') ? 'active' : '' }}">

@@ -10,8 +10,11 @@ use App\Livewire\Employee\EmployeeComponent;
 use App\Livewire\Department\DepartmentComponent;
 use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
+use App\Livewire\Attendance\AttendanceLogComponent;
+use App\Livewire\Attendance\AttendanceImportComponent;
 use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
+use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +50,13 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/{label}/create', CreateEmployeeComponent::class)->name('employee.create');
         Route::get('/designation', DesignationComponent::class)->name('designation');
         Route::get('/status', EmployeeStatusComponent::class)->name('employee-status');
+    });
+
+     // Attendance routes
+     Route::group(['prefix' => 'attendance'], function () {
+        Route::get('/logs', AttendanceLogComponent::class)->name('attendance-logs');
+        Route::get('/import', AttendanceImportComponent::class)->name('attendance-import');
+        Route::get('/adjustment', AttendanceAdjustmentComponent::class)->name('attendance-adjustment');
     });
 
 
