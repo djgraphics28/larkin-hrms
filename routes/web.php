@@ -10,6 +10,7 @@ use App\Livewire\Employee\EmployeeComponent;
 use App\Livewire\Department\DepartmentComponent;
 use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
+use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 
 /*
@@ -23,7 +24,7 @@ use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 |
 */
 
-Route::get('', function () {
+Route::get('/', function () {
     return redirect()->route('login');
 });
 
@@ -37,6 +38,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::group(['prefix' => 'apps'], function () {
         Route::get('/business', BusinessComponent::class)->name('business');
         Route::get('/department', DepartmentComponent::class)->name('department');
+        Route::get('/fortnight-generator', FortnightGeneratorComponent::class)->name('fortnight-generator');
     });
 
     // Employee routes
