@@ -182,9 +182,15 @@
                     <i class="fas fa-user mr-2"></i> Profile
                 </a>
 
-                <a wire:click="logoutUser" class="dropdown-item" style="cursor: pointer;">
-                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <x-dropdown-link :href="route('logout')" class="dropdown-item"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        <i class="fas fa-sign-out-alt mr-2"></i>{{ __('Log Out') }}
+                    </x-dropdown-link>
+                </form>
             </div>
         </li>
 
