@@ -12,8 +12,18 @@ use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
 
-Route::get('/', function () {
+Route::get('', function () {
     return redirect()->route('login');
 });
 
@@ -40,4 +50,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
 });
 
-require __DIR__.'/auth.php';
+// Authentication routes
+Route::group(['prefix' => 'auth'], function () {
+    Route::get('login', Login::class)->name('login');
+    Route::get('forgot-password', ForgetPassword::class)->name('forgot-password');
+});
