@@ -7,6 +7,7 @@ use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
+use App\Livewire\Workshift\WorkshiftComponent;
 use App\Livewire\Department\DepartmentComponent;
 use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
@@ -42,6 +43,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/business', BusinessComponent::class)->name('business');
         Route::get('/department', DepartmentComponent::class)->name('department');
         Route::get('/fortnight-generator', FortnightGeneratorComponent::class)->name('fortnight-generator');
+        Route::get('/workshift', WorkshiftComponent::class)->name('workshift');
     });
 
     // Employee routes

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Livewire\Business;
+namespace App\Livewire\Workshift;
 
+use App\Models\WeekDay;
 use Livewire\Component;
-use App\Models\Business;
-use App\Models\Department;
+use App\Models\Workshift;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
@@ -12,7 +12,7 @@ use App\Exports\BusinessExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
-class BusinessComponent extends Component
+class WorkshiftComponent extends Component
 {
     use WithPagination, LivewireAlert;
 
@@ -22,12 +22,13 @@ class BusinessComponent extends Component
     public $perPage = 10;
     #[Url]
     public $search = '';
-    public $modalTitle = 'Add New Business|Branch';
+    public $modalTitle = 'Add New Workshift';
     public $updateMode = false;
 
-    public $name;
-    public $contact_number;
-    public $address;
+    public $title;
+    public $start;
+    public $end;
+    public $meridiem;
     public $edit_id;
 
     protected $paginationTheme = 'bootstrap';
@@ -35,27 +36,26 @@ class BusinessComponent extends Component
     public $selectAll = false;
     public $selectedRows = [];
 
-    public $selectAllDepartment = false;
-    public $selectedDepartmentRows = [];
+    public $selectedDayRows = [];
 
-    public $departments = [];
+    public $weekDays = [];
 
-    #[Title('Business')]
+    #[Title('Workshift')]
     public function render()
     {
-        return view('livewire.business.business-component',[
+        return view('livewire.workshift.workshift-component',[
             'records' => $this->records
         ]);
     }
 
     public function mount()
     {
-        $this->departments = Department::where('is_active',1)->get();
+        $this->weekDays = WeekDay::all();
     }
 
     public function getRecordsProperty()
     {
-        return Business::withCount('employees')->search(trim($this->search))
+        return Workshift::with('week_days')->search(trim($this->search))
             ->paginate($this->perPage);
     }
 
@@ -68,90 +68,91 @@ class BusinessComponent extends Component
         }
     }
 
-    public function updatedSelectAllDepartment($value)
-    {
-        if($value){
-            $this->selectedDepartmentRows = $this->departments->pluck('id');
-        }else{
-            $this->selectedDepartmentRows = [];
-        }
-    }
-
     public function addNew()
     {
         $this->resetInputFields();
         $this->dispatch('show-add-modal');
-        $this->modalTitle = 'Add New Data';
+        $this->modalTitle = 'Add New Workshift';
         $this->updateMode = false;
     }
 
     public function submit($saveAndCreateNew)
     {
         $this->validate([
-            'name' => 'required'
+            'title' => 'required',
+            'start' => 'required',
+            'end' => 'required',
+            'meridiem' => 'required'
         ]);
 
-        $create = Business::create([
-            'name' => $this->name,
-            'contact_number' => $this->contact_number,
-            'address' => $this->address,
+        $create = Workshift::create([
+            'title' => $this->title,
+            'start' => $this->start,
+            'end' => $this->end,
+            'meridiem' => $this->meridiem,
         ]);
 
-        $create->departments()->sync($this->selectedDepartmentRows);
+        $create->week_days()->sync($this->selectedDayRows);
 
         if($create){
             $this->resetInputFields();
             if($saveAndCreateNew) {
-                $this->alert('success', 'New Business has been save successfully!');
+                $this->alert('success', 'New Workshift has been save successfully!');
             } else {
                 $this->dispatch('hide-add-modal');
 
-                $this->alert('success', 'New Business has been save successfully!');
+                $this->alert('success', 'New Workshift has been save successfully!');
             }
         }
     }
 
     public function resetInputFields()
     {
-        $this->name = '';
-        $this->contact_number = '';
-        $this->address = '';
+        $this->title = '';
+        $this->start = '';
+        $this->end = '';
+        $this->meridiem = '';
     }
 
     public function edit($id)
     {
         $this->edit_id = $id;
         $this->dispatch('show-add-modal');
-        $data = Business::find($id);
-        $this->name = $data->name;
-        $this->contact_number = $data->contact_number;
-        $this->address = $data->address;
-        $this->selectedDepartmentRows = $data->departments()->pluck('department_id')->toArray();
-        $this->modalTitle = 'Edit Data';
+        $data = Workshift::find($id);
+        $this->title = $data->title;
+        $this->start = $data->start;
+        $this->end = $data->end;
+        $this->meridiem = $data->meridiem;
+        $this->selectedDayRows = $data->week_days()->pluck('week_day_id')->toArray();
+        $this->modalTitle = 'Edit Workshift';
         $this->updateMode = true;
     }
 
     public function update()
     {
         $this->validate([
-            'name' => 'required'
+            'title' => 'required',
+            'start' => 'required',
+            'end' => 'required',
+            'meridiem' => 'required'
         ]);
 
-        $data = Business::find($this->edit_id);
+        $data = Workshift::find($this->edit_id);
         $data->update([
-            'name' => $this->name,
-            'contact_number' => $this->contact_number,
-            'address' => $this->address
+            'title' => $this->title,
+            'start' => $this->start,
+            'end' => $this->end,
+            'meridiem' => $this->meridiem,
         ]);
 
-        $data->departments()->sync($this->selectedDepartmentRows);
+        $data->week_days()->sync($this->selectedDayRows);
 
         if($data) {
             $this->dispatch('hide-add-modal');
 
             $this->resetInputFields();
 
-            $this->alert('success', $data->name.' has been updated!');
+            $this->alert('success', $data->title.' has been updated!');
         }
     }
 
@@ -167,8 +168,8 @@ class BusinessComponent extends Component
 
     public function remove()
     {
-        $delete = Business::find($this->approveConfirmed);
-        $name = $delete->name;
+        $delete = Workshift::find($this->approveConfirmed);
+        $name = $delete->title;
         $delete->delete();
         if($delete){
             $this->alert('success', $name.' has been removed!');

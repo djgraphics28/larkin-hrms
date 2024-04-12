@@ -56,6 +56,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('workshift') }}" class="nav-link {{ request()->is('apps/workshift') ? 'active' : '' }}">
+                                <i class="far fa-user-circle nav-icon"></i>
+                                <p>Workshift</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('fortnight-generator') }}" class="nav-link {{ request()->is('apps/fortnight-generator') ? 'active' : '' }}">
                                 <i class="far fa-user-circle nav-icon"></i>
                                 <p>Fortnight Generator</p>

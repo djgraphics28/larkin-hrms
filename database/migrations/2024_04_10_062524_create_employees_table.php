@@ -32,6 +32,7 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_status_id');
             $table->unsignedBigInteger('business_id');
             $table->unsignedBigInteger('department_id');
+            $table->unsignedBigInteger('workshift_id');
             $table
                 ->foreign('designation_id')
                 ->references('id')
@@ -57,6 +58,12 @@ return new class extends Migration
                 ->foreign('business_id')
                 ->references('id')
                 ->on('businesses')
+                ->onUpdate('CASCADE')
+                ->onDelete('CASCADE');
+            $table
+                ->foreign('workshift_id')
+                ->references('id')
+                ->on('workshifts')
                 ->onUpdate('CASCADE')
                 ->onDelete('CASCADE');
 
