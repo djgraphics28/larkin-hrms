@@ -56,30 +56,44 @@
                                 </div>
                             </div>
 
-
-                            <table class="table table-condensed table-sm table-hover">
+                            <div class="d-flex justify-content-center items-align-center">
+                                <div wire:loading wire:target="generate">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-condensed table-sm table-hover table-bordered"
+                                wire:loading.remove>
                                 <thead>
                                     <tr>
                                         <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
                                         <th class="text-start">Workshift Title</th>
+                                        <th class="text-start">Description</th>
                                         <th class="text-center">Start</th>
-                                        <th class="text-start">End</th>
-                                        <th class="text-start">Meridiem</th>
+                                        <th class="text-center">End</th>
+                                        <th class="text-center">Hours/Day</th>
+                                        <th class="text-center">Hours/Fortnightly</th>
                                         <th width="30%" class="text-start">Day-Offs</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @include('shared.table-loader')
                                     @forelse ($records as $data)
                                         <tr>
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
-                                            <td class="text-start">{{ $data->title }}</td>
-                                            <td class="text-center">{{ $data->start }}</td>
-                                            <td class="text-start">{{ $data->end }}</td>
-                                            <td class="text-start">{{ $data->meridiem }}</td>
-                                            <td class="text-start">
+                                            <td width="20%" class="text-start">{{ $data->title }}</td>
+                                            <td width="25%" class="text-start">{{ $data->description }}</td>
+                                            <td width="7%" class="text-center">
+                                                {{ date('h:i A', strtotime($data->start)) }}</td>
+                                            <td width="7%" class="text-center">
+                                                {{ date('h:i A', strtotime($data->end)) }}</td>
+                                            <td class="text-center">{{ $data->number_of_hours }} hours</td>
+                                            <td class="text-center">
+                                                {{ (7 - count($data->week_days)) * 2 * $data->number_of_hours }} hours
+                                            </td>
+                                            <td width="15%" class="text-start">
                                                 @forelse ($data->week_days as $do)
                                                     <span class="badge badge-primary">{{ $do->day }}</span>
                                                 @empty
@@ -103,8 +117,8 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td rowspan="5" colspan="7" class="text-center"><i class="fa fa-ban"
-                                                    aria-hidden="true"></i> No Result Found</td>
+                                            <td rowspan="5" colspan="9" class="text-center"><i
+                                                    class="fa fa-ban" aria-hidden="true"></i> No Result Found</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -144,19 +158,44 @@
                                 </span>
                             @enderror
                         </div>
+                        <div class="form-group">
+                            <label for="">Workshift Description</label>
+                            <input wire:model="description" type="text"
+                                class="form-control form-control-lg @error('description') is-invalid @enderror">
+
+                            @error('description')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        {{-- <div class="form-group">
+                            <label for="">Number of Hours Shift
+                            </label>
+                            <input wire:model="number_of_hours" type="number"
+                                class="form-control form-control-lg @error('number_of_hours') is-invalid @enderror">
+
+                            @error('number_of_hours')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div> --}}
                         <div class="row">
-                            <div class="form-group col-4">
+                            <div class="form-group col-6">
                                 <label>Start:</label>
-                                <input wire:model="start" type="time" class="form-control @error('start') is-invalid @enderror">
+                                <input wire:model="start" type="time"
+                                    class="form-control @error('start') is-invalid @enderror">
                                 @error('start')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
                             </div>
-                            <div class="form-group col-4">
+                            <div class="form-group col-6">
                                 <label>End:</label>
-                                <input wire:model="end" type="time" class="form-control @error('end') is-invalid @enderror">
+                                <input wire:model="end" type="time"
+                                    class="form-control @error('end') is-invalid @enderror">
                                 @error('end')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -164,30 +203,19 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group col-4">
-                                <label>Meridiem:</label>
-                                <select wire:model="meridiem" class="form-control">
-                                    <option value="AM">AM</option>
-                                    <option value="PM">PM</option>
-                                </select>
-                            </div>
-
                         </div>
                         <div class="row">
                             <div class="form-group" wire:ignore>
                                 <label>Select Day-Off</label>
-                                <table class="table table-sm table-condensed">
-                                    <tbody>
-                                        @foreach ($weekDays as $data)
-                                            <tr>
-                                                <td class="text-start"><input id="{{ $data->day }}"
-                                                        type="checkbox" wire:model.prevent="selectedDayRows"
-                                                        value="{{ $data->id }}"></td>
-                                                <td><label for="{{ $data->day }}">{{ $data->day }}</label></td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                <div>
+                                    @foreach ($weekDays as $data)
+                                        <span class="mr-3">
+                                            <input id="{{ $data->day }}" type="checkbox"
+                                                wire:model.prevent="selectedDayRows" value="{{ $data->id }}">
+                                            <label for="{{ $data->day }}">{{ $data->day }}</label>
+                                        </span>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>

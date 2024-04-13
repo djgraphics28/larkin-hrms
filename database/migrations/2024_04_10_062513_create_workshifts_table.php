@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('workshifts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('description');
+            $table->integer('number_of_hours');
             $table->string('start');
             $table->string('end');
-            $table->enum('meridiem',['AM','PM']);
             $table->timestamps();
         });
     }

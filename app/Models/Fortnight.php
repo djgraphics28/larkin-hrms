@@ -2,14 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Fortnight extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
+
+    /**
+     * The employee_attendances that belong to the Fortnight
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function employee_attendances(): BelongsToMany
+    {
+        return $this->belongsToMany(Employee::class, 'attendances', 'fortnight_id', 'employee_number');
+    }
 
     public function scopeSearch($query, $searchTerm)
     {

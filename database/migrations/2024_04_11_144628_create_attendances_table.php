@@ -13,17 +13,19 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('fortnight_id');
             $table->string('employee_number');
             $table->dateTime('time_in');
             $table->dateTime('time_out')->nullable();
+            $table->dateTime('time_in_after_break')->nullable();
+            $table->dateTime('time_out_after_break')->nullable();
             $table->float('late_in_minutes')->default(0);
             $table->text('notes')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table
-                ->foreign('employee_id')
+                ->foreign('fortnight_id')
                 ->references('id')
-                ->on('employees')
+                ->on('fortnights')
                 ->onUpdate('CASCADE')
                 ->onDelete('CASCADE');
             $table->timestamps();

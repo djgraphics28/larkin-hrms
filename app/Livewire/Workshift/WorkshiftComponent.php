@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Workshift;
 
+use Carbon\Carbon;
 use App\Models\WeekDay;
 use Livewire\Component;
 use App\Models\Workshift;
@@ -26,9 +27,10 @@ class WorkshiftComponent extends Component
     public $updateMode = false;
 
     public $title;
+    public $description;
+    public $number_of_hours = 7;
     public $start;
     public $end;
-    public $meridiem;
     public $edit_id;
 
     protected $paginationTheme = 'bootstrap';
@@ -80,16 +82,28 @@ class WorkshiftComponent extends Component
     {
         $this->validate([
             'title' => 'required',
+            'description' => 'required',
+            // 'number_of_hours' => 'required',
             'start' => 'required',
             'end' => 'required',
-            'meridiem' => 'required'
         ]);
+
+        $start = Carbon::parse($this->start);
+        $end = Carbon::parse($this->end);
+
+        $diffInHours = $end->diffInHours($start);
+
+        // if($this->number_of_hours != $diffInHours) {
+        //     $this->alert('error', 'Please correct the start and end time!');
+        //     return 0;
+        // }
 
         $create = Workshift::create([
             'title' => $this->title,
+            'description' => $this->description,
+            'number_of_hours' => $diffInHours,
             'start' => $this->start,
             'end' => $this->end,
-            'meridiem' => $this->meridiem,
         ]);
 
         $create->week_days()->sync($this->selectedDayRows);
@@ -109,9 +123,10 @@ class WorkshiftComponent extends Component
     public function resetInputFields()
     {
         $this->title = '';
+        $this->description = '';
+        $this->number_of_hours = 7;
         $this->start = '';
         $this->end = '';
-        $this->meridiem = '';
     }
 
     public function edit($id)
@@ -120,6 +135,8 @@ class WorkshiftComponent extends Component
         $this->dispatch('show-add-modal');
         $data = Workshift::find($id);
         $this->title = $data->title;
+        $this->description = $data->description;
+        $this->number_of_hours = $data->number_of_hours;
         $this->start = $data->start;
         $this->end = $data->end;
         $this->meridiem = $data->meridiem;
@@ -132,17 +149,24 @@ class WorkshiftComponent extends Component
     {
         $this->validate([
             'title' => 'required',
+            'description' => 'required',
+            // 'number_of_hours' => 'required',
             'start' => 'required',
             'end' => 'required',
-            'meridiem' => 'required'
         ]);
+
+        $start = Carbon::parse($this->start);
+        $end = Carbon::parse($this->end);
+
+        $diffInHours = $end->diffInHours($start);
 
         $data = Workshift::find($this->edit_id);
         $data->update([
             'title' => $this->title,
+            'description' => $this->description,
+            'number_of_hours' => $diffInHours,
             'start' => $this->start,
             'end' => $this->end,
-            'meridiem' => $this->meridiem,
         ]);
 
         $data->week_days()->sync($this->selectedDayRows);

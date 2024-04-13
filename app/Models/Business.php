@@ -45,6 +45,5 @@ class Business extends Model
 
             $query->where('name','like', $searchTerm);
         });
-
     }
 }

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('ext_name', 10)->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('phone')->nullable();
+            $table->text('address')->nullable();
             $table->enum('marital_status',['Single', 'Married', 'Divorced', 'Widowed'])->nullable();
             $table->date('birth_date')->nullable();
             $table->date('joining_date')->nullable();
@@ -28,6 +29,13 @@ return new class extends Migration
             $table->enum('label', ['National','Expatriate']);
             $table->enum('gender', ['Male','Female']);
             $table->string('image')->nullable();
+            $table->string('nasfund_number')->nullable();
+            $table->string('passport_number')->nullable();
+            $table->date('passport_expiry')->nullable();
+            $table->string('work_permit_number')->nullable();
+            $table->date('work_permit_expiry')->nullable();
+            $table->string('visa_number')->nullable();
+            $table->date('visa_expiry')->nullable();
             $table->unsignedBigInteger('designation_id');
             $table->unsignedBigInteger('employee_status_id');
             $table->unsignedBigInteger('business_id');

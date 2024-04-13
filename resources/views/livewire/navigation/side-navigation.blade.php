@@ -32,7 +32,7 @@
                     </a>
                 </li>
                 <li class="nav-item {{ request()->is('apps/*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('apps/*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link {{ request()->is('apps/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cubes"></i>
                         <p>
                             Apps
@@ -72,7 +72,7 @@
                 {{-- HR MANAGEMENT --}}
                 <li class="nav-header">HR Management</li>
                 <li class="nav-item {{ request()->is('employee/*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('employee/*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link {{ request()->is('employee/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users"></i>
                         <p>
                             Employees
@@ -131,7 +131,7 @@
                     </ul>
                 </li>
                 <li class="nav-item {{ request()->is('attendance/*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('attendance/*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link {{ request()->is('attendance/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-business-time"></i>
                         <p>
                             Attendance
@@ -142,7 +142,7 @@
                         <li class="nav-item">
                             <a href="{{ route('attendance-logs') }}" class="nav-link {{ request()->is('attendance/logs') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p> Logs</p>
+                                <p> Logs | Timesheets</p>
                             </a>
                         </li>
                         <li class="nav-item">

@@ -52,7 +52,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div>
-                                <div class="d-flex justify-content-center items-align-cneter">
+                                <div class="d-flex justify-content-center items-align-center">
                                     <div wire:loading>
                                         <div class="spinner-border" role="status">
                                             <span class="sr-only">Loading...</span>
