@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Workshift;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -61,6 +62,16 @@ class Employee extends Model
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class, 'employee_number', 'employee_number');
+    }
+
+    /**
+     * Get the workshift that owns the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function workshift(): BelongsTo
+    {
+        return $this->belongsTo(Workshift::class, 'workshift_id', 'id');
     }
 
     public function scopeSearch($query, $searchTerm)

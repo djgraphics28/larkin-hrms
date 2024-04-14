@@ -4,6 +4,7 @@ namespace App\Livewire\Employee;
 
 use Livewire\Component;
 use App\Models\Employee;
+use App\Models\Department;
 use App\Models\Designation;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
@@ -27,6 +28,10 @@ class EmployeeComponent extends Component
     #[Url]
     public $search = '';
     #[Url]
+    public $sortByLabel = '';
+    #[Url]
+    public $sortByDepartment = '';
+    #[Url]
     public $sortByDesignation = '';
     #[Url]
     public $sortByEmployeeStatus = '';
@@ -37,6 +42,7 @@ class EmployeeComponent extends Component
     public $name;
     public $edit_id;
 
+    public $departments = [];
     public $designations = [];
     public $employeeStatuses = [];
 
@@ -56,17 +62,21 @@ class EmployeeComponent extends Component
 
     public function mount()
     {
+        $this->departments = Department::where('is_active',1)->get();
         $this->designations = Designation::where('is_active',1)->get();
         $this->employeeStatuses = EmployeeStatus::where('is_active',1)->get();
     }
 
     public function getRecordsProperty()
     {
-        $label = $this->label == 'all' ? '' : $this->label;
+        $label = $this->label == 'all' ? $this->sortByLabel : $this->label;
 
         return Employee::search(trim($this->search))
             ->when($label, function($query) use ($label) {
                 $query->where('label', $label);
+            })
+            ->when($this->sortByDepartment, function($query) use ($label) {
+                $query->where('department_id', $this->sortByDepartment);
             })
             ->when($this->sortByDesignation, function($query) {
                 $query->where('designation_id', $this->sortByDesignation);

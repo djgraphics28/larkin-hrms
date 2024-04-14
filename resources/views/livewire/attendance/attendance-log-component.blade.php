@@ -103,14 +103,14 @@
                                 <thead>
                                     <tr>
                                         <th rowspan="2" class="text-start align-middle"><input type="checkbox" wire:model.live="selectAll"></th>
-                                        <th rowspan="2" class="text-start align-middle"><small class="text-start text-bold">EMP. NO.</small></th>
+                                        <th rowspan="2" class="text-center align-middle"><small class="text-start text-bold">EMP. NO.</small></th>
                                         <th rowspan="2" class="text-start align-middle"><small class="text-start text-bold">EMPLOYEE NAME</small></th>
                                         <th rowspan="2" class="text-center align-middle"><small class="text-center text-bold">REG</small></th>
                                         <th rowspan="2" class="text-center align-middle"><small class="text-center text-bold">OT Hrs.(1.5)</small></th>
                                         <th rowspan="2" class="text-center align-middle"><small class="text-center text-bold">Sun OT.(2.0)</small></th>
                                         <th rowspan="2" class="text-center align-middle"><small class="text-center text-bold">HOL.</small></th>
                                         @forelse ($ranges as $dr)
-                                            <th class="text-center"> <small
+                                            <th class="text-center @if($dr['day'] == 'Sun' || $dr['day'] == 'Sun2') bg-danger @endif"> <small
                                                     class="text-center text-bold">{{ $dr['day'] }}</small></th>
                                         @empty
                                             <th>No Records</th>
@@ -119,7 +119,7 @@
                                     </tr>
                                     <tr>
                                         @forelse ($ranges as $dr)
-                                            <th class="text-center">
+                                            <th class="text-center @if($dr['day'] == 'Sun' || $dr['day'] == 'Sun2') bg-danger @endif">
                                                 <small class="text-center text-bold">{{ $dr['date'] }}</small>
                                             </th>
                                         @empty
@@ -134,22 +134,12 @@
                                         <tr>
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
-                                            <td class="text-start">{{ $data->name }}</td>
-                                            <td class="text-center">@livewire('active-status', ['model' => $data, 'field' => 'is_active'], key($data->id)){{ $data->employees_count }}</td>
-                                            <td class="text-center">
-                                                <div class="btn-group">
-                                                    <a wire:click="view({{ $data->id }})"
-                                                        class="dropdown-item text-primary" href="javascript:void(0)"><i
-                                                            class="fa fa-eye" aria-hidden="true"></i></a>
-                                                    <a wire:click="edit({{ $data->id }})"
-                                                        class="dropdown-item text-warning" href="javascript:void(0)"><i
-                                                            class="fa fa-edit" aria-hidden="true"></i></a>
-                                                    <a wire:click="alertConfirm({{ $data->id }})"
-                                                        class="dropdown-item text-danger" href="javascript:void(0)"><i
-                                                            class="fa fa-trash" aria-hidden="true"></i></a>
-                                                </div>
-
-                                            </td>
+                                            <td class="text-center">{{ $data->employee_number }}</td>
+                                            <td class="text-start">{{ $data->first_name }} {{ $data->last_name }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                     @empty
                                         <tr>
