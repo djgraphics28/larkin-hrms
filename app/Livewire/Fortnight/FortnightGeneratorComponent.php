@@ -49,12 +49,24 @@ class FortnightGeneratorComponent extends Component
 
             $period = [];
 
+            $periodStart = $date->copy(); // Initialize period start date
+
             for ($y = 1; $y <= 27; $y++) {
-                $period[] = $date->copy(); // Copy the date object to avoid modifying the original
-                $date->addDays(14); // Add 14 days to the date
+                $periodEnd = $periodStart->copy()->addDays(14)->subDay(); // Calculate period end date
+                $period[] = ['start' => $periodStart, 'end' => $periodEnd]; // Store period start and end dates
+
+                $periodStart = $periodEnd->copy()->addDay(); // Set the next period start date
+
+                // Ensure the last period ends on 31-Dec of the current year
+                if ($y === 26) {
+                    $period[] = ['start' => $periodStart, 'end' => Carbon::create($year, 12, 31)->endOfDay()];
+                }
             }
 
-            for ($i = 0; $i < 26; $i++) {
+            foreach ($period as $i => $p) {
+                if ($i >= 26) {
+                    break; // Stop the loop after 26 periods
+                }
                 // Add leading zero if iteration number is less than 10
                 $iteration = ($i < 9) ? '0' . ($i + 1) : ($i + 1);
                 $code = "FN{$year2}{$iteration}";
@@ -66,8 +78,8 @@ class FortnightGeneratorComponent extends Component
                     [
                         'fn_number' => $iteration,
                         'code' => $code,
-                        'start' => $period[$i],
-                        'end' => $period[$i + 1],
+                        'start' => $p['start']->toDateString(), // Convert to MySQL date string
+                        'end' => $p['end']->toDateString(), // Convert to MySQL date string
                         'year' => $year,
                     ]
                 );

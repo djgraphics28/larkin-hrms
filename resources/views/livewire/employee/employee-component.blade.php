@@ -27,12 +27,13 @@
                             <div class="btn-group float-right" role="group" aria-label="Groups">
                                 <button type="button" class="btn btn-warning btn-sm mr-2"><i class="fa fa-upload"
                                         aria-hidden="true"></i> Import</button>
-                                <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i class="fa fa-file-excel"
-                                        aria-hidden="true"></i> Export</button>
+                                <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i
+                                        class="fa fa-file-excel" aria-hidden="true"></i> Export</button>
                                 <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
                                         aria-hidden="true"></i> PDF</button>
-                                <a href="{{ route('employee.create',$label) }}" type="button" class="btn btn-primary btn-sm mr-2"><i
-                                        class="fa fa-plus" aria-hidden="true"></i> Add New</a>
+                                <a href="{{ route('employee.create', $label) }}" type="button"
+                                    class="btn btn-primary btn-sm mr-2"><i class="fa fa-plus" aria-hidden="true"></i>
+                                    Add New</a>
                             </div>
                         </div>
                         <div class="card-body">
@@ -54,10 +55,34 @@
                                             placeholder="Search term here" wire:model.live.debounce.500="search">
                                     </div>
                                 </div>
+
+                                @if ($label == 'all')
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <select class="form-control" wire:model.live="sortByLabel">
+                                                <option value="">All Labels</option>
+                                                <option value="National">National</option>
+                                                <option value="Expatriate">Expatriate</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <select class="form-control" wire:model="sortByDesignation">
-                                            <option value="">All Designations</option>
+                                        <select class="form-control" wire:model.live="sortByDepartment">
+                                            <option value="">All Departments</option>
+                                            @foreach ($departments as $data)
+                                                <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <select class="form-control" wire:model.live="sortByDesignation">
+                                            <option value="">All Positions</option>
                                             @foreach ($designations as $data)
                                                 <option value="{{ $data->id }}">{{ $data->name }}</option>
                                             @endforeach
@@ -66,7 +91,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <select class="form-control" wire:model="sortByEmployeeStatus">
+                                        <select class="form-control" wire:model.live="sortByEmployeeStatus">
                                             <option value="">All Status</option>
                                             @foreach ($employeeStatuses as $data)
                                                 <option value="{{ $data->id }}">{{ $data->name }}</option>
@@ -79,28 +104,41 @@
                             <table class="table table-condensed table-sm table-hover">
                                 <thead>
                                     <tr>
-                                        <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
-                                        <th class="text-start">Employee Name</th>
-                                        <th class="text-center">Status</th>
-                                        <th class="text-center">Action</th>
+                                        <th width="3%" class="text-start"><input width="3%" type="checkbox"
+                                                wire:model.live="selectAll"></th>
+                                        <th width="10%"class="text-center">EMP NO</th>
+                                        <th class="text-start">EMPLOYEE NAME</th>
+                                        <th class="text-center">POSITION</th>
+                                        <th class="text-center">WORKSHIFT</th>
+                                        <th class="text-center">DEPARTMENT</th>
+                                        <th class="text-center">STATUS</th>
+                                        <th class="text-center">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                   @include('shared.table-loader')
+                                    @include('shared.table-loader')
                                     @forelse ($records as $data)
                                         <tr>
-                                            <td class="text-start"><input type="checkbox"
+                                            <td width="3%" class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
-                                            <td class="text-start">{{ $data->first_name }}</td>
-                                            <td class="text-center"></td>
-                                            <td class="text-center">
+                                            <td class="text-center">{{ $data->employee_number }}</td>
+                                            <td class="text-start"><strong>{{ $data->first_name }}
+                                                    {{ $data->last_name }}</strong>
+                                                <br><small>{{ $data->email }}</small></td>
+                                            <td class="text-center">{{ $data->designation->name }}</td>
+                                            <td class="text-center">{{ $data->workshift->title }}</td>
+                                            <td class="text-center">{{ $data->department->name }}</td>
+                                            <td class="text-center">{{ $data->employee_status->name }}</td>
+                                            <td width="10%" class="text-center">
                                                 <div class="btn-group">
                                                     <a wire:click="view({{ $data->id }})"
-                                                        class="dropdown-item text-primary" href="javascript:void(0)"><i
-                                                            class="fa fa-eye" aria-hidden="true"></i></a>
-                                                    <a wire:click="edit({{ $data->id }})"
-                                                        class="dropdown-item text-warning" href="javascript:void(0)"><i
-                                                            class="fa fa-edit" aria-hidden="true"></i></a>
+                                                        class="dropdown-item text-primary"
+                                                        href="javascript:void(0)"><i class="fa fa-eye"
+                                                            aria-hidden="true"></i></a>
+                                                    <a href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
+                                                        class="dropdown-item text-warning"
+                                                        href="javascript:void(0)"><i class="fa fa-edit"
+                                                            aria-hidden="true"></i></a>
                                                     <a wire:click="alertConfirm({{ $data->id }})"
                                                         class="dropdown-item text-danger" href="javascript:void(0)"><i
                                                             class="fa fa-trash" aria-hidden="true"></i></a>
@@ -110,8 +148,8 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td rowspan="5" colspan="7" class="text-center"><i class="fa fa-ban"
-                                                    aria-hidden="true"></i> No Result Found</td>
+                                            <td rowspan="5" colspan="8" class="text-center"><i
+                                                    class="fa fa-ban" aria-hidden="true"></i> No Result Found</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

@@ -32,7 +32,7 @@
                     </a>
                 </li>
                 <li class="nav-item {{ request()->is('apps/*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('apps/*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link {{ request()->is('apps/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cubes"></i>
                         <p>
                             Apps
@@ -56,6 +56,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('workshift') }}" class="nav-link {{ request()->is('apps/workshift') ? 'active' : '' }}">
+                                <i class="far fa-user-circle nav-icon"></i>
+                                <p>Workshift</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('fortnight-generator') }}" class="nav-link {{ request()->is('apps/fortnight-generator') ? 'active' : '' }}">
                                 <i class="far fa-user-circle nav-icon"></i>
                                 <p>Fortnight Generator</p>
@@ -66,7 +72,7 @@
                 {{-- HR MANAGEMENT --}}
                 <li class="nav-header">HR Management</li>
                 <li class="nav-item {{ request()->is('employee/*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('employee/*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link {{ request()->is('employee/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users"></i>
                         <p>
                             Employees
@@ -120,6 +126,35 @@
                                 class="nav-link {{ request()->is('employee/status') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Employee Status</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item {{ request()->is('attendance/*') ? 'menu-open' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link {{ request()->is('attendance/*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-business-time"></i>
+                        <p>
+                            Attendance
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('attendance-logs') }}" class="nav-link {{ request()->is('attendance/logs') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Logs | Timesheets</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('attendance-import') }}" class="nav-link {{ request()->is('attendance/import') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Import</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('attendance-adjustment') }}" class="nav-link {{ request()->is('attendance/adjustment') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Adjustment</p>
                             </a>
                         </li>
                     </ul>

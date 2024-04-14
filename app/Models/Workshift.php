@@ -2,24 +2,25 @@
 
 namespace App\Models;
 
+use App\Models\WeekDay;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Fortnight extends Model
+class Workshift extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
     /**
-     * The employee_attendances that belong to the Fortnight
+     * The week_days that belong to the Workshift
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function employee_attendances(): BelongsToMany
+    public function week_days(): BelongsToMany
     {
-        return $this->belongsToMany(Employee::class, 'attendances', 'fortnight_id', 'employee_number');
+        return $this->belongsToMany(WeekDay::class);
     }
 
     public function scopeSearch($query, $searchTerm)
@@ -28,8 +29,9 @@ class Fortnight extends Model
 
         $query->where(function($query) use ($searchTerm){
 
-            $query->where('year','like', $searchTerm);
+            $query->where('title','like', $searchTerm);
         });
 
     }
+
 }

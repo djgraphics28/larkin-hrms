@@ -97,7 +97,7 @@ class BusinessComponent extends Component
             'address' => $this->address,
         ]);
 
-        $data->departments()->sync($this->selectedDepartmentRows);
+        $create->departments()->sync($this->selectedDepartmentRows);
 
         if($create){
             $this->resetInputFields();

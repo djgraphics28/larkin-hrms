@@ -7,11 +7,16 @@ use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
+use App\Livewire\Workshift\WorkshiftComponent;
 use App\Livewire\Department\DepartmentComponent;
+use App\Livewire\Employee\EmployeeInfoComponent;
 use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
+use App\Livewire\Attendance\AttendanceLogComponent;
+use App\Livewire\Attendance\AttendanceImportComponent;
 use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
+use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,14 +44,23 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/business', BusinessComponent::class)->name('business');
         Route::get('/department', DepartmentComponent::class)->name('department');
         Route::get('/fortnight-generator', FortnightGeneratorComponent::class)->name('fortnight-generator');
+        Route::get('/workshift', WorkshiftComponent::class)->name('workshift');
     });
 
     // Employee routes
     Route::group(['prefix' => 'employee'], function () {
         Route::get('/{label}/employees', EmployeeComponent::class)->name('employee.index');
         Route::get('/{label}/create', CreateEmployeeComponent::class)->name('employee.create');
+        Route::get('/{label}/info/{id}', EmployeeInfoComponent::class)->name('employee.info');
         Route::get('/designation', DesignationComponent::class)->name('designation');
         Route::get('/status', EmployeeStatusComponent::class)->name('employee-status');
+    });
+
+     // Attendance routes
+     Route::group(['prefix' => 'attendance'], function () {
+        Route::get('/logs', AttendanceLogComponent::class)->name('attendance-logs');
+        Route::get('/import', AttendanceImportComponent::class)->name('attendance-import');
+        Route::get('/adjustment', AttendanceAdjustmentComponent::class)->name('attendance-adjustment');
     });
 
 
