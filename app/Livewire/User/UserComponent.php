@@ -49,7 +49,7 @@ class UserComponent extends Component
 
     public function mount()
     {
-        $this->businesses = Business::all();
+        $this->businesses = Business::where('is_active',1)->get();
     }
 
     public function getRecordsProperty()

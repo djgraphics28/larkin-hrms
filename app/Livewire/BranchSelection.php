@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Business;
+use Illuminate\Support\Facades\Auth;
 
 class BranchSelection extends Component
 {
@@ -17,6 +18,6 @@ class BranchSelection extends Component
 
     public function mount()
     {
-        $this->branches = Business::where('is_active', 1)->get();
+        $this->branches = Auth::user()->businesses;
     }
 }
