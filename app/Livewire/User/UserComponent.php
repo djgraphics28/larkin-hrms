@@ -106,8 +106,8 @@ class UserComponent extends Component
     public function resetInputFields()
     {
         $this->name = '';
-        $this->contact_number = '';
-        $this->address = '';
+        $this->email = '';
+        $this->password = '';
         $this->selectedBusinessRows = [];
     }
 
