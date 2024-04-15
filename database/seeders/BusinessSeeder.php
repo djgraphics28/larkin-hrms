@@ -28,5 +28,6 @@ class BusinessSeeder extends Seeder
                 'name' => $business
             ]);
         }
+
     }
 }

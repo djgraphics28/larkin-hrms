@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(AdminSeeder::class);
         $this->call(BusinessSeeder::class);
+        $this->call(AdminSeeder::class);
         $this->call(DepartmentSeeder::class);
         $this->call(DesignationSeeder::class);
         $this->call(WeekDaySeeder::class);

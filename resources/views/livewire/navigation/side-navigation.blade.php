@@ -67,6 +67,14 @@
                                 <p>Fortnight Generator</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('users') }}" class="nav-link">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    User Managment
+                                </p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 {{-- HR MANAGEMENT --}}

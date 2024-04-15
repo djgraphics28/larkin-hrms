@@ -2,6 +2,7 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
 use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/department', DepartmentComponent::class)->name('department');
         Route::get('/fortnight-generator', FortnightGeneratorComponent::class)->name('fortnight-generator');
         Route::get('/workshift', WorkshiftComponent::class)->name('workshift');
+        Route::get('/users', UserComponent::class)->name('users');
     });
 
     // Employee routes
