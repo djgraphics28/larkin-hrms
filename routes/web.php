@@ -34,7 +34,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::group(['middleware' => ['auth', 'verified']], function () {
+Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
     // Dashboard routes
     Route::group(['prefix' => 'dashboard'], function () {
         Route::get('/', Dashboard::class)->name('dashboard');
