@@ -111,12 +111,6 @@
 
     @stack('scripts')
 
-    <script>
-        $(function() {
-            $().alert('dispose')
-        });
-    </script>
-
     @livewireScripts
 </body>
 
