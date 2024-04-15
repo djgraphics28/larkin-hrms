@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Workshift;
+use App\Models\SalaryHistory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -72,6 +73,16 @@ class Employee extends Model
     public function workshift(): BelongsTo
     {
         return $this->belongsTo(Workshift::class, 'workshift_id', 'id');
+    }
+
+    /**
+     * Get all of the salary for the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function salaries(): HasMany
+    {
+        return $this->hasMany(SalaryHistory::class, 'employee_id', 'id');
     }
 
     public function scopeSearch($query, $searchTerm)
