@@ -133,47 +133,7 @@
                                 <!-- /.tab-pane -->
 
                                 <div class="tab-pane" id="bank_details">
-                                    <form class="form-horizontal" wire:ignore>
-                                        <div class="form-group row">
-                                            <label for="account_name" class="col-sm-2 col-form-label">Account
-                                                Name</label>
-                                            <div class="col-sm-10">
-                                                <input wire:model="account_name" type="text" class="form-control"
-                                                    id="account_name" placeholder="Account Name">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="account_number" class="col-sm-2 col-form-label">Account
-                                                Number</label>
-                                            <div class="col-sm-10">
-                                                <input wire:model="account_number" type="text"
-                                                    class="form-control" id="account_number"
-                                                    placeholder="00000000000">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="bank_name" class="col-sm-2 col-form-label">Bank Name</label>
-                                            <div class="col-sm-10">
-                                                <input wire:model="bank_name" type="text" class="form-control"
-                                                    id="bank_name" placeholder="Bank Name">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="bsb_code" class="col-sm-2 col-form-label">BSB Code</label>
-                                            <div class="col-sm-10">
-                                                <input wire:model="bsb_code" type="text" class="form-control"
-                                                    id="bsb_code" placeholder="BSB Code">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="offset-sm-2 col-sm-10">
-                                                <button type="submit" class="btn btn-primary float-right">Save
-                                                    Changes</button>
-                                                <button type="submit" class="btn btn-success float-right mr-2">ADD
-                                                    NEW BANK</button>
-                                            </div>
-                                        </div>
-                                    </form>
+                                    @livewire('employee.partials.bank-details-component', ['id' => $id])
                                 </div>
                                 <!-- /.tab-pane -->
 

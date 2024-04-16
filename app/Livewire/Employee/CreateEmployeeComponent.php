@@ -121,6 +121,11 @@ class CreateEmployeeComponent extends Component
             'business_id' => 1
         ]);
 
+        $create->salaries()->create([
+            'salary_rate' => $this->salary_rate,
+            'is_active' => true
+        ]);
+
         if ($create) {
             $this->alert('success', 'New Employee has been saved successfully!');
         } else {

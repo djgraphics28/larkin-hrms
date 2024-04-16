@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Workshift;
+use App\Models\BankDetail;
 use App\Models\SalaryHistory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -83,6 +84,16 @@ class Employee extends Model
     public function salaries(): HasMany
     {
         return $this->hasMany(SalaryHistory::class, 'employee_id', 'id');
+    }
+
+    /**
+     * Get all of the bank_details for the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bank_details(): HasMany
+    {
+        return $this->hasMany(BankDetail::class, 'employee_id', 'id');
     }
 
     public function scopeSearch($query, $searchTerm)
