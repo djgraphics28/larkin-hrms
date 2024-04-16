@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Workshift;
 use App\Models\BankDetail;
+use App\Models\LeaveCredit;
+use App\Models\LeaveRequest;
 use App\Models\SalaryHistory;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
@@ -97,6 +99,26 @@ class Employee extends Model implements HasMedia
     public function bank_details(): HasMany
     {
         return $this->hasMany(BankDetail::class, 'employee_id', 'id');
+    }
+
+    /**
+     * Get all of the leave_credits for the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function leave_credits(): HasMany
+    {
+        return $this->hasMany(LeaveCredit::class, 'employee_id', 'id');
+    }
+
+    /**
+     * Get all of the leave_requests for the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function leave_requests(): HasMany
+    {
+        return $this->hasMany(LeaveRequest::class, 'employee_id', 'id');
     }
 
     public function scopeSearch($query, $searchTerm)

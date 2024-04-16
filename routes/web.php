@@ -2,6 +2,8 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Leave\LeaveRequestComponent;
+use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
 use App\Livewire\Dashboard\Dashboard;
@@ -58,11 +60,17 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/status', EmployeeStatusComponent::class)->name('employee-status');
     });
 
-     // Attendance routes
-     Route::group(['prefix' => 'attendance'], function () {
+    // Attendance routes
+    Route::group(['prefix' => 'attendance'], function () {
         Route::get('/logs', AttendanceLogComponent::class)->name('attendance-logs');
         Route::get('/import', AttendanceImportComponent::class)->name('attendance-import');
         Route::get('/adjustment', AttendanceAdjustmentComponent::class)->name('attendance-adjustment');
+    });
+
+    // Leave routes
+    Route::group(['prefix' => 'leave'], function () {
+        Route::get('/request', LeaveRequestComponent::class)->name('leave-request');
+        Route::get('/types', LeaveTypeComponent::class)->name('leave-types');
     });
 
 

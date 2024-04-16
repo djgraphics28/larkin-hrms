@@ -167,6 +167,29 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item {{ request()->is('leave/*') ? 'menu-open' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link {{ request()->is('leave/*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-business-time"></i>
+                        <p>
+                            Leave
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('leave-request') }}" class="nav-link {{ request()->is('leave/request') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Leave Request</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('leave-types') }}" class="nav-link {{ request()->is('leave/types') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p> Leave Types</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
                 {{-- <li class="nav-item {{ request()->is('employee/*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('employee/*') ? 'active' : '' }}">
