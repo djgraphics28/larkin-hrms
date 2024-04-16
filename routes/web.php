@@ -72,8 +72,6 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/request', LeaveRequestComponent::class)->name('leave-request');
         Route::get('/types', LeaveTypeComponent::class)->name('leave-types');
     });
-
-
 });
 
 // Authentication routes
@@ -81,3 +79,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::get('login', Login::class)->name('login');
     Route::get('forgot-password', ForgetPassword::class)->name('forgot-password');
 });
+
+//Leave Approve Route
+Route::post('/leave-request/approve/{id}', [ApproveLeaveRequest::class, 'approve'])->name('approve-leave-request');
+Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->name('success-leave-request');

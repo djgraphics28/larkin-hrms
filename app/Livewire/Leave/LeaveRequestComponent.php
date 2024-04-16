@@ -9,6 +9,8 @@ use App\Models\LeaveRequest;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\ApproveLeaveRequest;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 class LeaveRequestComponent extends Component
@@ -24,7 +26,13 @@ class LeaveRequestComponent extends Component
     public $modalTitle = 'Create Leave Request';
     public $updateMode = false;
 
-    public $name;
+    public $employee_id;
+    public $leave_type;
+    public $date_from;
+    public $date_to;
+    public $reason;
+    public $halfday = false;
+    public $halftime = null;
     public $edit_id;
 
     protected $paginationTheme = 'bootstrap';
@@ -76,20 +84,34 @@ class LeaveRequestComponent extends Component
     public function submit($saveAndCreateNew)
     {
         $this->validate([
-            'name' => 'required'
+            'leave_type' => 'required',
+            'date_from' => 'required',
+            'date_to' => 'required',
+            'reason' => 'required',
         ]);
 
-        $create = Department::create([
-            'name' => $this->name
+        $create = LeaveRequest::create([
+            'employee_id' => $this->employee_id,
+            'leave_type_id' => $this->leave_type,
+            'date_from' => $this->date_from,
+            'date_to' => $this->date_to,
+            'reason' => $this->leave_type,
+            'is_half_day' => $this->halfday,
+            'choosen_half' => $this->halftime,
+            'with_pay_number_of_days' => 0,
+            'without_pay_number_of_days' => 0
         ]);
 
         if($create){
+
+            Mail::to('darwin.ibay30@gmail.com')->send(new ApproveLeaveRequest());
+
             $this->resetInputFields();
             if($saveAndCreateNew) {
-                $this->alert('success', 'New Department has been save successfully!');
+                $this->alert('success', 'Leave Request has been save successfully!');
             } else {
                 $this->dispatch('hide-add-modal');
-                $this->alert('success', 'New Department has been save successfully!');
+                $this->alert('success', 'Leave Request has been save successfully!');
             }
         }
     }
@@ -156,6 +178,7 @@ class LeaveRequestComponent extends Component
         if($employee_id == null) {
             $this->employeeData = [];
         } else{
+            $this->employee_id = $employee_id;
             $this->employeeData = Employee::with('leave_credits')->find($employee_id);
         }
     }

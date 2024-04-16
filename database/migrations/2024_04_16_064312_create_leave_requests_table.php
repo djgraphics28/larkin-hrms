@@ -21,9 +21,9 @@ return new class extends Migration
             $table->integer('with_pay_number_of_days');
             $table->integer('without_pay_number_of_days');
             $table->string('reason');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('approved_by');
-            $table->date('date_approved');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('approved_by')->nullable();
+            $table->date('date_approved')->nullable();
             $table->unsignedBigInteger('leave_type_id');
             $table->unsignedBigInteger('employee_id');
             $table

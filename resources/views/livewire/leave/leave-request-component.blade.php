@@ -173,8 +173,11 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="">Leave Type:</label>
-                                            <select class="form-control">
+                                            <select wire:model="leave_type" class="form-control">
                                                 <option value=""></option>
+                                                @foreach ($leaveTypes as $type)
+                                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -183,13 +186,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Date From:</label>
-                                            <input type="date" class="form-control">
+                                            <input wire:model="date_from" type="date" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Date To:</label>
-                                            <input type="date" class="form-control">
+                                            <input wire:model="date_to" type="date" class="form-control">
                                         </div>
                                     </div>
                                 </div>
@@ -197,7 +200,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="">Reason:</label>
-                                            <textarea class="form-control" name="" id="" cols="30" rows="3"></textarea>
+                                            <textarea wire:model="reason" class="form-control" name="" id="" cols="30" rows="3"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -222,7 +225,7 @@
                         @if ($updateMode == true)
                             <button wire:click.prevent="update()" class="btn btn-success">Update</button>
                         @else
-                            <button wire:click.prevent="submit()" class="btn btn-primary">Submit</button>
+                            <button wire:click.prevent="submit(false)" class="btn btn-primary">Submit</button>
                         @endif
                     </div>
             </div>
