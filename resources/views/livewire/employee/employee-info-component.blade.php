@@ -11,8 +11,8 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active"><a
+                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active"><a wire:navigate
                                 href="{{ route('employee.index', $label) }}">{{ ucfirst($label) }} Employees</a></li>
                         <li class="breadcrumb-item active">Info</li>
                     </ol>

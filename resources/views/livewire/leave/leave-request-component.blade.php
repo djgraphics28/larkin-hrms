@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Leave Request</li>
                     </ol>
                 </div><!-- /.col -->
@@ -72,7 +72,10 @@
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
                                             <td class="text-start">{{ $data->status }}</td>
-                                            <td class="text-start"><strong>{{ $data->employee->employee_number }}</strong> - {{ $data->employee->first_name }} {{ $data->employee->last_name }}</td>
+                                            <td class="text-start">
+                                                <strong>{{ $data->employee->employee_number }}</strong> -
+                                                {{ $data->employee->first_name }} {{ $data->employee->last_name }}
+                                            </td>
                                             <td class="text-start">{{ $date_filed }}</td>
                                             <td class="text-start">{{ $data->leave_type->name }}</td>
                                             <td class="text-start">{{ $data->date_from }}</td>
@@ -114,7 +117,7 @@
 
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
         aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">{{ $modalTitle }}</h5>
@@ -125,6 +128,84 @@
                 <form wire:submit.prevent="submit()">
                     <div class="modal-body">
                         <div class="form-group">
+                            @livewire('shared.search-employee')
+                        </div>
+                        @if ($employeeData)
+                            <div class="card card-outline card-primary">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td width="5%"><img width="100px"
+                                                        src="{{ asset('assets/images/male.png') }}" alt="Photo">
+                                                </td>
+                                                <td width="20%">
+                                                    <label for="">{{ $employeeData->first_name }}
+                                                        {{ $employeeData->last_name }}</label><br>
+                                                    <label for="">{{ $employeeData->employee_number }}
+                                                    </label><br>
+                                                    <label for="">{{ $employeeData->email }} </label><br>
+                                                </td>
+                                                <td width="10%">
+                                                    <label for="">Leave Credits</label>
+                                                </td>
+                                                <td width="25%">
+                                                    <br>
+                                                    @forelse ($employeeData->leave_credits as $lc)
+
+                                                    @empty
+                                                        @foreach ($leaveTypes as $lt)
+                                                            <label for="">{{ $lt->name }} - 0</label><br>
+                                                        @endforeach
+                                                    @endforelse
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        @endif
+
+                        <div class="card card-outline card-warning">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">Leave Type:</label>
+                                            <select class="form-control">
+                                                <option value=""></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Date From:</label>
+                                            <input type="date" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Date To:</label>
+                                            <input type="date" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="">Reason:</label>
+                                            <textarea class="form-control" name="" id="" cols="30" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {{-- <div class="form-group">
                             <label for="">Department Name</label>
                             <input wire:model="name" type="text"
                                 class="form-control form-control-lg @error('name') is-invalid @enderror">
@@ -134,15 +215,14 @@
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         @if ($updateMode == true)
                             <button wire:click.prevent="update()" class="btn btn-success">Update</button>
                         @else
-                            <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
-                            <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
+                            <button wire:click.prevent="submit()" class="btn btn-primary">Submit</button>
                         @endif
                     </div>
             </div>

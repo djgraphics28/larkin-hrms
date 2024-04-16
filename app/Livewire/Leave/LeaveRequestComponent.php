@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Leave;
 
-use App\Models\LeaveRequest;
 use Livewire\Component;
+use App\Models\Employee;
+use App\Models\LeaveType;
+use App\Models\LeaveRequest;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
@@ -13,7 +15,7 @@ class LeaveRequestComponent extends Component
 {
     use WithPagination, LivewireAlert;
 
-    protected $listeners = ['remove'];
+    protected $listeners = ['remove','selectedEmployee'];
     public $approveConfirmed;
     // filters
     public $perPage = 10;
@@ -30,12 +32,20 @@ class LeaveRequestComponent extends Component
     public $selectAll = false;
     public $selectedRows = [];
 
+    public $employeeData = [];
+    public $leaveTypes = [];
+
     #[Title('Leave Request')]
     public function render()
     {
         return view('livewire.leave.leave-request-component',[
             'records' => $this->records
         ]);
+    }
+
+    public function mount()
+    {
+        $this->leaveTypes = LeaveType::all();
     }
 
     public function getRecordsProperty()
@@ -55,9 +65,10 @@ class LeaveRequestComponent extends Component
 
     public function addNew()
     {
+        $this->employeeData = [];
         $this->resetInputFields();
         $this->dispatch('show-add-modal');
-        $this->modalTitle = 'Add New Department';
+        $this->modalTitle = 'Create Leave Request';
         $this->updateMode = false;
 
     }
@@ -137,6 +148,15 @@ class LeaveRequestComponent extends Component
         $delete->delete();
         if($delete){
             $this->alert('success', $name.' has been removed!');
+        }
+    }
+
+    public function selectedEmployee($employee_id)
+    {
+        if($employee_id == null) {
+            $this->employeeData = [];
+        } else{
+            $this->employeeData = Employee::with('leave_credits')->find($employee_id);
         }
     }
 }

@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">{{ ucfirst($label) }} Employees</li>
                     </ol>
                 </div><!-- /.col -->
@@ -31,7 +31,7 @@
                                         class="fa fa-file-excel" aria-hidden="true"></i> Export</button>
                                 <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
                                         aria-hidden="true"></i> PDF</button>
-                                <a href="{{ route('employee.create', $label) }}" type="button"
+                                <a wire:navigate href="{{ route('employee.create', $label) }}" type="button"
                                     class="btn btn-primary btn-sm mr-2"><i class="fa fa-plus" aria-hidden="true"></i>
                                     Add New</a>
                             </div>
@@ -135,7 +135,7 @@
                                                         class="dropdown-item text-primary"
                                                         href="javascript:void(0)"><i class="fa fa-eye"
                                                             aria-hidden="true"></i></a>
-                                                    <a href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
+                                                    <a wire:navigate href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
                                                         class="dropdown-item text-warning"
                                                         href="javascript:void(0)"><i class="fa fa-edit"
                                                             aria-hidden="true"></i></a>
