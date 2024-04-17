@@ -2,13 +2,16 @@
 
 namespace App\Livewire\Leave;
 
+use Carbon\Carbon;
 use Livewire\Component;
 use App\Models\Employee;
 use App\Models\LeaveType;
 use App\Models\LeaveRequest;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
+use App\Mail\SendLeaveRequest;
 use Livewire\Attributes\Title;
+use App\Jobs\sendLeaveRequestJob;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\ApproveLeaveRequest;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
@@ -17,7 +20,7 @@ class LeaveRequestComponent extends Component
 {
     use WithPagination, LivewireAlert;
 
-    protected $listeners = ['remove','selectedEmployee'];
+    protected $listeners = ['remove', 'selectedEmployee'];
     public $approveConfirmed;
     // filters
     public $perPage = 10;
@@ -46,7 +49,7 @@ class LeaveRequestComponent extends Component
     #[Title('Leave Request')]
     public function render()
     {
-        return view('livewire.leave.leave-request-component',[
+        return view('livewire.leave.leave-request-component', [
             'records' => $this->records
         ]);
     }
@@ -58,15 +61,15 @@ class LeaveRequestComponent extends Component
 
     public function getRecordsProperty()
     {
-        return LeaveRequest::with(['employee','leave_type'])->search(trim($this->search))
+        return LeaveRequest::with(['employee', 'leave_type'])->latest()->search(trim($this->search))
             ->paginate($this->perPage);
     }
 
     public function updatedSelectAll($value)
     {
-        if($value){
+        if ($value) {
             $this->selectedRows = $this->records->pluck('id');
-        }else{
+        } else {
             $this->selectedRows = [];
         }
     }
@@ -90,24 +93,42 @@ class LeaveRequestComponent extends Component
             'reason' => 'required',
         ]);
 
+        if(empty($this->employeeData)){
+            $this->alert('error', 'Please select an employee.');
+            return;
+        }
+
+        $start = Carbon::parse($this->date_from);
+        $end = Carbon::parse($this->date_to);
+
+        if ($end->lessThan($start)) {
+            $this->alert('error', 'Date To must be greater than or equal to Date From.');
+            return;
+        }
+
+        $diffInDays = $end->diffInDays($start);
+
+        $leaveType = LeaveType::find($this->leave_type);
+
         $create = LeaveRequest::create([
             'employee_id' => $this->employee_id,
             'leave_type_id' => $this->leave_type,
             'date_from' => $this->date_from,
             'date_to' => $this->date_to,
-            'reason' => $this->leave_type,
+            'reason' => $this->reason,
             'is_half_day' => $this->halfday,
             'choosen_half' => $this->halftime,
-            'with_pay_number_of_days' => 0,
-            'without_pay_number_of_days' => 0
+            'with_pay_number_of_days' => $leaveType->is_payable ? $diffInDays + 1 : 0,
+            'without_pay_number_of_days' => !$leaveType->is_payable ? $diffInDays + 1 : 0,
         ]);
 
-        if($create){
+        if ($create) {
+            $employee = Employee::find($this->employee_id);
+            dispatch(new sendLeaveRequestJob($employee, $create));
 
-            Mail::to('darwin.ibay30@gmail.com')->send(new ApproveLeaveRequest());
 
             $this->resetInputFields();
-            if($saveAndCreateNew) {
+            if ($saveAndCreateNew) {
                 $this->alert('success', 'Leave Request has been save successfully!');
             } else {
                 $this->dispatch('hide-add-modal');
@@ -118,18 +139,26 @@ class LeaveRequestComponent extends Component
 
     public function resetInputFields()
     {
-        $this->name = '';
-        $this->contact_number = '';
-        $this->address = '';
+        $this->leave_type = '';
+        $this->date_from = '';
+        $this->date_to = '';
+        $this->reason = '';
     }
 
     public function edit($id)
     {
         $this->edit_id = $id;
         $this->dispatch('show-add-modal');
-        $data = Department::find($id);
-        $this->name = $data->name;
-        $this->modalTitle = 'Edit '.$this->name;
+        $data = LeaveRequest::find($id);
+        $this->employee_id = $data->employee_id;
+        $this->leave_type = $data->leave_type_id;
+        $this->date_from = $data->date_from;
+        $this->date_to = $data->date_to;
+        $this->reason = $data->reason;
+
+        $this->employeeData = Employee::with('leave_credits')->find($data->employee_id);
+
+        $this->modalTitle = 'Edit Leave Request';
         $this->updateMode = true;
     }
 
@@ -139,17 +168,25 @@ class LeaveRequestComponent extends Component
             'name' => 'required'
         ]);
 
-        $data = Designation::find($this->edit_id);
+        $data = LeaveRequest::find($this->edit_id);
         $data->update([
-            'name' => $this->name
+            'employee_id' => $this->employee_id,
+            'leave_type_id' => $this->leave_type,
+            'date_from' => $this->date_from,
+            'date_to' => $this->date_to,
+            'reason' => $this->reason,
+            'is_half_day' => $this->halfday,
+            'choosen_half' => $this->halftime,
+            'with_pay_number_of_days' => 0,
+            'without_pay_number_of_days' => 0
         ]);
 
-        if($data) {
+        if ($data) {
             $this->dispatch('hide-add-modal');
 
             $this->resetInputFields();
 
-            $this->alert('success', $data->name.' has been updated!');
+            $this->alert('success', 'Leave Request has been updated!');
         }
     }
 
@@ -166,18 +203,17 @@ class LeaveRequestComponent extends Component
     public function remove()
     {
         $delete = LeaveRequest::find($this->approveConfirmed);
-        $name = $delete->name;
         $delete->delete();
-        if($delete){
-            $this->alert('success', $name.' has been removed!');
+        if ($delete) {
+            $this->alert('success', 'Leave Request has been removed!');
         }
     }
 
     public function selectedEmployee($employee_id)
     {
-        if($employee_id == null) {
+        if ($employee_id == null) {
             $this->employeeData = [];
-        } else{
+        } else {
             $this->employee_id = $employee_id;
             $this->employeeData = Employee::with('leave_credits')->find($employee_id);
         }

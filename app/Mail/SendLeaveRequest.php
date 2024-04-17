@@ -9,16 +9,22 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ApprovedLeaveRequestEmail extends Mailable
+class SendLeaveRequest extends Mailable
 {
     use Queueable, SerializesModels;
+
+    public $employee;
+    public $data;
+    public $leaveId;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($employee, $data)
     {
-        //
+        $this->employee = $employee;
+        $this->data = $data;
+        $this->leaveId = $data->id;
     }
 
     /**
@@ -27,7 +33,7 @@ class ApprovedLeaveRequestEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Approved Leave Request Email',
+            subject: 'Leave Request Approval Needed for',
         );
     }
 
@@ -37,7 +43,13 @@ class ApprovedLeaveRequestEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            markdown: 'emails.sendLeaveRequestMail',
+            with: [
+                'data' => $this->data,
+                'employee' => $this->employee,
+                'link' => "https://larkin-hrms.com/leave-request/approve/".$this->leaveId,
+
+            ],
         );
     }
 

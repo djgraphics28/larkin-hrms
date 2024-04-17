@@ -21,10 +21,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(BusinessSeeder::class);
         $this->call(AdminSeeder::class);
+        $this->call(WeekDaySeeder::class);
         $this->call(WorkshiftSeeder::class);
         $this->call(DepartmentSeeder::class);
         $this->call(DesignationSeeder::class);
-        $this->call(WeekDaySeeder::class);
         $this->call(EmployeeStatusSeeder::class);
     }
 }

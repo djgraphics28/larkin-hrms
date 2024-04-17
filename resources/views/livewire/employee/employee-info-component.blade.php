@@ -138,10 +138,12 @@
                                 <!-- /.tab-pane -->
 
                                 <div class="tab-pane" id="documents">
+
                                 </div>
                                 <!-- /.tab-pane -->
 
                                 <div class="tab-pane" id="leaves">
+                                    @livewire('employee.partials.leaves-component', ['id' => $id])
                                 </div>
                                 <!-- /.tab-pane -->
 

@@ -71,12 +71,22 @@
                                         <tr>
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
-                                            <td class="text-start">{{ $data->status }}</td>
+                                            <td class="text-start">
+                                                @if ($data->status == 'Approved')
+                                                    <span class="badge bg-success">Approved</span>
+                                                @elseif($data->status == 'Pending')
+                                                    <span class="badge bg-warning text-dark">Pending</span>
+                                                @elseif($data->status == 'Rejected')
+                                                    <span class="badge bg-danger">Rejected</span>
+                                                @elseif($data->status == 'Cancelled')
+                                                    <span class="badge bg-secondary">Cancelled</span>
+                                                @endif
+                                            </td>
                                             <td class="text-start">
                                                 <strong>{{ $data->employee->employee_number }}</strong> -
                                                 {{ $data->employee->first_name }} {{ $data->employee->last_name }}
                                             </td>
-                                            <td class="text-start">{{ $date_filed }}</td>
+                                            <td class="text-start">{{ $data->created_at }}</td>
                                             <td class="text-start">{{ $data->leave_type->name }}</td>
                                             <td class="text-start">{{ $data->date_from }}</td>
                                             <td class="text-start">{{ $data->date_to }}</td>
@@ -152,7 +162,6 @@
                                                 <td width="25%">
                                                     <br>
                                                     @forelse ($employeeData->leave_credits as $lc)
-
                                                     @empty
                                                         @foreach ($leaveTypes as $lt)
                                                             <label for="">{{ $lt->name }} - 0</label><br>
@@ -173,12 +182,18 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="">Leave Type:</label>
-                                            <select wire:model="leave_type" class="form-control">
-                                                <option value=""></option>
+                                            <select wire:model="leave_type"
+                                                class="form-control @error('leave_type') in-valid @enderror">
+                                                <option value="">Choose Leave Type</option>
                                                 @foreach ($leaveTypes as $type)
                                                     <option value="{{ $type->id }}">{{ $type->name }}</option>
                                                 @endforeach
                                             </select>
+                                            @error('leave_type')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -186,13 +201,25 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Date From:</label>
-                                            <input wire:model="date_from" type="date" class="form-control">
+                                            <input wire:model="date_from" type="date"
+                                                class="form-control @error('date_from') in-valid @enderror">
+                                            @error('date_from')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Date To:</label>
-                                            <input wire:model="date_to" type="date" class="form-control">
+                                            <input wire:model="date_to" type="date"
+                                                class="form-control @error('date_to') in-valid @enderror">
+                                            @error('date_to')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -200,25 +227,18 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="">Reason:</label>
-                                            <textarea wire:model="reason" class="form-control" name="" id="" cols="30" rows="3"></textarea>
+                                            <textarea wire:model="reason" class="form-control @error('reason') in-valid @enderror" name="" id=""
+                                                cols="30" rows="3"></textarea>
+                                            @error('reason')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
-                        {{-- <div class="form-group">
-                            <label for="">Department Name</label>
-                            <input wire:model="name" type="text"
-                                class="form-control form-control-lg @error('name') is-invalid @enderror">
-
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

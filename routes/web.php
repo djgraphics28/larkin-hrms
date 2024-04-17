@@ -2,14 +2,15 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
-use App\Livewire\Leave\LeaveRequestComponent;
-use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
 use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
+use App\Http\Controllers\ApproveLeaveRequest;
+use App\Livewire\Leave\LeaveRequestComponent;
 use App\Livewire\Workshift\WorkshiftComponent;
 use App\Livewire\Department\DepartmentComponent;
 use App\Livewire\Employee\EmployeeInfoComponent;
@@ -81,5 +82,5 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 //Leave Approve Route
-Route::post('/leave-request/approve/{id}', [ApproveLeaveRequest::class, 'approve'])->name('approve-leave-request');
+Route::get('/leave-request/approve/{id}', [ApproveLeaveRequest::class, 'approve'])->name('approve-leave-request');
 Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->name('success-leave-request');
