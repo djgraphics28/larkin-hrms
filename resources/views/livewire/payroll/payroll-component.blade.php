@@ -40,7 +40,7 @@
                                         <select class="form-control" wire:model.live="selectedFN">
                                             <option value="">Select Fortnight range</option>
                                             @foreach ($fortnights as $fn)
-                                                <option value="{{ $fn->id }}">{{ $fn->code }} --
+                                                <option value="{{ $fn->code }}">{{ $fn->code }} --
                                                     {{ \Carbon\Carbon::parse($fn->start)->format('d-M') . ' - ' . \Carbon\Carbon::parse($fn->end)->format('d-M') }}
                                                 </option>
                                             @endforeach
@@ -137,7 +137,6 @@
                                     </thead>
                                     <tbody>
                                         @include('shared.table-loader')
-
                                         @forelse ($records as $data)
                                             <tr>
                                                 <td class="text-start"><input type="checkbox"
@@ -146,57 +145,10 @@
                                                 <td class="text-center">{{ $data->employee_number }}</td>
                                                 <td class="text-start">{{ $data->first_name }} {{ $data->last_name }}
                                                 </td>
-
-                                                @forelse ($data->employee_hours as $hours)
-
-                                                    @if($hours->fortnight_id === $ranges[0]['fortnight_id'])
-
-                                                        <td>{{ $hours->regular_hr }}</td>
-                                                        <td>{{ $hours->overtime_hr }}</td>
-                                                        <td>{{ $hours->sunday_ot_hr }}</td>
-                                                        <td>{{ $hours->holiday_ot_hr }}</td>
-
-
-
-                                                    @endif
-
-                                                @empty
-                                                @endforelse
-
-
-
-                                                @forelse ($ranges as $dr)
-                                                    @php
-                                                        $found = false;
-                                                    @endphp
-
-                                                    @foreach($data->attendances as $attendance)
-
-                                                        @php
-                                                            $time_out = new DateTime($attendance->time_out);
-                                                            $time_in = new DateTime($attendance->time_in);
-                                                            $interval = $time_out->diff($time_in);
-                                                        @endphp
-
-                                                        @if($dr['fortnight_id'] === $attendance->fortnight_id && $time_in->format('Y-m-d') === $dr['full_date'])
-
-                                                                <td>{{ $interval->format('%h') - 1 }}</td>
-                                                                @php
-                                                                    $found = true;
-                                                                @endphp
-
-                                                        @endif
-
-                                                    @endforeach
-
-                                                    @if(!$found)
-                                                        <td>0</td>
-                                                    @endif
-
-                                                @empty
-                                                    <td>0</td>
-                                                @endforelse
-
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
                                             </tr>
                                         @empty
                                             <tr>

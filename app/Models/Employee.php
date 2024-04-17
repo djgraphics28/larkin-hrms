@@ -103,11 +103,20 @@ class Employee extends Model implements HasMedia
     {
         $searchTerm = "%$searchTerm%";
 
-        $query->where(function($query) use ($searchTerm){
+        $query->where(function ($query) use ($searchTerm) {
 
-            $query->where('first_name','like', $searchTerm)
-            ->orWhere('last_name','like', $searchTerm);
+            $query->where('first_name', 'like', $searchTerm)
+                ->orWhere('last_name', 'like', $searchTerm);
         });
+    }
 
+    public function employee_hours(): HasMany
+    {
+        return $this->hasMany(EmployeeHours::class, 'employee_id', 'id');
+    }
+
+    public function payslip(): HasMany
+    {
+        return $this->hasMany(Payslip::class, 'employee_id', 'id');
     }
 }

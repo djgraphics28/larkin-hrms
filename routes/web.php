@@ -18,6 +18,7 @@ use App\Livewire\Attendance\AttendanceImportComponent;
 use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
+use App\Livewire\Payroll\PayslipComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,14 +59,17 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/status', EmployeeStatusComponent::class)->name('employee-status');
     });
 
-     // Attendance routes
-     Route::group(['prefix' => 'attendance'], function () {
+    // Attendance routes
+    Route::group(['prefix' => 'attendance'], function () {
         Route::get('/logs', AttendanceLogComponent::class)->name('attendance-logs');
         Route::get('/import', AttendanceImportComponent::class)->name('attendance-import');
         Route::get('/adjustment', AttendanceAdjustmentComponent::class)->name('attendance-adjustment');
     });
 
-
+    // Payroll routes
+    Route::group(['prefix' => 'payroll'], function () {
+        Route::get('/payslip', PayslipComponent::class)->name('payslip');
+    });
 });
 
 // Authentication routes

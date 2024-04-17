@@ -2,7 +2,14 @@
 
 namespace App\Helpers;
 
+use DateTime;
 use Carbon\Carbon;
+use App\Models\Employee;
+use App\Models\Fortnight;
+use App\Models\Attendance;
+use App\Models\EmployeeHours;
+use App\Models\Payslip;
+use App\Models\SalaryHistory;
 
 class Helpers
 {
@@ -34,5 +41,100 @@ class Helpers
         return $randomString;
     }
 
-    // Add more helper methods as needed...
+    public static function computeHours($selected_fn)
+    {
+        $getDates = Fortnight::where('id', $selected_fn)->first();
+
+        $start = $getDates->start;
+        $end = $getDates->end;
+
+        $endDate = new DateTime($end);
+
+        $endDate->modify('+1 day');
+
+        // Format the modified end date back to your desired format
+        $end = $endDate->format('Y-m-d');
+
+        $getEmployee = Employee::all();
+
+
+
+        foreach ($getEmployee as $employee) {
+            $getHours = Attendance::selectRaw('(TIME_TO_SEC(TIMEDIFF(time_out, time_in))/3600) - 1 as hours, DAYNAME(time_in) as day_name')
+                ->where('employee_number', $employee->employee_number)
+                ->whereBetween('time_in', [$start, $end])
+                ->get();
+
+            $total_hours = 0;
+            $sunday_total_hours = 0;
+            $regular_hours = 0;
+            $ot_hours = 0;
+
+            foreach ($getHours as $hours) {
+                $computed_hour = $hours->hours;
+                if ($hours->day_name == 'Sunday') {
+                    $sunday_total_hours = $sunday_total_hours + ($computed_hour);
+                }
+                $total_hours = $total_hours + $computed_hour;
+            }
+
+
+            if ($employee->workshift->number_of_hours <= $total_hours) {
+                $ot_hours = ($total_hours - $employee->workshift->number_of_hours);
+                $regular_hours = $employee->workshift->number_of_hours;
+            } else {
+                $regular_hours = $total_hours;
+            }
+
+            // dd($sunday_total_hours, "", $total_hours, $employee->workshift->number_of_hours, $ot_hours);
+
+            EmployeeHours::updateOrCreate(
+                [
+                    'employee_id' => $employee->id,
+                    'fortnight_id' => $getDates->id,
+                ],
+                [
+                    'regular_hr' => $regular_hours,
+                    'overtime_hr' => $ot_hours,
+                    'sunday_ot_hr' => $sunday_total_hours,
+                    'holiday_ot_hr' => 0
+                ]
+            );
+        }
+    }
+
+    public static function computePay($selected_fn)
+    {
+        $get_hours = EmployeeHours::where('fortnight_id', $selected_fn)->get();
+
+        foreach ($get_hours as $hours) {
+            $get_rate = SalaryHistory::where('employee_id', $hours->employee_id)
+                ->where('is_active', 1)->first();
+
+            $regular = $hours->regular_hr * $get_rate->salary_rate;
+            $overtime = ($hours->overtime_hr * $get_rate->salary_rate) * 1.5;
+            $sunday_ot = $hours->sunday_ot_hr * $get_rate->salary_rate;
+            $holiday_ot = $hours->holiday_ot_hr * $get_rate->salary_rate;
+
+            Payslip::updateOrCreate(
+                [
+                    'employee_id' => $hours->employee_id,
+                    'fortnight_id' => $selected_fn,
+                ],
+                [
+                    'regular' => $regular,
+                    'overtime' => $overtime,
+                    'sunday_ot' => $sunday_ot,
+                    'holiday_ot' => $holiday_ot,
+                    'plp_alp_fp' => 0,
+                    'other' => 0,
+
+                    'fn_tax' => 0,
+                    'npf' => 0,
+                    'ncsl' => 0,
+                    'cash_adv' => 0
+                ]
+            );
+        }
+    }
 }
