@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\AdminSeeder;
 use Database\Seeders\WeekDaySeeder;
 use Database\Seeders\BusinessSeeder;
+use Database\Seeders\LeaveTypeSeeder;
 use Database\Seeders\WorkshiftSeeder;
 use Database\Seeders\DepartmentSeeder;
 use Database\Seeders\DesignationSeeder;
@@ -26,5 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DepartmentSeeder::class);
         $this->call(DesignationSeeder::class);
         $this->call(EmployeeStatusSeeder::class);
+        $this->call(LeaveTypeSeeder::class);
     }
 }
