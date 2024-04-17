@@ -6,11 +6,13 @@ use Livewire\Component;
 use App\Models\Employee;
 use App\Models\Department;
 use App\Models\Designation;
+use App\Models\BusinessUser;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use App\Models\EmployeeStatus;
 use Livewire\Attributes\Title;
 use App\Exports\EmployeeExport;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
@@ -19,6 +21,7 @@ class EmployeeComponent extends Component
     use WithPagination, LivewireAlert;
 
     public $label;
+    public $businessId;
 
     protected $listeners = ['remove'];
     public $approveConfirmed;
@@ -65,6 +68,9 @@ class EmployeeComponent extends Component
         $this->departments = Department::where('is_active',1)->get();
         $this->designations = Designation::where('is_active',1)->get();
         $this->employeeStatuses = EmployeeStatus::where('is_active',1)->get();
+
+        $this->businessId = BusinessUser::where('user_id',Auth::user()->id)->where('is_active', true)->first()->business_id;
+
     }
 
     public function getRecordsProperty()
@@ -84,6 +90,7 @@ class EmployeeComponent extends Component
             ->when($this->sortByEmployeeStatus, function($query) {
                 $query->where('employee_status_id', $this->sortByEmployeeStatus);
             })
+            ->where('business_id', $this->businessId)
             ->paginate($this->perPage);
     }
 

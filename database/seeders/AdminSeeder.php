@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Business;
 use App\Models\User;
+use App\Models\Business;
 use Illuminate\Support\Str;
+use App\Models\BusinessUser;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -32,6 +33,10 @@ class AdminSeeder extends Seeder
         ]);
 
         $data->businesses()->attach($businessIds);
+
+        BusinessUser::find(1)->update([
+            'is_active' => true,
+        ]);
 
     }
 }

@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="ml-3">
-            @livewire('branch-selection')
+            @livewire('business-selection')
         </div>
 
     </ul>

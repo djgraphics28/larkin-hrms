@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('business_id');
             $table->unsignedBigInteger('user_id');
+            $table->boolean('is_active')->default(false);
 
             // Define foreign key constraints
             $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade');
