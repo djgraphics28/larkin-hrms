@@ -4,15 +4,27 @@ namespace App\Livewire\Shared;
 
 use Livewire\Component;
 use App\Models\Employee;
+use App\Models\BusinessUser;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class SearchEmployee extends Component
 {
+    public $businessId;
     public $query;
     public $search_results;
     public $how_many;
 
     public function mount() {
+        $businessUser = BusinessUser::where('user_id', Auth::user()->id)
+                                     ->where('is_active', true)
+                                     ->first();
+        if (!$businessUser) {
+            return redirect()->back();
+        }
+
+        $this->businessId = $businessUser->business_id;
+
         $this->query = '';
         $this->how_many = 5;
         $this->search_results = Collection::empty();
@@ -23,7 +35,8 @@ class SearchEmployee extends Component
     }
 
     public function updatedQuery() {
-        $this->search_results = Employee::where('first_name', 'like', '%' . $this->query . '%')
+        $this->search_results = Employee::where('business_id', $this->businessId)
+            ->orWhere('first_name', 'like', '%' . $this->query . '%')
             ->orWhere('last_name', 'like', '%' . $this->query . '%')
             ->orWhere('employee_number', 'like', '%' . $this->query . '%')
             ->orWhere('email', 'like', '%' . $this->query . '%')

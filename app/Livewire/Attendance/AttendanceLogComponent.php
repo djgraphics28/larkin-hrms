@@ -9,16 +9,19 @@ use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\Fortnight;
 use App\Models\Attendance;
+use App\Models\BusinessUser;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use App\Models\EmployeeHours;
 use Livewire\Attributes\Title;
+use Illuminate\Support\Facades\Auth;
 
 class AttendanceLogComponent extends Component
 {
     use WithPagination;
 
     // filters
+    public $businessId;
     public $perPage = 10;
     public $search = '';
     public $fortnights = [];
@@ -51,6 +54,15 @@ class AttendanceLogComponent extends Component
 
     public function mount()
     {
+        $businessUser = BusinessUser::where('user_id', Auth::user()->id)
+                                     ->where('is_active', true)
+                                     ->first();
+        if (!$businessUser) {
+            return redirect()->back();
+        }
+
+        $this->businessId = $businessUser->business_id;
+
         $this->fortnights = Fortnight::all();
         $this->generate();
         $this->getDailyHr();
@@ -62,7 +74,7 @@ class AttendanceLogComponent extends Component
             'selectedFN' => 'required'
         ]);
 
-        $employees = Employee::withCount('attendances')
+        $employees = Employee::withCount('attendances')->where('business_id', $this->businessId)
             ->search(trim($this->search))->get();
 
         $getDates = Fortnight::where('id', $this->selectedFN)->first();

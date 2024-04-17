@@ -61,6 +61,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
+                                        <th class="text-center">Code</th>
                                         <th class="text-start">Business Name</th>
                                         <th width="30%" class="text-start">Departments</th>
                                         <th class="text-center">Contact Number</th>
@@ -76,6 +77,7 @@
                                         <tr>
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
+                                            <td class="text-center">{{ $data->code }}</td>
                                             <td class="text-start">{{ $data->name }}</td>
                                             <td class="text-start">
                                                 @forelse ($data->departments as $dept)
@@ -135,6 +137,17 @@
                 </div>
                 <form wire:submit.prevent="submit()">
                     <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Code</label>
+                            <input wire:model="code" type="text"
+                                class="form-control form-control-lg @error('code') is-invalid @enderror">
+
+                            @error('code')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
                         <div class="form-group">
                             <label for="">Business Name</label>
                             <input wire:model="name" type="text"

@@ -7,8 +7,10 @@ use App\Models\Employee;
 use App\Models\Workshift;
 use App\Models\Department;
 use App\Models\Designation;
+use App\Models\BusinessUser;
 use App\Models\EmployeeStatus;
 use Livewire\Attributes\Title;
+use Illuminate\Support\Facades\Auth;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 class CreateEmployeeComponent extends Component
@@ -118,7 +120,7 @@ class CreateEmployeeComponent extends Component
             'employee_status_id' => $this->employee_status,
             'department_id' => $this->department,
             'workshift_id' => $this->workshift,
-            'business_id' => 1
+            'business_id' => BusinessUser::where('user_id',Auth::user()->id)->where('is_active', true)->first()->business_id,
         ]);
 
         $create->salaries()->create([
@@ -127,7 +129,8 @@ class CreateEmployeeComponent extends Component
         ]);
 
         if ($create) {
-            $this->alert('success', 'New Employee has been saved successfully!');
+            // $this->alert('success', 'New Employee has been saved successfully!');
+            return redirect()->route('employee.index', $this->label)->with('success', 'New Employee has been saved successfully!');
         } else {
             $this->alert('error', 'Something went wrong, please try again!');
         }

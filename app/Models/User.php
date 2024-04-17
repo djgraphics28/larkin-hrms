@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Business;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -67,5 +68,15 @@ class User extends Authenticatable
     public function businesses(): BelongsToMany
     {
         return $this->belongsToMany(Business::class);
+    }
+
+    /**
+     * Get the active_business associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function active_business(): HasOne
+    {
+        return $this->hasOne(BusinessUser::class, 'user_id', 'id')->where('is_active', true)->select('business_id');
     }
 }

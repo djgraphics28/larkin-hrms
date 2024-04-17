@@ -6,12 +6,14 @@ use Carbon\Carbon;
 use Livewire\Component;
 use App\Models\Employee;
 use App\Models\LeaveType;
+use App\Models\BusinessUser;
 use App\Models\LeaveRequest;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use App\Mail\SendLeaveRequest;
 use Livewire\Attributes\Title;
 use App\Jobs\sendLeaveRequestJob;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\ApproveLeaveRequest;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
@@ -23,6 +25,7 @@ class LeaveRequestComponent extends Component
     protected $listeners = ['remove', 'selectedEmployee'];
     public $approveConfirmed;
     // filters
+    public $businessId;
     public $perPage = 10;
     #[Url]
     public $search = '';
@@ -56,7 +59,17 @@ class LeaveRequestComponent extends Component
 
     public function mount()
     {
+        $businessUser = BusinessUser::where('user_id', Auth::user()->id)
+                                     ->where('is_active', true)
+                                     ->first();
+        if (!$businessUser) {
+            return redirect()->back();
+        }
+
+        $this->businessId = $businessUser->business_id;
+
         $this->leaveTypes = LeaveType::all();
+
     }
 
     public function getRecordsProperty()
