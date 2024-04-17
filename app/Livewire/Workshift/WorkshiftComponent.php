@@ -57,7 +57,7 @@ class WorkshiftComponent extends Component
 
     public function getRecordsProperty()
     {
-        return Workshift::with('week_days')->search(trim($this->search))
+        return Workshift::with('day_offs')->search(trim($this->search))
             ->paginate($this->perPage);
     }
 
@@ -106,7 +106,7 @@ class WorkshiftComponent extends Component
             'end' => $this->end,
         ]);
 
-        $create->week_days()->sync($this->selectedDayRows);
+        $create->day_offs()->sync($this->selectedDayRows);
 
         if($create){
             $this->resetInputFields();
@@ -140,7 +140,7 @@ class WorkshiftComponent extends Component
         $this->start = $data->start;
         $this->end = $data->end;
         $this->meridiem = $data->meridiem;
-        $this->selectedDayRows = $data->week_days()->pluck('week_day_id')->toArray();
+        $this->selectedDayRows = $data->day_offs()->pluck('week_day_id')->toArray();
         $this->modalTitle = 'Edit Workshift';
         $this->updateMode = true;
     }
@@ -169,7 +169,7 @@ class WorkshiftComponent extends Component
             'end' => $this->end,
         ]);
 
-        $data->week_days()->sync($this->selectedDayRows);
+        $data->day_offs()->sync($this->selectedDayRows);
 
         if($data) {
             $this->dispatch('hide-add-modal');

@@ -18,7 +18,7 @@ class Workshift extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function week_days(): BelongsToMany
+    public function day_offs(): BelongsToMany
     {
         return $this->belongsToMany(WeekDay::class);
     }
