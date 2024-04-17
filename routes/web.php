@@ -6,8 +6,11 @@ use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
 use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
+use App\Http\Controllers\ApproveLeaveRequest;
+use App\Livewire\Leave\LeaveRequestComponent;
 use App\Livewire\Workshift\WorkshiftComponent;
 use App\Livewire\Department\DepartmentComponent;
 use App\Livewire\Employee\EmployeeInfoComponent;
@@ -58,14 +61,18 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/status', EmployeeStatusComponent::class)->name('employee-status');
     });
 
-     // Attendance routes
-     Route::group(['prefix' => 'attendance'], function () {
+    // Attendance routes
+    Route::group(['prefix' => 'attendance'], function () {
         Route::get('/logs', AttendanceLogComponent::class)->name('attendance-logs');
         Route::get('/import', AttendanceImportComponent::class)->name('attendance-import');
         Route::get('/adjustment', AttendanceAdjustmentComponent::class)->name('attendance-adjustment');
     });
 
-
+    // Leave routes
+    Route::group(['prefix' => 'leave'], function () {
+        Route::get('/request', LeaveRequestComponent::class)->name('leave-request');
+        Route::get('/types', LeaveTypeComponent::class)->name('leave-types');
+    });
 });
 
 // Authentication routes
@@ -73,3 +80,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::get('login', Login::class)->name('login');
     Route::get('forgot-password', ForgetPassword::class)->name('forgot-password');
 });
+
+//Leave Approve Route
+Route::get('/leave-request/approve/{id}', [ApproveLeaveRequest::class, 'approve'])->name('approve-leave-request');
+Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->name('success-leave-request');

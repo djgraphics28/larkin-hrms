@@ -91,10 +91,10 @@
                                                 {{ date('h:i A', strtotime($data->end)) }}</td>
                                             <td class="text-center">{{ $data->number_of_hours }} hours</td>
                                             <td class="text-center">
-                                                {{ (7 - count($data->week_days)) * 2 * $data->number_of_hours }} hours
+                                                {{ (7 - count($data->day_offs)) * 2 * $data->number_of_hours }} hours
                                             </td>
                                             <td width="15%" class="text-start">
-                                                @forelse ($data->week_days as $do)
+                                                @forelse ($data->day_offs as $do)
                                                     <span class="badge badge-primary">{{ $do->day }}</span>
                                                 @empty
                                                     <span class="badge badge-danger">no dayoff</span>
