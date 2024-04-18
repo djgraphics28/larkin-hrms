@@ -3,6 +3,7 @@
 namespace App\Livewire\Employee;
 
 use Livewire\Component;
+use App\Models\Business;
 use App\Models\Employee;
 use App\Models\Workshift;
 use App\Models\Department;
@@ -17,6 +18,8 @@ class CreateEmployeeComponent extends Component
 {
     use LivewireAlert;
 
+    public $businessId;
+    public $code;
     public $label;
     public $employee_number;
     public $first_name;
@@ -59,6 +62,20 @@ class CreateEmployeeComponent extends Component
 
     public function mount()
     {
+        $businessUser = BusinessUser::where('user_id', Auth::user()->id)
+            ->where('is_active', true)
+            ->first();
+        if (!$businessUser) {
+            return redirect()->route('employee.index', $this->label);
+        }
+        $code = Business::find($businessUser->business_id)->first()->code;
+        $this->businessId = $businessUser->business_id;
+        $this->code = $code;
+
+        $employee_number = Employee::where('business_id', $this->businessId)->count() + 1;
+        $employee_number = $this->code . '-' . str_pad($employee_number, 4, '0', STR_PAD_LEFT);
+        $this->employee_number = $employee_number;
+
         $this->departments = Department::where('is_active',1)->get();
         $this->workshifts = Workshift::all();
         $this->employeeStatuses = EmployeeStatus::where('is_active',1)->get();
@@ -120,7 +137,7 @@ class CreateEmployeeComponent extends Component
             'employee_status_id' => $this->employee_status,
             'department_id' => $this->department,
             'workshift_id' => $this->workshift,
-            'business_id' => BusinessUser::where('user_id',Auth::user()->id)->where('is_active', true)->first()->business_id,
+            'business_id' => $this->businessId,
         ]);
 
         $create->salaries()->create([
