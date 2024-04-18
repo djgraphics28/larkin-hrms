@@ -12,13 +12,16 @@ use Livewire\WithPagination;
 use App\Models\EmployeeStatus;
 use Livewire\Attributes\Title;
 use App\Exports\EmployeeExport;
+use App\Imports\EmployeeImport;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Livewire\WithFileUploads;
 
 class EmployeeComponent extends Component
 {
     use WithPagination, LivewireAlert;
+    use WithFileUploads;
 
     public $label;
     public $businessId;
@@ -41,6 +44,8 @@ class EmployeeComponent extends Component
 
     public $modalTitle = 'Add New Business|Branch';
     public $updateMode = false;
+
+    public $file;
 
     public $name;
     public $edit_id;
@@ -193,5 +198,33 @@ class EmployeeComponent extends Component
     public function export()
     {
         return Excel::download(new EmployeeExport, 'employee.xlsx');
+    }
+
+    public function openImportModal()
+    {
+        $this->dispatch('show-import-modal');
+    }
+
+    public function import()
+    {
+        $this->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        try {
+            // Store the uploaded file
+            $path = $this->file->store('temp');
+
+            // Import the data using Laravel Excel
+            Excel::import(new EmployeeImport(), $path);
+
+            session()->flash('message', 'Excel file imported successfully.');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Failed to import Excel file: ' . $e->getMessage());
+        }
+
+        session()->flash('message', 'Excel file imported successfully.');
+
+        $this->reset('file');
     }
 }

@@ -4,15 +4,45 @@ namespace App\Helpers;
 
 use DateTime;
 use Carbon\Carbon;
+use App\Models\Payslip;
+use App\Models\Business;
 use App\Models\Employee;
 use App\Models\Fortnight;
 use App\Models\Attendance;
+use App\Models\BusinessUser;
 use App\Models\EmployeeHours;
-use App\Models\Payslip;
 use App\Models\SalaryHistory;
+use Illuminate\Support\Facades\Auth;
 
 class Helpers
 {
+    public static function getActiveBusinessId()
+    {
+        $businessUser = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first();
+        return $businessUser->business_id;
+    }
+
+    public static function generateEmployeeNumber($businessId)
+    {
+        $code = Business::find($businessId)->code;
+        $lastEmployee = Employee::where('business_id', $businessId)->orderBy('employee_number', 'desc')->first();
+
+        if ($lastEmployee) {
+            $existingNumber = explode('-', $lastEmployee->employee_number)[1];
+            $employeeNumber = (int)$existingNumber + 1;
+        } else {
+            $employeeNumber = 1; // Start from 1 for new employee
+        }
+
+        // Calculate the number of leading zeros required based on the desired format (e.g., 4 digits)
+        $desiredLength = 4;
+        $leadingZeros = str_repeat('0', $desiredLength - strlen($employeeNumber));
+
+        // Concatenate the leading zeros with the employee number
+        $paddedEmployeeNumber = $leadingZeros . $employeeNumber;
+
+        return $code . '-' . $paddedEmployeeNumber;
+    }
     /**
      * Formats a date to a desired format.
      *
