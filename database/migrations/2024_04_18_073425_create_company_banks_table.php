@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('company_banks', function (Blueprint $table) {
             $table->id();
+            $table->string('bank_name');
             $table->string('account_name');
             $table->unsignedBigInteger('account_number');
             $table->string('account_bsb');

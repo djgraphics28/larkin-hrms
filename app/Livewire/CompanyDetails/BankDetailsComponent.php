@@ -26,6 +26,7 @@ class BankDetailsComponent extends Component
     public $updateMode = false;
 
     public $code;
+    public $bank_name;
     public $account_name;
     public $account_number;
     public $bsb;
@@ -89,12 +90,14 @@ class BankDetailsComponent extends Component
     public function submit($saveAndCreateNew)
     {
         $this->validate([
+            'bank_name' => 'required',
             'account_name' => 'required',
             'account_number' => 'required',
             'bsb' => 'required'
         ]);
 
         $create = CompanyBank::create([
+            'bank_name' => $this->bank_name,
             'account_name' => $this->account_name,
             'account_number' => $this->account_number,
             'account_bsb' => $this->bsb,
@@ -116,6 +119,7 @@ class BankDetailsComponent extends Component
 
     public function resetInputFields()
     {
+        $this->bank_name = '';
         $this->account_name = '';
         $this->account_number = '';
         $this->bsb = '';
@@ -126,6 +130,7 @@ class BankDetailsComponent extends Component
         $this->edit_id = $id;
         $this->dispatch('show-add-modal');
         $data = CompanyBank::find($id);
+        $this->bank_name = $data->bank_name;
         $this->account_name = $data->account_name;
         $this->account_number = $data->account_number;
         $this->bsb = $data->account_bsb;
@@ -137,6 +142,7 @@ class BankDetailsComponent extends Component
     public function update()
     {
         $this->validate([
+            'bank_name' => 'required',
             'account_name' => 'required',
             'account_number' => 'required',
             'bsb' => 'required'
@@ -144,6 +150,7 @@ class BankDetailsComponent extends Component
 
         $data = CompanyBank::find($this->edit_id);
         $data->update([
+            'bank_name' => $this->bank_name,
             'account_name' => $this->account_name,
             'account_number' => $this->account_number,
             'account_bsb' => $this->bsb
@@ -156,7 +163,7 @@ class BankDetailsComponent extends Component
 
             $this->resetInputFields();
 
-            $this->alert('success', $data->account_name . ' has been updated!');
+            $this->alert('success', $data->bank_name . ' (' . $data->account_name . ') has been updated!');
         }
     }
 
@@ -173,10 +180,11 @@ class BankDetailsComponent extends Component
     public function remove()
     {
         $delete = CompanyBank::find($this->approveConfirmed);
+        $bankname = $delete->bank_name;
         $name = $delete->account_name;
         $delete->delete();
         if ($delete) {
-            $this->alert('success', $name . ' has been removed!');
+            $this->alert('success', $bankname . ' (' . $name . ') has been removed!');
         }
     }
 

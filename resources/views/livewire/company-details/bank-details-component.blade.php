@@ -61,8 +61,9 @@
                                 <thead>
                                     <tr>
                                         <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
+                                        <th class="text-center">Bank Name</th>
                                         <th class="text-center">Account Name</th>
-                                        <th class="text-start">Account_Number</th>
+                                        <th class="text-center">Account_Number</th>
                                         <th class="text-center">BSB</th>
                                         <th width="30%" class="text-start">Business</th>
                                         <th width="10%" class="text-center">Status</th>
@@ -75,6 +76,7 @@
                                         <tr>
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
+                                            <td class="text-center">{{ $data->bank_name }}</td>
                                             <td class="text-center">{{ $data->account_name }}</td>
                                             <td class="text-start">{{ $data->account_number }}</td>
                                             <td class="text-start">{{ $data->account_bsb }}</td>
@@ -133,6 +135,18 @@
                 </div>
                 <form wire:submit.prevent="submit()">
                     <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="">Bank Name</label>
+                            <input wire:model="bank_name" type="text"
+                                class="form-control form-control-lg @error('account_name') is-invalid @enderror">
+
+                            @error('account_name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
 
                         <div class="form-group">
                             <label for="">Account Name</label>
