@@ -42,9 +42,9 @@ class Business extends Model
     {
         $searchTerm = "%$searchTerm%";
 
-        $query->where(function($query) use ($searchTerm){
+        $query->where(function ($query) use ($searchTerm) {
 
-            $query->where('name','like', $searchTerm);
+            $query->where('name', 'like', $searchTerm);
         });
     }
 
@@ -56,5 +56,10 @@ class Business extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function banks(): HasMany
+    {
+        return $this->hasMany(BusinessCompanyBank::class);
     }
 }
