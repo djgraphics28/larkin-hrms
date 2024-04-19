@@ -11,14 +11,14 @@ class EmployeeImport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
-            'Administration' =>  new EmployeeAdministrationSheetImport(),
-            'Human Resource' => new EmployeeHumanResourceSheetImport(),
-            '' => new EmployeeAccountingAndFinanceSheetImport(),
-            '' => new EmployeeOperationSheetImport(),
-            '' => new EmployeeSalesAndMarketingSheetImport(),
-            '' => new EmployeePurchasingSheetImport(),
-            '' => new EmployeeLogisticSheetImport(),
-            '' => new EmployeeITSheetImport(),
+            new EmployeeAdministrationSheetImport(),
+            // 'Human Resource' => new EmployeeHumanResourceSheetImport(),
+            // 'Accounting & Finance' => new EmployeeAccountingAndFinanceSheetImport(),
+            // 'Operation' => new EmployeeOperationSheetImport(),
+            // 'Sales & Marketing' => new EmployeeSalesAndMarketingSheetImport(),
+            // 'Purchasing' => new EmployeePurchasingSheetImport(),
+            // 'Logistic' => new EmployeeLogisticSheetImport(),
+            // 'IT' => new EmployeeITSheetImport(),
         ];
     }
 }
