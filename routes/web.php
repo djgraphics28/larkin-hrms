@@ -7,6 +7,7 @@ use App\Livewire\Auth\ForgetPassword;
 use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Leave\LeaveTypeComponent;
+use App\Livewire\Payroll\PayslipComponent;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
 use App\Http\Controllers\ApproveLeaveRequest;
@@ -16,6 +17,7 @@ use App\Livewire\Department\DepartmentComponent;
 use App\Livewire\Employee\EmployeeInfoComponent;
 use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
+use App\Livewire\Employee\ImportEmployeeComponent;
 use App\Livewire\Attendance\AttendanceLogComponent;
 use App\Livewire\Attendance\AttendanceImportComponent;
 use App\Livewire\Fortnight\FortnightGeneratorComponent;
@@ -62,6 +64,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/{label}/info/{id}', EmployeeInfoComponent::class)->name('employee.info');
         Route::get('/designation', DesignationComponent::class)->name('designation');
         Route::get('/status', EmployeeStatusComponent::class)->name('employee-status');
+        Route::get('/import', ImportEmployeeComponent::class)->name('import-employee');
     });
 
     // Attendance routes

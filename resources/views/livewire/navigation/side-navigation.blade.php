@@ -96,13 +96,13 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        {{-- <li class="nav-item">
-                            <a href="{{ route('employee.create') }}"
-                                class="nav-link {{ request()->is('employee/create') ? 'active' : '' }}">
-                                <i class="far fa fa-plus nav-icon"></i>
-                                <p>Create New</p>
+                        <li class="nav-item">
+                            <a wire:navigate href="{{ route('import-employee') }}"
+                                class="nav-link {{ request()->is('employee/import') ? 'active' : '' }}">
+                                <i class="far fa fa-upload nav-icon"></i>
+                                <p>Import</p>
                             </a>
-                        </li> --}}
+                        </li>
                         <li class="nav-item">
                             <a wire:navigate href="{{ route('employee.index','all') }}"
                                 class="nav-link {{ request()->is('employee/all/employees') || request()->is('employee/all/create') ? 'active' : '' }}">

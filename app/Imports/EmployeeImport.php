@@ -2,20 +2,23 @@
 
 namespace App\Imports;
 
+use App\Helpers\Helpers;
 use App\Models\Employee;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class EmployeeImport implements ToModel
+class EmployeeImport implements WithMultipleSheets
 {
-    /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
-    public function model(array $row)
+    public function sheets(): array
     {
-        return new Employee([
-            //
-        ]);
+        return [
+            new EmployeeAdministrationSheetImport(),
+            // 'Human Resource' => new EmployeeHumanResourceSheetImport(),
+            // 'Accounting & Finance' => new EmployeeAccountingAndFinanceSheetImport(),
+            // 'Operation' => new EmployeeOperationSheetImport(),
+            // 'Sales & Marketing' => new EmployeeSalesAndMarketingSheetImport(),
+            // 'Purchasing' => new EmployeePurchasingSheetImport(),
+            // 'Logistic' => new EmployeeLogisticSheetImport(),
+            // 'IT' => new EmployeeITSheetImport(),
+        ];
     }
 }

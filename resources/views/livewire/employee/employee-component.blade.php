@@ -25,8 +25,9 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <button type="button" class="btn btn-warning btn-sm mr-2"><i class="fa fa-upload"
-                                        aria-hidden="true"></i> Import</button>
+                                <button wire:click="openImportModal()" type="button"
+                                    class="btn btn-warning btn-sm mr-2"><i class="fa fa-upload" aria-hidden="true"></i>
+                                    Import</button>
                                 <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i
                                         class="fa fa-file-excel" aria-hidden="true"></i> Export</button>
                                 <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
@@ -124,7 +125,8 @@
                                             <td class="text-center">{{ $data->employee_number }}</td>
                                             <td class="text-start"><strong>{{ $data->first_name }}
                                                     {{ $data->last_name }}</strong>
-                                                <br><small>{{ $data->email }}</small></td>
+                                                <br><small>{{ $data->email }}</small>
+                                            </td>
                                             <td class="text-center">{{ $data->designation->name }}</td>
                                             <td class="text-center">{{ $data->workshift->title }}</td>
                                             <td class="text-center">{{ $data->department->name }}</td>
@@ -135,7 +137,8 @@
                                                         class="dropdown-item text-primary"
                                                         href="javascript:void(0)"><i class="fa fa-eye"
                                                             aria-hidden="true"></i></a>
-                                                    <a wire:navigate href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
+                                                    <a wire:navigate
+                                                        href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
                                                         class="dropdown-item text-warning"
                                                         href="javascript:void(0)"><i class="fa fa-edit"
                                                             aria-hidden="true"></i></a>
@@ -202,6 +205,31 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel">Import Employees</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="file" wire:model="file" id="filepond">
+                        @error('file')
+                            <span class="error">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" wire:click.prevent="import">Import</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @push('scripts')
@@ -212,6 +240,14 @@
 
         window.addEventListener('hide-add-modal', () => {
             $('#addModal').modal('hide');
+        });
+
+        window.addEventListener('show-import-modal', () => {
+            $('#importModal').modal('show');
+        });
+
+        window.addEventListener('hide-import-modal', () => {
+            $('#importModal').modal('hide');
         });
     </script>
 @endpush
