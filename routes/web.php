@@ -23,6 +23,8 @@ use App\Livewire\Attendance\AttendanceImportComponent;
 use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
+use App\Livewire\CompanyDetails\BankDetailsComponent;
+use App\Livewire\Payroll\PayslipComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +54,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/fortnight-generator', FortnightGeneratorComponent::class)->name('fortnight-generator');
         Route::get('/workshift', WorkshiftComponent::class)->name('workshift');
         Route::get('/users', UserComponent::class)->name('users');
+        Route::get('/bank-details', BankDetailsComponent::class)->name('bank-details');
     });
 
     // Employee routes

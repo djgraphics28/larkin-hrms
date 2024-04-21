@@ -68,10 +68,18 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a wire:navigate href="{{ route('users') }}" class="nav-link">
+                            <a wire:navigate href="{{ route('users') }}" class="nav-link {{ request()->is('apps/users') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-users"></i>
                                 <p>
                                     User Managment
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a wire:navigate href="{{ route('bank-details') }}" class="nav-link {{ request()->is('apps/bank-details') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-piggy-bank"></i>
+                                <p>
+                                    Company Bank Details
                                 </p>
                             </a>
                         </li>
@@ -206,18 +214,6 @@
                                 <p> Generate</p>
                             </a>
                         </li>
-                        {{-- <li class="nav-item">
-                            <a href="{{ route('attendance-import') }}" class="nav-link {{ request()->is('attendance/import') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p> Import</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('attendance-adjustment') }}" class="nav-link {{ request()->is('attendance/adjustment') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p> Adjustment</p>
-                            </a>
-                        </li> --}}
                     </ul>
                 </li>
 
