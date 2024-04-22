@@ -6,6 +6,7 @@ use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
 use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PDFController;
 use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\Payroll\PayslipComponent;
 use App\Livewire\Business\BusinessComponent;
@@ -19,12 +20,11 @@ use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
 use App\Livewire\Employee\ImportEmployeeComponent;
 use App\Livewire\Attendance\AttendanceLogComponent;
+use App\Livewire\CompanyDetails\BankDetailsComponent;
 use App\Livewire\Attendance\AttendanceImportComponent;
 use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
-use App\Livewire\CompanyDetails\BankDetailsComponent;
-use App\Livewire\Payroll\PayslipComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,3 +95,9 @@ Route::group(['prefix' => 'auth'], function () {
 //Leave Approve Route
 Route::get('/leave-request/approve/{id}', [ApproveLeaveRequest::class, 'approve'])->name('approve-leave-request');
 Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->name('success-leave-request');
+
+//PDF Routes
+Route::group(['prefix' => 'pdf'], function() {
+    Route::get('/generate-final-pay/{id}', [PDFController::class, 'generateFinalPay'])->name('generate-final-pay');
+    Route::get('/bulk-generate-final-pay/{ids}', [PDFController::class, 'bulkGenerateFinalPay'])->name('bulk-generate-final-pay');
+});

@@ -24,7 +24,32 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
+                            <h3 class="card-title">Employee Lists</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                    title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
                             <div class="btn-group float-right" role="group" aria-label="Groups">
+                                @if (!empty($selectedRows))
+                                    <div class="btn-group mr-2">
+                                        <button type="button" class="btn btn-info btn-sm dropdown-toggle dropdown-icon"
+                                            data-toggle="dropdown">
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                            Bulk Actions
+                                        </button>
+                                        <div class="dropdown-menu" role="menu">
+                                            <a wire:click="bulkGenerateFinalPay" class="dropdown-item"
+                                                href="#">Generate Final Pay</a>
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <button wire:click="openImportModal()" type="button"
                                     class="btn btn-warning btn-sm mr-2"><i class="fa fa-upload" aria-hidden="true"></i>
                                     Import</button>
@@ -37,8 +62,8 @@
                                     Add New</a>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
+                        <div class="card-body p-0">
+                            <div class="row p-3">
                                 <div class="col-md-1">
                                     <div class="form-group">
                                         <select class="form-control form-control" wire:model="perPage">
@@ -101,8 +126,21 @@
                                     </div>
                                 </div>
                             </div>
+                            @if (!empty($selectedRows))
+                                @if ($selectAllData)
+                                    <a class="ml-3" style="cursor: pointer;"
+                                        wire:click.live="selectAllData"><b>Select
+                                            All</b></a>
+                                @else
+                                    <a class="ml-3" style="cursor: pointer;"
+                                        wire:click.live="deselectAllData"><b>Deselect
+                                            All</b></a>
+                                @endif
+                                <span> {{ $selectedRows ? count($selectedRows) : 0 }} rows
+                                    selected</span>
+                            @endif
 
-                            <table class="table table-condensed table-sm table-hover">
+                            <table class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th width="3%" class="text-start"><input width="3%" type="checkbox"
@@ -121,7 +159,8 @@
                                     @forelse ($records as $data)
                                         <tr>
                                             <td width="3%" class="text-start"><input type="checkbox"
-                                                    wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
+                                                    wire:model.prevent="selectedRows" value="{{ $data->id }}">
+                                            </td>
                                             <td class="text-center">{{ $data->employee_number }}</td>
                                             <td class="text-start"><strong>{{ $data->first_name }}
                                                     {{ $data->last_name }}</strong>
@@ -131,22 +170,43 @@
                                             <td class="text-center">{{ $data->workshift->title }}</td>
                                             <td class="text-center">{{ $data->department->name }}</td>
                                             <td class="text-center">{{ $data->employee_status->name }}</td>
-                                            <td width="10%" class="text-center">
+                                            <td class="project-actions text-right">
                                                 <div class="btn-group">
-                                                    <a wire:click="view({{ $data->id }})"
-                                                        class="dropdown-item text-primary"
-                                                        href="javascript:void(0)"><i class="fa fa-eye"
-                                                            aria-hidden="true"></i></a>
-                                                    <a wire:navigate
-                                                        href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
-                                                        class="dropdown-item text-warning"
-                                                        href="javascript:void(0)"><i class="fa fa-edit"
-                                                            aria-hidden="true"></i></a>
-                                                    <a wire:click="alertConfirm({{ $data->id }})"
-                                                        class="dropdown-item text-danger" href="javascript:void(0)"><i
-                                                            class="fa fa-trash" aria-hidden="true"></i></a>
+                                                    <button type="button"
+                                                        class="btn btn-info btn-sm dropdown-toggle dropdown-icon"
+                                                        data-toggle="dropdown">
+                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                        Generate
+                                                    </button>
+                                                    <div class="dropdown-menu" role="menu">
+                                                        <a wire:click="generateFinalPay({{ $data->id }})"
+                                                            class="dropdown-item" href="#">Final Pay</a>
+                                                        {{-- <a class="dropdown-item" href="#">Another action</a>
+                                                        <a class="dropdown-item" href="#">Something else
+                                                            here</a>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item" href="#">Separated link</a> --}}
+                                                    </div>
                                                 </div>
-
+                                                <a wire:click="view({{ $data->id }})"
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-folder">
+                                                    </i>
+                                                    View
+                                                </a>
+                                                <a wire:navigate
+                                                    href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
+                                                    class="btn btn-info btn-sm">
+                                                    <i class="fas fa-pencil-alt">
+                                                    </i>
+                                                    Info
+                                                </a>
+                                                <a wire:click="alertConfirm({{ $data->id }})"
+                                                    class="btn btn-danger btn-sm" href="javascript:void(0)">
+                                                    <i class="fas fa-trash">
+                                                    </i>
+                                                    Delete
+                                                </a>
                                             </td>
                                         </tr>
                                     @empty

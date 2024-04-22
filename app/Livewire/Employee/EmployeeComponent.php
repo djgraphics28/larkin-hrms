@@ -9,14 +9,15 @@ use App\Models\Designation;
 use App\Models\BusinessUser;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 use App\Models\EmployeeStatus;
 use Livewire\Attributes\Title;
 use App\Exports\EmployeeExport;
 use App\Imports\EmployeeImport;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
-use Livewire\WithFileUploads;
 
 class EmployeeComponent extends Component
 {
@@ -56,6 +57,7 @@ class EmployeeComponent extends Component
 
     protected $paginationTheme = 'bootstrap';
 
+    public $selectAllData = false;
     public $selectAll = false;
     public $selectedRows = [];
 
@@ -63,18 +65,18 @@ class EmployeeComponent extends Component
 
     public function render()
     {
-        return view('livewire.employee.employee-component',[
+        return view('livewire.employee.employee-component', [
             'records' => $this->records
         ]);
     }
 
     public function mount()
     {
-        $this->departments = Department::where('is_active',1)->get();
-        $this->designations = Designation::where('is_active',1)->get();
-        $this->employeeStatuses = EmployeeStatus::where('is_active',1)->get();
+        $this->departments = Department::where('is_active', 1)->get();
+        $this->designations = Designation::where('is_active', 1)->get();
+        $this->employeeStatuses = EmployeeStatus::where('is_active', 1)->get();
 
-        $this->businessId = BusinessUser::where('user_id',Auth::user()->id)->where('is_active', true)->first()->business_id;
+        $this->businessId = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
 
     }
 
@@ -83,16 +85,16 @@ class EmployeeComponent extends Component
         $label = $this->label == 'all' ? $this->sortByLabel : $this->label;
 
         return Employee::search(trim($this->search))
-            ->when($label, function($query) use ($label) {
+            ->when($label, function ($query) use ($label) {
                 $query->where('label', $label);
             })
-            ->when($this->sortByDepartment, function($query) use ($label) {
+            ->when($this->sortByDepartment, function ($query) use ($label) {
                 $query->where('department_id', $this->sortByDepartment);
             })
-            ->when($this->sortByDesignation, function($query) {
+            ->when($this->sortByDesignation, function ($query) {
                 $query->where('designation_id', $this->sortByDesignation);
             })
-            ->when($this->sortByEmployeeStatus, function($query) {
+            ->when($this->sortByEmployeeStatus, function ($query) {
                 $query->where('employee_status_id', $this->sortByEmployeeStatus);
             })
             ->where('business_id', $this->businessId)
@@ -101,11 +103,24 @@ class EmployeeComponent extends Component
 
     public function updatedSelectAll($value)
     {
-        if($value){
+        if ($value) {
             $this->selectedRows = $this->records->pluck('id');
-        }else{
+        } else {
             $this->selectedRows = [];
         }
+    }
+
+    public function selectAllData()
+    {
+        $this->selectedRows = Employee::where('business_id', $this->businessId)->pluck('id');
+        $this->selectAllData = true;
+    }
+
+    public function deselectAllData()
+    {
+        $this->selectAll = false;
+        $this->selectAllData = false;
+        $this->selectedRows = [];
     }
 
     public function addNew()
@@ -127,9 +142,9 @@ class EmployeeComponent extends Component
             'name' => $this->name
         ]);
 
-        if($create){
+        if ($create) {
             $this->resetInputFields();
-            if($saveAndCreateNew) {
+            if ($saveAndCreateNew) {
                 $this->alert('success', 'New Designation has been save successfully!');
             } else {
                 $this->dispatch('hide-add-modal');
@@ -151,7 +166,7 @@ class EmployeeComponent extends Component
         $this->dispatch('show-add-modal');
         $data = Designation::find($id);
         $this->name = $data->name;
-        $this->modalTitle = 'Edit '.$this->name;
+        $this->modalTitle = 'Edit ' . $this->name;
         $this->updateMode = true;
     }
 
@@ -166,12 +181,12 @@ class EmployeeComponent extends Component
             'name' => $this->name
         ]);
 
-        if($data) {
+        if ($data) {
             $this->dispatch('hide-add-modal');
 
             $this->resetInputFields();
 
-            $this->alert('success', $data->name.' has been updated!');
+            $this->alert('success', $data->name . ' has been updated!');
         }
     }
 
@@ -190,8 +205,8 @@ class EmployeeComponent extends Component
         $delete = Designation::find($this->approveConfirmed);
         $name = $delete->name;
         $delete->delete();
-        if($delete){
-            $this->alert('success', $name.' has been removed!');
+        if ($delete) {
+            $this->alert('success', $name . ' has been removed!');
         }
     }
 
@@ -226,5 +241,16 @@ class EmployeeComponent extends Component
         session()->flash('message', 'Excel file imported successfully.');
 
         $this->reset('file');
+    }
+
+    public function generateFinalPay($id)
+    {
+        return redirect()->route('generate-final-pay', $id);
+    }
+
+    public function bulkGenerateFinalPay()
+    {
+        // dd(serialize($this->selectedRows));
+        return redirect()->route('bulk-generate-final-pay', ['ids' => $this->selectedRows]);
     }
 }
