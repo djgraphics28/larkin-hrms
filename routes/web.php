@@ -24,7 +24,6 @@ use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Livewire\CompanyDetails\BankDetailsComponent;
-use App\Livewire\Payroll\PayslipComponent;
 
 /*
 |--------------------------------------------------------------------------
