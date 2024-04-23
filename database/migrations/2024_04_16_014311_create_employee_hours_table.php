@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('fortnight_id');
             $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('salary_id');
             $table->decimal('regular_hr', 10, 2);
             $table->decimal('overtime_hr', 10, 2);
             $table->decimal('sunday_ot_hr', 10, 2);
