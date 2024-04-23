@@ -83,6 +83,14 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a wire:navigate href="{{ route('tax-table') }}" class="nav-link {{ request()->is('apps/tax-table') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-percent"></i>
+                                <p>
+                                    Tax Table
+                                </p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 {{-- HR MANAGEMENT --}}
@@ -199,8 +207,8 @@
                     </ul>
                 </li>
 
-                <li class="nav-item {{ request()->is('attendance/*') ? 'menu-open' : '' }}">
-                    <a href="javascript:void(0)" class="nav-link {{ request()->is('attendance/*') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->is('payroll/*') ? 'menu-open' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link {{ request()->is('payroll/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-dollar-sign"></i>
                         <p>
                             Payroll
@@ -209,7 +217,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('payslip') }}" class="nav-link {{ request()->is('attendance/logs') ? 'active' : '' }}">
+                            <a href="{{ route('payslip') }}" class="nav-link {{ request()->is('payroll/payslip') ? 'active' : '' }}">
                                 <i class="far fa-print nav-icon"></i>
                                 <p> Generate</p>
                             </a>

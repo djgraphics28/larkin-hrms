@@ -11,6 +11,7 @@ use App\Models\Fortnight;
 use App\Models\Attendance;
 use App\Models\BusinessUser;
 use App\Models\EmployeeHours;
+use App\Models\Holiday;
 use App\Models\SalaryHistory;
 use Illuminate\Support\Facades\Auth;
 
@@ -90,7 +91,20 @@ class Helpers
 
 
         foreach ($getEmployee as $employee) {
-            $getHours = Attendance::selectRaw('(TIME_TO_SEC(TIMEDIFF(time_out, time_in))/3600) - 1 as hours, DAYNAME(time_in) as day_name')
+            //check existing record
+            $check_salary  = EmployeeHours::where('employee_id', $employee->id)
+                ->where('fortnight_id', $getDates->id)->first();
+
+            $current_salary = SalaryHistory::where('is_active', 1)
+                ->where('employee_id', $employee->id)->first();
+
+            if ($check_salary) {
+                $rate_id = $check_salary->salary_id;
+            } else {
+                $rate_id = $current_salary->id;
+            }
+
+            $getHours = Attendance::selectRaw('(TIME_TO_SEC(TIMEDIFF(time_out, time_in))/3600) - 1 as hours, DAYNAME(time_in) as day_name, DATE(time_in) as attendance_date')
                 ->where('employee_number', $employee->employee_number)
                 ->whereBetween('time_in', [$start, $end])
                 ->get();
@@ -99,9 +113,15 @@ class Helpers
             $sunday_total_hours = 0;
             $regular_hours = 0;
             $ot_hours = 0;
+            $holiday_hours = 0;
 
             foreach ($getHours as $hours) {
+                $getHoliday = Holiday::where('holiday_date', $hours->attendance_date)->first();
                 $computed_hour = $hours->hours;
+
+                if ($getHoliday) {
+                    $holiday_hours =  $holiday_hours + $computed_hour;
+                }
                 if ($hours->day_name == 'Sunday') {
                     $sunday_total_hours = $sunday_total_hours + ($computed_hour);
                 }
@@ -122,12 +142,13 @@ class Helpers
                 [
                     'employee_id' => $employee->id,
                     'fortnight_id' => $getDates->id,
+                    'salary_id' => $rate_id,
                 ],
                 [
                     'regular_hr' => $regular_hours,
                     'overtime_hr' => $ot_hours,
                     'sunday_ot_hr' => $sunday_total_hours,
-                    'holiday_ot_hr' => 0
+                    'holiday_ot_hr' => $holiday_hours
                 ]
             );
         }
@@ -139,12 +160,13 @@ class Helpers
 
         foreach ($get_hours as $hours) {
             $get_rate = SalaryHistory::where('employee_id', $hours->employee_id)
-                ->where('is_active', 1)->first();
+                ->where('id', $hours->salary_id)->first();
 
             $regular = $hours->regular_hr * $get_rate->salary_rate;
             $overtime = ($hours->overtime_hr * $get_rate->salary_rate) * 1.5;
             $sunday_ot = $hours->sunday_ot_hr * $get_rate->salary_rate;
             $holiday_ot = $hours->holiday_ot_hr * $get_rate->salary_rate;
+            $npf = $regular * 0.06;
 
             Payslip::updateOrCreate(
                 [
@@ -160,7 +182,7 @@ class Helpers
                     'other' => 0,
 
                     'fn_tax' => 0,
-                    'npf' => 0,
+                    'npf' => $npf,
                     'ncsl' => 0,
                     'cash_adv' => 0
                 ]
