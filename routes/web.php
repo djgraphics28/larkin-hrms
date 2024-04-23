@@ -24,6 +24,7 @@ use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Livewire\CompanyDetails\BankDetailsComponent;
+use App\Livewire\Tax\TaxTablesComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/workshift', WorkshiftComponent::class)->name('workshift');
         Route::get('/users', UserComponent::class)->name('users');
         Route::get('/bank-details', BankDetailsComponent::class)->name('bank-details');
+        Route::get('/tax-table', TaxTablesComponent::class)->name('tax-table');
     });
 
     // Employee routes
