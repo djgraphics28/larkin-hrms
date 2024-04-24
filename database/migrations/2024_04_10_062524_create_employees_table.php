@@ -27,6 +27,7 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->date('deployment_date_home_country')->nullable();
             $table->enum('label', ['National','Expatriate']);
+            $table->boolean('is_discontinued')->default(false);
             $table->enum('gender', ['Male','Female']);
             $table->string('image')->nullable();
             $table->string('nasfund_number')->nullable();

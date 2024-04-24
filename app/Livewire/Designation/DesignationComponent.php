@@ -43,6 +43,7 @@ class DesignationComponent extends Component
     public function getRecordsProperty()
     {
         return Designation::withCount('employees')->search(trim($this->search))
+            ->orderBy('name', 'asc')
             ->paginate($this->perPage);
     }
 
