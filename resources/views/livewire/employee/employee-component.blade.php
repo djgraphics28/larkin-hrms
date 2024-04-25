@@ -107,12 +107,14 @@
                                     <tr>
                                         <th width="3%" class="text-start"><input width="3%" type="checkbox"
                                                 wire:model.live="selectAll"></th>
-                                        <th width="10%"class="text-center">EMP NO</th>
-                                        <th class="text-start">EMPLOYEE NAME</th>
+                                        <th width="5%"class="text-center">EMP NO</th>
+                                        <th width="10%"class="text-center">IMAGE</th>
+                                        <th class="text-start">EMPLOYEE DETAILS</th>
                                         <th class="text-center">POSITION</th>
                                         <th class="text-center">WORKSHIFT</th>
                                         <th class="text-center">DEPARTMENT</th>
                                         <th class="text-center">STATUS</th>
+                                        <th class="text-start">NOTES</th>
                                         <th class="text-center">ACTIONS</th>
                                     </tr>
                                 </thead>
@@ -120,22 +122,32 @@
                                     @include('shared.table-loader')
                                     @forelse ($records as $data)
                                         <tr>
-                                            <td width="3%" class="text-start"><input type="checkbox"
-                                                    wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
+                                            <td width="3%" class="text-start {{ $data->is_discontinued ? 'bg-danger' : '' }}"><input type="checkbox"
+                                                    wire:model.prevent="selectedRows" value="{{ $data->id }}"><strong>{{ $data->is_discontinued ? ' D' : '' }}</strong></td>
                                             <td class="text-center">{{ $data->employee_number }}</td>
+                                            <td class="text-center"><img class="w-50 h-50" src="{{ $data->gender == 'Male' ? asset('assets/images/male.png') : asset('assets/images/female.png') }}" alt="Profile Picture"></td>
                                             <td class="text-start"><strong>{{ $data->first_name }}
                                                     {{ $data->last_name }}</strong>
-                                                <br><small>{{ $data->email }}</small>
+                                                <br><small>Email: {{ $data->email }}</small>
+                                                <br><small>Contact: {{ $data->phone }}</small>
                                             </td>
                                             <td class="text-center">{{ $data->designation->name }}</td>
                                             <td class="text-center">{{ $data->workshift->title }}</td>
                                             <td class="text-center">{{ $data->department->name }}</td>
                                             <td class="text-center">{{ $data->employee_status->name }}</td>
+                                            <td width="15%" class="text-start">
+                                                <ul>
+                                                    @forelse ($data->employee_notes as $emp)
+                                                        <li><small>{{ $emp->notes }}</small></li>
+                                                    @empty
+                                                    @endforelse
+                                                </ul>
+                                            </td>
                                             <td width="10%" class="text-center">
                                                 <div class="btn-group">
-                                                    <a wire:click="view({{ $data->id }})"
-                                                        class="dropdown-item text-primary"
-                                                        href="javascript:void(0)"><i class="fa fa-eye"
+                                                    <a title="Discontinued this Employee"
+                                                        class="dropdown-item text-secondary"
+                                                        href="javascript:void(0)"><i class="fa fa-times"
                                                             aria-hidden="true"></i></a>
                                                     <a wire:navigate
                                                         href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
