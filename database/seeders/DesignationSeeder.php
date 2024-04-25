@@ -75,6 +75,7 @@ class DesignationSeeder extends Seeder
             'Wait Staff',
             'OJT',
             'Restaurant Manager',
+            'Construction Manager',
         ];
 
         foreach ($designations as $designation) {

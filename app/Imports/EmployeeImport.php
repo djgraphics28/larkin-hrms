@@ -22,10 +22,11 @@ class EmployeeImport implements ToCollection, WithHeadingRow
             $nameParts = Helpers::explodeFullName($row['first_name']);
             $firstName = $nameParts['first_name'];
             $lastName = $nameParts['last_name'];
+            $employeeNumber = Helpers::generateEmployeeNumber($businessId);
 
             $emp = Employee::create([
                 'label' => $row['label'],
-                'employee_number' => Helpers::generateEmployeeNumber($businessId),
+                'employee_number' => $employeeNumber,
                 'is_discontinued' => $row['is_discontinued'] == "D" ? 1 : 0,
                 'first_name' => $firstName,
                 'middle_name' => $row['middle_name'] ?? null,
@@ -35,8 +36,8 @@ class EmployeeImport implements ToCollection, WithHeadingRow
                 'phone' => $row['phone'] ?? null,
                 'birth_date' => $row['birth_date'] ?? null,
                 'joining_date' => $row['joining_date'],
-                'end_date' => $row['end_date'] ?? null,
-                'gender' => $row['gender'],
+                // 'end_date' => $row['end_date'] ?? null,
+                'gender' => $row['gender'] ?? null,
                 'marital_status' => $row['marital_status'] ?? null,
                 'address' => $row['address'] ?? null,
                 'deployment_date_home_country' => $row['deployment_date_home_country'] ?? null,

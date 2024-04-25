@@ -398,8 +398,11 @@ class Helpers
             case 'Restaurant Manager':
                 return 60;
                 break;
+            case 'Construction Manager':
+                return 61;
+                break;
             default:
-                return null; // Return null if designation is not found
+                return 1; // Return 1 if designation is not found
         }
     }
 
@@ -446,7 +449,7 @@ class Helpers
                 return 13;
                 break;
             default:
-                return null; // Return null if status is not found
+                return 1; // Return 1 if status is not found
         }
     }
 

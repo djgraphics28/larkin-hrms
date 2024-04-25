@@ -6,11 +6,13 @@ use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
 use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Tax\TaxTablesComponent;
 use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\Payroll\PayslipComponent;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
 use App\Http\Controllers\ApproveLeaveRequest;
+use App\Livewire\Holiday\SetHolidayComponent;
 use App\Livewire\Leave\LeaveRequestComponent;
 use App\Livewire\Workshift\WorkshiftComponent;
 use App\Livewire\Department\DepartmentComponent;
@@ -19,13 +21,12 @@ use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
 use App\Livewire\Employee\ImportEmployeeComponent;
 use App\Livewire\Attendance\AttendanceLogComponent;
+use App\Livewire\CompanyDetails\BankDetailsComponent;
 use App\Livewire\Attendance\AttendanceImportComponent;
 use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
-use App\Livewire\CompanyDetails\BankDetailsComponent;
-use App\Livewire\Holiday\SetHolidayComponent;
-use App\Livewire\Tax\TaxTablesComponent;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +43,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
+Route::group(['middleware' => ['auth', 'verified']], function () {
     // Dashboard routes
     Route::group(['prefix' => 'dashboard'], function () {
         Route::get('/', Dashboard::class)->name('dashboard');
@@ -90,11 +91,16 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
 });
 
 // Authentication routes
-Route::group(['prefix' => 'auth'], function () {
-    Route::get('login', Login::class)->name('login');
-    Route::get('forgot-password', ForgetPassword::class)->name('forgot-password');
-});
+// Route::group(['prefix' => 'auth'], function () {
+//     Route::get('login', Login::class)->name('login');
+//     Route::get('forgot-password', ForgetPassword::class)->name('forgot-password');
+// });
 
 //Leave Approve Route
 Route::get('/leave-request/approve/{id}', [ApproveLeaveRequest::class, 'approve'])->name('approve-leave-request');
 Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->name('success-leave-request');
+
+// Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
+
+// Route::post('login', [AuthenticatedSessionController::class, 'store']);
+require __DIR__.'/auth.php';
