@@ -167,4 +167,265 @@ class Helpers
             );
         }
     }
+
+    public static function explodeFullName($fullName)
+    {
+        $parts = explode(' ', $fullName); // Split the full name by spaces
+
+        $firstName = array_shift($parts); // Take the first part as the first name
+
+        $lastName = '';
+
+        // Check if there are remaining parts for the last name
+        if (!empty($parts)) {
+            // If there are remaining parts, take the last part as the last name
+            $lastName = array_pop($parts);
+
+            // If there are still parts remaining, they belong to the first name
+            if (!empty($parts)) {
+                $firstName .= ' ' . implode(' ', $parts);
+            }
+        }
+
+        return [
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+        ];
+    }
+
+    public static function designationToId($designation)
+    {
+        switch ($designation) {
+            case 'Admin Clerk':
+                return 1;
+                break;
+            case 'Bricklayer':
+                return 2;
+                break;
+            case 'Driver':
+                return 3;
+                break;
+            case 'Electrician':
+                return 4;
+                break;
+            case 'General Labourer':
+                return 5;
+                break;
+            case 'Helper':
+                return 6;
+                break;
+            case 'Painter':
+                return 7;
+                break;
+            case 'Plasterer':
+                return 8;
+                break;
+            case 'Plumber Helper':
+                return 9;
+                break;
+            case 'Tiler':
+                return 10;
+                break;
+            case 'Welder':
+                return 11;
+                break;
+            case 'Cook':
+                return 12;
+                break;
+            case 'Accounts Clerk':
+                return 13;
+                break;
+            case 'Aluminium Fitter':
+                return 14;
+                break;
+            case 'Cleaner':
+                return 15;
+                break;
+            case 'Financial Controller':
+                return 16;
+                break;
+            case 'G&A Fitter':
+                return 17;
+                break;
+            case 'Glass Cutter':
+                return 18;
+                break;
+            case 'Glass Fitter':
+                return 19;
+                break;
+            case 'Joiner':
+                return 20;
+                break;
+            case 'Joinery':
+                return 21;
+                break;
+            case 'Lead Carpenter':
+                return 22;
+                break;
+            case 'Leadman':
+                return 23;
+                break;
+            case 'Logistic Officer':
+                return 24;
+                break;
+            case 'Mason':
+                return 25;
+                break;
+            case 'Mechanic':
+                return 26;
+                break;
+            case 'Office Clerk':
+                return 27;
+                break;
+            case 'Foreman':
+                return 28;
+                break;
+            case 'Plumber':
+                return 29;
+                break;
+            case 'Security Guard':
+                return 30;
+                break;
+            case 'Stone Installer':
+                return 31;
+                break;
+            case 'Storeman':
+                return 32;
+                break;
+            case 'Trade Supervisor':
+                return 33;
+                break;
+            case 'Trade Supervisor (Finishing)':
+                return 34;
+                break;
+            case 'Trade Supervisor-Welding':
+                return 35;
+                break;
+            case 'Trade Supervisor/Coordinator (Carpentry)':
+                return 36;
+                break;
+            case 'Trade Supervisor/Coordinator (Electrical)':
+                return 37;
+                break;
+            case 'Trade Supervisor/Coordinator (Finishing)':
+                return 38;
+                break;
+            case 'Carpenter':
+                return 39;
+                break;
+            case 'Admin Director':
+                return 40;
+                break;
+            case 'Fabricator':
+                return 41;
+                break;
+            case 'Graphic Artist':
+                return 42;
+                break;
+            case 'Managing Director':
+                return 43;
+                break;
+            case 'Marketing':
+                return 44;
+                break;
+            case 'Operations Manager':
+                return 45;
+                break;
+            case 'Production Supervisor':
+                return 46;
+                break;
+            case 'Production Staff':
+                return 47;
+                break;
+            case 'Works Manager':
+                return 48;
+                break;
+            case 'Sales & Marketing Manager':
+                return 49;
+                break;
+            case 'Security Manager':
+                return 50;
+                break;
+            case 'General Manager':
+                return 51;
+                break;
+            case 'Reserved Guard':
+                return 52;
+                break;
+            case 'Supervisor':
+                return 53;
+                break;
+            case 'Kitchen Staff':
+                return 54;
+                break;
+            case 'Chef':
+                return 55;
+                break;
+            case 'Assistant Chef':
+                return 56;
+                break;
+            case 'Head Chef':
+                return 57;
+                break;
+            case 'Wait Staff':
+                return 58;
+                break;
+            case 'OJT':
+                return 59;
+                break;
+            case 'Restaurant Manager':
+                return 60;
+                break;
+            default:
+                return null; // Return null if designation is not found
+        }
+    }
+
+    public static function employeeStatusToId($status)
+    {
+        switch ($status) {
+            case 'Active':
+                return 1;
+                break;
+            case 'Present':
+                return 2;
+                break;
+            case 'AWOL':
+                return 3;
+                break;
+            case 'Terminated':
+                return 4;
+                break;
+            case 'Resigned':
+                return 5;
+                break;
+            case 'Deported':
+                return 6;
+                break;
+            case 'New Contract':
+                return 7;
+                break;
+            case 'Redundant':
+                return 8;
+                break;
+            case 'Stand Down':
+                return 9;
+                break;
+            case 'Transferred':
+                return 10;
+                break;
+            case 'Project Completion':
+                return 11;
+                break;
+            case 'Suspended':
+                return 12;
+                break;
+            case 'Did not pass trade test':
+                return 13;
+                break;
+            default:
+                return null; // Return null if status is not found
+        }
+    }
+
 }
