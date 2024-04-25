@@ -141,4 +141,14 @@ class Employee extends Model implements HasMedia
     {
         return $this->hasMany(Payslip::class, 'employee_id', 'id');
     }
+
+    /**
+     * Get all of the employee_notes for the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function employee_notes(): HasMany
+    {
+        return $this->hasMany(EmployeeNote::class, 'employee_id', 'id');
+    }
 }
