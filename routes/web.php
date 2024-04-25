@@ -24,6 +24,7 @@ use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Livewire\CompanyDetails\BankDetailsComponent;
+use App\Livewire\Holiday\SetHolidayComponent;
 use App\Livewire\Tax\TaxTablesComponent;
 
 /*
@@ -56,6 +57,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/users', UserComponent::class)->name('users');
         Route::get('/bank-details', BankDetailsComponent::class)->name('bank-details');
         Route::get('/tax-table', TaxTablesComponent::class)->name('tax-table');
+        Route::get('set-holiday', SetHolidayComponent::class)->name('set-holiday');
     });
 
     // Employee routes
