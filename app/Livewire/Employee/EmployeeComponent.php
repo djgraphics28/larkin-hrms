@@ -82,7 +82,7 @@ class EmployeeComponent extends Component
     {
         $label = $this->label == 'all' ? $this->sortByLabel : $this->label;
 
-        return Employee::search(trim($this->search))
+        return Employee::with(['employee_notes'])->search(trim($this->search))
             ->when($label, function($query) use ($label) {
                 $query->where('label', $label);
             })
@@ -105,73 +105,6 @@ class EmployeeComponent extends Component
             $this->selectedRows = $this->records->pluck('id');
         }else{
             $this->selectedRows = [];
-        }
-    }
-
-    public function addNew()
-    {
-        $this->resetInputFields();
-        $this->dispatch('show-add-modal');
-        $this->modalTitle = 'Add New Designation';
-        $this->updateMode = false;
-
-    }
-
-    public function submit($saveAndCreateNew)
-    {
-        $this->validate([
-            'name' => 'required'
-        ]);
-
-        $create = Designation::create([
-            'name' => $this->name
-        ]);
-
-        if($create){
-            $this->resetInputFields();
-            if($saveAndCreateNew) {
-                $this->alert('success', 'New Designation has been save successfully!');
-            } else {
-                $this->dispatch('hide-add-modal');
-                $this->alert('success', 'New Designation has been save successfully!');
-            }
-        }
-    }
-
-    public function resetInputFields()
-    {
-        $this->name = '';
-        $this->contact_number = '';
-        $this->address = '';
-    }
-
-    public function edit($id)
-    {
-        $this->edit_id = $id;
-        $this->dispatch('show-add-modal');
-        $data = Designation::find($id);
-        $this->name = $data->name;
-        $this->modalTitle = 'Edit '.$this->name;
-        $this->updateMode = true;
-    }
-
-    public function update()
-    {
-        $this->validate([
-            'name' => 'required'
-        ]);
-
-        $data = Designation::find($this->edit_id);
-        $data->update([
-            'name' => $this->name
-        ]);
-
-        if($data) {
-            $this->dispatch('hide-add-modal');
-
-            $this->resetInputFields();
-
-            $this->alert('success', $data->name.' has been updated!');
         }
     }
 
