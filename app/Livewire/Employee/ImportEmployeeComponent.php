@@ -21,9 +21,9 @@ class ImportEmployeeComponent extends Component
 
     public function submit()
     {
-        // $this->validate([
-        //     'file' => 'required|mimes:xlsx'
-        // ]);
+        $this->validate([
+            'file' => 'required|mimes:xlsx,csv,xls'
+        ]);
 
         try {
             // Store the uploaded file

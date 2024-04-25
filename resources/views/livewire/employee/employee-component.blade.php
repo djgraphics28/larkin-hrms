@@ -41,7 +41,7 @@
                             <div class="row">
                                 <div class="col-md-1">
                                     <div class="form-group">
-                                        <select class="form-control form-control" wire:model="perPage">
+                                        <select class="form-control form-control" wire:model.live="perPage">
                                             <option value="10">10</option>
                                             <option value="25">25</option>
                                             <option value="50">50</option>
