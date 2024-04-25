@@ -91,6 +91,14 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a wire:navigate href="{{ route('set-holiday') }}" class="nav-link {{ request()->is('apps/set-holiday') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-calendar"></i>
+                                <p>
+                                    Holidays
+                                </p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 {{-- HR MANAGEMENT --}}
