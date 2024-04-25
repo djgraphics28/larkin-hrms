@@ -108,7 +108,7 @@ class DepartmentComponent extends Component
             'name' => 'required'
         ]);
 
-        $data = Designation::find($this->edit_id);
+        $data = Department::find($this->edit_id);
         $data->update([
             'name' => $this->name
         ]);

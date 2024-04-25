@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="ml-3">
-            @livewire('branch-selection')
+            @livewire('business-selection')
         </div>
 
     </ul>
@@ -182,9 +182,20 @@
                     <i class="fas fa-user mr-2"></i> Profile
                 </a>
 
-                <a wire:click="logoutUser" class="dropdown-item" style="cursor: pointer;">
+                {{-- <a wire:click="logoutUser" class="dropdown-item" style="cursor: pointer;">
                     <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                </a>
+                </a> --}}
+
+                 <!-- Authentication -->
+                 <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <x-dropdown-link class="dropdown-item" style="cursor: pointer;" :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        <i class="fas fa-sign-out-alt mr-2"></i> {{ __('Log Out') }}
+                    </x-dropdown-link>
+                </form>
             </div>
         </li>
 
