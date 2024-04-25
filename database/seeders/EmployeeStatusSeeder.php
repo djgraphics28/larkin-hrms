@@ -19,12 +19,14 @@ class EmployeeStatusSeeder extends Seeder
             'AWOL',
             'Terminated',
             'Resigned',
+            'Deported',
             'New Contract',
             'Redundant',
             'Stand Down',
             'Transferred',
             'Project Completion',
             'Suspended',
+            'Did not pass trade test'
         ];
 
         foreach ($employeeStatues as $status) {

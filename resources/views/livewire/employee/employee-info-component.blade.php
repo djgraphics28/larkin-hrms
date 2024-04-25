@@ -47,7 +47,7 @@
                     <!-- /.card -->
 
                     <!-- About Me Box -->
-                    <div class="card card-primary">
+                    {{-- <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title">About Me</h3>
                         </div>
@@ -85,7 +85,7 @@
                                 fermentum enim neque.</p>
                         </div>
                         <!-- /.card-body -->
-                    </div>
+                    </div> --}}
                     <!-- /.card -->
                 </div>
                 <!-- /.col -->

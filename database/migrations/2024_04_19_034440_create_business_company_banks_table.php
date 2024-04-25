@@ -39,4 +39,5 @@
         {
             Schema::dropIfExists('business_company_banks');
         }
+
     };
