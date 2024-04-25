@@ -1,3 +1,4 @@
+@section('title', 'Login')
 <x-guest-layout>
     <div class="container-fluid bg-light d-flex align-items-center justify-content-center" style="height: 100vh;">
         <div class="bg-white p-4 rounded shadow-lg" style="width: 25rem;">
@@ -5,7 +6,7 @@
                     class="mx-auto d-block mb-4 cursor-pointer" style="width: 200px" />
             </a>
 
-            <h3 class="font-weight-bold mb-4 text-dark text-center">HRMS | Admin Login</h3>
+            <h3 class="font-weight-bold mb-4 text-dark text-center">HRMS | Login</h3>
             @if (session('error'))
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>{{ session('error') }}</strong>

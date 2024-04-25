@@ -1,5 +1,23 @@
 <div>
-    <section class="content mt-2">
+     <!-- Content Header (Page header) -->
+     <div class="content-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4 class="m-0">DASHBOARD</h4>
+                    <p>Welcome {{ Auth::user()->name }}</p>
+                </div><!-- /.col -->
+                {{-- <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Departments</li>
+                    </ol>
+                </div><!-- /.col --> --}}
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <section class="content">
         <div class="container-fluid">
             <!-- Small boxes (Stat box) -->
             <div class="row">
@@ -7,9 +25,9 @@
                     <!-- small box -->
                     <div class="small-box bg-info">
                         <div class="inner">
-                            <h3>150</h3>
+                            <h3>{{ $totalEmployees }}</h3>
 
-                            <p>New Orders</p>
+                            <p>TOTAL EMPLOYEES</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-bag"></i>
@@ -22,9 +40,9 @@
                     <!-- small box -->
                     <div class="small-box bg-success">
                         <div class="inner">
-                            <h3>53<sup style="font-size: 20px">%</sup></h3>
+                            <h3>{{ $totalLeaveRequests }}</h3>
 
-                            <p>Bounce Rate</p>
+                            <p>Leave Requests</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-stats-bars"></i>
