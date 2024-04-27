@@ -42,6 +42,24 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @livewireStyles
+
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script>
+
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('934e51f172bf06782f9f', {
+
+             cluster: 'ap1'
+        });
+
+        var channel = pusher.subscribe('notify-channel');
+        channel.bind('notify-event', function(data) {
+            toastr.success(JSON.stringify(data.name));
+            // alert(JSON.stringify(data));
+        });
+    </script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
