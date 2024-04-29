@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Tax\TaxTablesComponent;
 use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\Payroll\PayslipComponent;
+use App\Livewire\Loan\LoanRequestComponent;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
 use App\Http\Controllers\ApproveLeaveRequest;
@@ -87,6 +88,11 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
     Route::group(['prefix' => 'leave'], function () {
         Route::get('/request', LeaveRequestComponent::class)->name('leave-request');
         Route::get('/types', LeaveTypeComponent::class)->name('leave-types');
+    });
+
+    // Loan routes
+    Route::group(['prefix' => 'loan'], function () {
+        Route::get('/cash-advance', LoanRequestComponent::class)->name('cash-advance');
     });
 });
 
