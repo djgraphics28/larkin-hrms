@@ -86,7 +86,11 @@ class LoanRequestComponent extends Component
     public function submit()
     {
         $this->validate([
-            'name' => 'required'
+            'employee' => 'required',
+            'loan_type' => 'required',
+            'payable_for' => 'required',
+            'amount' => 'required',
+            'amount' => 'required',
         ]);
 
         $create = Loan::create([
@@ -110,8 +114,10 @@ class LoanRequestComponent extends Component
     {
         $this->edit_id = $id;
         $this->dispatch('show-add-modal');
-        $data = Department::find($id);
-        $this->name = $data->name;
+        $data = Loan::find($id);
+        $this->loan_type = $data->loan_type_id;
+        $this->status = $data->status;
+        $this->loan_type = $data->loan_type_id;
         $this->modalTitle = 'Edit '.$this->name;
         $this->updateMode = true;
     }
