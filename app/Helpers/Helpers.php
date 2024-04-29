@@ -86,7 +86,9 @@ class Helpers
         // Format the modified end date back to your desired format
         $end = $endDate->format('Y-m-d');
 
-        $getEmployee = Employee::all();
+        $businessId = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
+
+        $getEmployee = Employee::where('business_id', $businessId)->get();
 
 
 
@@ -101,7 +103,7 @@ class Helpers
             if ($check_salary) {
                 $rate_id = $check_salary->salary_id;
             } else {
-                $rate_id = $current_salary->id;
+                $rate_id = $current_salary?->id;
             }
 
             $getHours = Attendance::selectRaw('(TIME_TO_SEC(TIMEDIFF(time_out, time_in))/3600) - 1 as hours, DAYNAME(time_in) as day_name, DATE(time_in) as attendance_date')
@@ -115,17 +117,28 @@ class Helpers
             $ot_hours = 0;
             $holiday_hours = 0;
 
+            $getHoliday = Holiday::whereBetween('holiday_date', [$start, $end])->get();
+
+            if ($getHoliday) {
+                foreach ($getHoliday as $holiday) {
+                    $total_hours = +7;
+                }
+            }
+
             foreach ($getHours as $hours) {
-                $getHoliday = Holiday::where('holiday_date', $hours->attendance_date)->first();
+                $checkHoliday = Holiday::where('holiday_date', $hours->attendance_date)->first();
                 $computed_hour = $hours->hours;
 
-                if ($getHoliday) {
+                if ($checkHoliday) {
                     $holiday_hours =  $holiday_hours + $computed_hour;
                 }
                 if ($hours->day_name == 'Sunday') {
                     $sunday_total_hours = $sunday_total_hours + ($computed_hour);
                 }
-                $total_hours = $total_hours + $computed_hour;
+
+                if (!$checkHoliday) {
+                    $total_hours = $total_hours + $computed_hour;
+                }
             }
 
 
@@ -138,19 +151,21 @@ class Helpers
 
             // dd($sunday_total_hours, "", $total_hours, $employee->workshift->number_of_hours, $ot_hours);
 
-            EmployeeHours::updateOrCreate(
-                [
-                    'employee_id' => $employee->id,
-                    'fortnight_id' => $getDates->id,
-                    'salary_id' => $rate_id,
-                ],
-                [
-                    'regular_hr' => $regular_hours,
-                    'overtime_hr' => $ot_hours,
-                    'sunday_ot_hr' => $sunday_total_hours,
-                    'holiday_ot_hr' => $holiday_hours
-                ]
-            );
+            if ($rate_id) {
+                EmployeeHours::updateOrCreate(
+                    [
+                        'employee_id' => $employee->id,
+                        'fortnight_id' => $getDates->id,
+                        'salary_id' => $rate_id,
+                    ],
+                    [
+                        'regular_hr' => $regular_hours,
+                        'overtime_hr' => $ot_hours,
+                        'sunday_ot_hr' => $sunday_total_hours,
+                        'holiday_ot_hr' => $holiday_hours
+                    ]
+                );
+            }
         }
     }
 
@@ -452,5 +467,4 @@ class Helpers
                 return 1; // Return 1 if status is not found
         }
     }
-
 }
