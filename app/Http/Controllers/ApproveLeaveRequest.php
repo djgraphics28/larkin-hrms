@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotifyUser;
 use App\Models\LeaveRequest;
 use Illuminate\Http\Request;
 
@@ -42,12 +43,15 @@ class ApproveLeaveRequest extends Controller
             //     ]);
             // }
 
-            if($leave) {
+            if ($leave) {
+                //notify
+                $name = "Leave Request Approved!";
+
+                event(new NotifyUser($name));
                 return redirect()->route('success-leave-request')->with('success', 'Leave Request has been approved successfully.');
             } else {
                 return redirect()->route('success-leave-request')->with('error', 'Something went wrong!, please try again.');
             }
-
         } catch (\Throwable $th) {
             //throw $th;
             return redirect()->route('success-leave-request')->with('error', 'Something went wrong!, please try again.');
