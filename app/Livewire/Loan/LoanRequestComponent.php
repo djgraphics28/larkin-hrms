@@ -4,6 +4,8 @@ namespace App\Livewire\Loan;
 
 use App\Models\Loan;
 use Livewire\Component;
+use App\Models\Employee;
+use App\Models\LoanType;
 use App\Models\BusinessUser;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
@@ -30,6 +32,7 @@ class LoanRequestComponent extends Component
     public $amount;
     public $reason;
     public $payable_for;
+    public $date_requested;
     public $percentage_to_be_deducted;
     public $status;
     public $edit_id;
@@ -38,6 +41,9 @@ class LoanRequestComponent extends Component
 
     public $selectAll = false;
     public $selectedRows = [];
+
+    public $loanTypes = [];
+    public $employees = [];
 
     #[Title('Loan/Cash Advance Request')]
     public function render()
@@ -57,6 +63,9 @@ class LoanRequestComponent extends Component
         }
 
         $this->businessId = $businessUser->business_id;
+
+        $this->loanTypes = LoanType::where('is_active', 1)->get();
+        $this->employees = Employee::where('business_id', $this->businessId)->get();
     }
 
     public function getRecordsProperty()
@@ -90,11 +99,18 @@ class LoanRequestComponent extends Component
             'loan_type' => 'required',
             'payable_for' => 'required',
             'amount' => 'required',
-            'amount' => 'required',
         ]);
 
         $create = Loan::create([
-            'name' => $this->name
+            'employee_id' => $this->employee,
+            'loan_type_id' => $this->loan_type,
+            'payable_for' => $this->payable_for,
+            'percentage_to_be_deducted' => $this->percentage_to_be_deducted,
+            'reason' => $this->reason,
+            'amount' => $this->amount,
+            'date_requested' => now(),
+            'status' => 'Pending',
+            'business_id' => $this->businessId,
         ]);
 
         if($create){
@@ -105,9 +121,14 @@ class LoanRequestComponent extends Component
 
     public function resetInputFields()
     {
-        $this->name = '';
-        $this->contact_number = '';
-        $this->address = '';
+        $this->employee = '';
+        $this->loan_type = '';
+        $this->payable_for = '';
+        $this->percentage_to_be_deducted = '';
+        $this->reason = '';
+        $this->amount = '';
+        $this->status = '';
+        $this->date_requested = '';
     }
 
     public function edit($id)
@@ -117,28 +138,51 @@ class LoanRequestComponent extends Component
         $data = Loan::find($id);
         $this->loan_type = $data->loan_type_id;
         $this->status = $data->status;
-        $this->loan_type = $data->loan_type_id;
-        $this->modalTitle = 'Edit '.$this->name;
+        $this->employee = $data->employee_id;
+        $this->payable_for = $data->payable_for;
+        $this->percentage_to_be_deducted = $data->percentage_to_be_deducted;
+        $this->reason = $data->reason;
+        $this->amount = $data->amount;
+        $this->date_requested = $data->date_requested;
+        $this->modalTitle = 'Edit Loan Request';
         $this->updateMode = true;
     }
 
     public function update()
     {
         $this->validate([
-            'name' => 'required'
+            'employee' => 'required',
+            'loan_type' => 'required',
+            'payable_for' => 'required',
+            'amount' => 'required',
+            'status' => 'required',
         ]);
 
-        $data = Department::find($this->edit_id);
+        $data = Loan::find($this->edit_id);
         $data->update([
-            'name' => $this->name
+            'employee_id' => $this->employee,
+            'loan_type_id' => $this->loan_type,
+            'payable_for' => $this->payable_for,
+            'percentage_to_be_deducted' => $this->percentage_to_be_deducted,
+            'reason' => $this->reason,
+            'amount' => $this->amount,
+            'date_requested' => $this->date_requested,
+            'status' => $this->status,
         ]);
+
+        if($this->status == 'Approved'){
+            $data->update([
+                'date_approved' => now(),
+                'approved_by' => Auth::user()->id,
+            ]);
+        }
 
         if($data) {
             $this->dispatch('hide-add-modal');
 
             $this->resetInputFields();
 
-            $this->alert('success', $data->name.' has been updated!');
+            $this->alert('success', 'Loan Request has been updated!');
         }
     }
 
@@ -154,16 +198,10 @@ class LoanRequestComponent extends Component
 
     public function remove()
     {
-        $delete = Department::find($this->approveConfirmed);
-        $name = $delete->name;
+        $delete = Loan::find($this->approveConfirmed);
         $delete->delete();
         if($delete){
-            $this->alert('success', $name.' has been removed!');
+            $this->alert('success', 'Loan Request has been removed!');
         }
-    }
-
-    public function export()
-    {
-        return Excel::download(new DepartmentExport, 'department.xlsx');
     }
 }

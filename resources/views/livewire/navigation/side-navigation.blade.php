@@ -244,8 +244,8 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('cash-advance') }}" class="nav-link {{ request()->is('loan/cash-advance') ? 'active' : '' }}">
-                                <i class="far fa-print nav-icon"></i>
-                                <p>Loan / Cash Advance Request</p>
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Loan Request</p>
                             </a>
                         </li>
                     </ul>
