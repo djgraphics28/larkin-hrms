@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('percentage_to_be_deducted')->nullable(); //percentage to be deducted on the salary
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('approved_by')->nullable();
-            $table->timestamp('date_requested');
+            $table->date('date_requested');
             $table->date('date_approved')->nullable();
             $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('loan_type_id');
