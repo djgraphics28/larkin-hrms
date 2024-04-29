@@ -13,6 +13,7 @@ use App\Models\BusinessUser;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use App\Models\EmployeeHours;
+use App\Models\Holiday;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,6 +30,7 @@ class AttendanceLogComponent extends Component
     public $selectedFN;
     public $records = [];
     public $ranges = [];
+    public $holidays = [];
 
     public $fn_start;
     public $fn_end;
@@ -55,8 +57,8 @@ class AttendanceLogComponent extends Component
     public function mount()
     {
         $businessUser = BusinessUser::where('user_id', Auth::user()->id)
-                                     ->where('is_active', true)
-                                     ->first();
+            ->where('is_active', true)
+            ->first();
         if (!$businessUser) {
             return redirect()->back();
         }
@@ -90,7 +92,9 @@ class AttendanceLogComponent extends Component
         $this->records = $employees;
         $this->ranges = $ranges;
 
-
+        //Get Holidays
+        $get_holiday = Holiday::whereBetween('holiday_date', [$this->fn_start, $this->fn_end])->get();
+        $this->holidays = $get_holiday;
 
         Helpers::computeHours($this->selectedFN);
     }
