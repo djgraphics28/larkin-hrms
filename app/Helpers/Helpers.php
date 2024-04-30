@@ -12,6 +12,7 @@ use App\Models\Attendance;
 use App\Models\BusinessUser;
 use App\Models\EmployeeHours;
 use App\Models\Holiday;
+use App\Models\Nasfund;
 use App\Models\SalaryHistory;
 use Illuminate\Support\Facades\Auth;
 
@@ -81,9 +82,9 @@ class Helpers
 
         $endDate = new DateTime($end);
 
-        $endDate->modify('+1 day');
+        $endDateAttendance = new DateTime($end);
+        $endDateAttendance->modify('+1 day');
 
-        // Format the modified end date back to your desired format
         $end = $endDate->format('Y-m-d');
 
         $businessId = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
@@ -108,7 +109,7 @@ class Helpers
 
             $getHours = Attendance::selectRaw('(TIME_TO_SEC(TIMEDIFF(time_out, time_in))/3600) - 1 as hours, DAYNAME(time_in) as day_name, DATE(time_in) as attendance_date')
                 ->where('employee_number', $employee->employee_number)
-                ->whereBetween('time_in', [$start, $end])
+                ->whereBetween('time_in', [$start, $endDateAttendance])
                 ->get();
 
             $total_hours = 0;
@@ -148,8 +149,6 @@ class Helpers
             } else {
                 $regular_hours = $total_hours;
             }
-
-            // dd($sunday_total_hours, "", $total_hours, $employee->workshift->number_of_hours, $ot_hours);
 
             if ($rate_id) {
                 EmployeeHours::updateOrCreate(
@@ -465,6 +464,31 @@ class Helpers
                 break;
             default:
                 return 1; // Return 1 if status is not found
+        }
+    }
+
+    public static function computeNPF($selected_fn, $businessId)
+    {
+        $get_employees = Employee::where('business_id', $businessId)->get();
+
+        foreach ($get_employees as $employee) {
+            $get_pay = Payslip::where('employee_id', $employee->id)
+                ->where('fortnight_id', $selected_fn)
+                ->first();
+
+            if ($get_pay) {
+                Nasfund::updateOrCreate(
+                    [
+                        'employee_id' => $employee->id,
+                        'fortnight_id' => $selected_fn
+                    ],
+                    [
+                        'pay' => $get_pay->regular,
+                        'ER' => $get_pay->regular * 0.084,
+                        'EE' => $get_pay->regular * 0.06
+                    ]
+                );
+            }
         }
     }
 }

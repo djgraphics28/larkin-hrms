@@ -28,6 +28,7 @@ use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Livewire\Nasfund\NasfundComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +60,8 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/users', UserComponent::class)->name('users');
         Route::get('/bank-details', BankDetailsComponent::class)->name('bank-details');
         Route::get('/tax-table', TaxTablesComponent::class)->name('tax-table');
-        Route::get('set-holiday', SetHolidayComponent::class)->name('set-holiday');
+        Route::get('/set-holiday', SetHolidayComponent::class)->name('set-holiday');
+        Route::get('/nasfund', NasfundComponent::class)->name('nasfund');
     });
 
     // Employee routes
@@ -109,4 +111,4 @@ Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->n
 // Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 
 // Route::post('login', [AuthenticatedSessionController::class, 'store']);
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
