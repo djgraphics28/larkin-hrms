@@ -31,9 +31,14 @@
                     <div class="card card-primary card-outline">
                         <div class="card-body box-profile">
                             <div class="text-center">
-                                <img class="profile-user-img img-fluid img-circle w-150"
-                                    src="{{ $image == '' ? ($gender == 'Male' ? asset('assets/images/male.png') : asset('assets/images/female.png')) : $image }}"
-                                    alt="User profile picture">
+                                @if ($image)
+                                    <img class="profile-user-img img-fluid img-circle w-150" src="{{ $image }}"
+                                        alt="User profile picture">
+                                @else
+                                    <img class="profile-user-img img-fluid img-circle w-150"
+                                        src="{{ asset('assets/images/' . ($gender == 'Male' ? 'male.png' : 'female.png')) }}"
+                                        alt="User profile picture">
+                                @endif
                             </div>
 
                             <h3 class="profile-username text-center">{{ $fullName }}</h3>
@@ -96,7 +101,8 @@
                                 <li class="nav-item"><a class="nav-link active" href="#basic" data-toggle="tab">Basic
                                         Info</a></li>
 
-                                <li class="nav-item"><a class="nav-link" href="#work_info" data-toggle="tab">Work Info</a>
+                                <li class="nav-item"><a class="nav-link" href="#work_info" data-toggle="tab">Work
+                                        Info</a>
                                 <li class="nav-item"><a class="nav-link" href="#salary_history" data-toggle="tab">Salary
                                         History</a>
                                 </li>
@@ -162,3 +168,31 @@
         </div><!-- /.container-fluid -->
     </section>
 </div>
+
+@push('script')
+    <script>
+        $(document).ready(function() {
+
+            $("#profileImage").click(function(e) {
+                $("#imageUpload").click();
+            });
+
+            function fasterPreview(uploader) {
+                if (uploader.files && uploader.files[0]) {
+                    $('#profileImage').attr('src',
+                        window.URL.createObjectURL(uploader.files[0]));
+                }
+            }
+
+            $("#imageUpload").change(function() {
+                fasterPreview(this);
+            });
+
+            /* datepicker initialization */
+            $('#datepicker').datepicker({
+                autoclose: true,
+            }); /* datepicker initialization */
+
+        });
+    </script>
+@endpush
