@@ -121,7 +121,7 @@ class Helpers
 
             if ($getHoliday) {
                 foreach ($getHoliday as $holiday) {
-                    $total_hours = +7;
+                    $total_hours = $total_hours + 7;
                 }
             }
 
