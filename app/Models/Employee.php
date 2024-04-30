@@ -151,4 +151,9 @@ class Employee extends Model implements HasMedia
     {
         return $this->hasMany(EmployeeNote::class, 'employee_id', 'id');
     }
+
+    public function nasfund(): HasMany
+    {
+        return $this->hasMany(Nasfund::class, 'employee_id', 'id');
+    }
 }

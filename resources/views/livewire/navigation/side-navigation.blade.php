@@ -99,6 +99,14 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a wire:navigate href="{{ route('nasfund') }}" class="nav-link {{ request()->is('apps/nasfund') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-money-bill"></i>
+                                <p>
+                                    Nasfund
+                                </p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 {{-- HR MANAGEMENT --}}
