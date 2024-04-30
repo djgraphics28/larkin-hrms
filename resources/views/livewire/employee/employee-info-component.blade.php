@@ -112,6 +112,9 @@
                                 <li class="nav-item"><a class="nav-link" href="#attendance_logs"
                                         data-toggle="tab">Attendance Logs</a>
                                 </li>
+                                <li class="nav-item"><a class="nav-link" href="#loan_history"
+                                    data-toggle="tab">Loan History</a>
+                            </li>
                             </ul>
                         </div><!-- /.card-header -->
                         <div class="card-body">
@@ -148,6 +151,11 @@
                                 <!-- /.tab-pane -->
 
                                 <div class="tab-pane" id="attendance_logs">
+                                </div>
+                                <!-- /.tab-pane -->
+
+                                <div class="tab-pane" id="loan_history">
+                                    @livewire('employee.partials.loan-history-component', ['id' => $id])
                                 </div>
                                 <!-- /.tab-pane -->
                             </div>

@@ -233,6 +233,24 @@
                     </ul>
                 </li>
 
+                <li class="nav-item {{ request()->is('loan/*') ? 'menu-open' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link {{ request()->is('loan/*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-dollar-sign"></i>
+                        <p>
+                            Loan Management
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('cash-advance') }}" class="nav-link {{ request()->is('loan/cash-advance') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Loan Request</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
 
                 {{-- <li class="nav-item {{ request()->is('employee/*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('employee/*') ? 'active' : '' }}">
