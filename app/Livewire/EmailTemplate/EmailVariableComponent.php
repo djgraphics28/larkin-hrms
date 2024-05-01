@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Livewire\Designation;
+namespace App\Livewire\EmailTemplate;
 
 use Livewire\Component;
-use App\Models\Designation;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
+use App\Models\EmailVariable;
 use Livewire\Attributes\Title;
-use App\Exports\DesignationExport;
-use Maatwebsite\Excel\Facades\Excel;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
-class DesignationComponent extends Component
+class EmailVariableComponent extends Component
 {
     use WithPagination, LivewireAlert;
 
@@ -21,7 +19,7 @@ class DesignationComponent extends Component
     public $perPage = 10;
     #[Url]
     public $search = '';
-    public $modalTitle = 'Add New Designation';
+    public $modalTitle = 'Add New Email Variable';
     public $updateMode = false;
 
     public $name;
@@ -32,17 +30,17 @@ class DesignationComponent extends Component
     public $selectAll = false;
     public $selectedRows = [];
 
-    #[Title('Designation/Position')]
+    #[Title('Email Variable')]
     public function render()
     {
-        return view('livewire.designation.designation-component',[
+        return view('livewire.email-template.email-variable-component',[
             'records' => $this->records
         ]);
     }
 
     public function getRecordsProperty()
     {
-        return Designation::withCount('employees')->search(trim($this->search))
+        return EmailVariable::search(trim($this->search))
             ->orderBy('name', 'asc')
             ->paginate($this->perPage);
     }
@@ -60,7 +58,7 @@ class DesignationComponent extends Component
     {
         $this->resetInputFields();
         $this->dispatch('show-add-modal');
-        $this->modalTitle = 'Add New Designation';
+        $this->modalTitle = 'Add New Email Variable';
         $this->updateMode = false;
 
     }
@@ -71,17 +69,20 @@ class DesignationComponent extends Component
             'name' => 'required'
         ]);
 
-        $create = Designation::create([
-            'name' => $this->name
+        $variableName = str_replace(' ', '', ucwords(str_replace('_', ' ', $this->name)));
+
+        $create = EmailVariable::create([
+            'name' => $this->name,
+            'variable' => lcfirst($variableName),
         ]);
 
         if($create){
             $this->resetInputFields();
             if($saveAndCreateNew) {
-                $this->alert('success', 'New Designation has been save successfully!');
+                $this->alert('success', 'New Email Variable has been save successfully!');
             } else {
                 $this->dispatch('hide-add-modal');
-                $this->alert('success', 'New Designation has been save successfully!');
+                $this->alert('success', 'New Email Variable has been save successfully!');
             }
         }
     }
@@ -95,7 +96,7 @@ class DesignationComponent extends Component
     {
         $this->edit_id = $id;
         $this->dispatch('show-add-modal');
-        $data = Designation::find($id);
+        $data = EmailVariable::find($id);
         $this->name = $data->name;
         $this->modalTitle = 'Edit '.$this->name;
         $this->updateMode = true;
@@ -107,9 +108,12 @@ class DesignationComponent extends Component
             'name' => 'required'
         ]);
 
-        $data = Designation::find($this->edit_id);
+        $variableName = str_replace(' ', '', ucwords(str_replace('_', ' ', $this->name)));
+
+        $data = EmailVariable::find($this->edit_id);
         $data->update([
-            'name' => $this->name
+            'name' => $this->name,
+            'variable' => lcfirst($variableName)
         ]);
 
         if($data) {
@@ -133,16 +137,11 @@ class DesignationComponent extends Component
 
     public function remove()
     {
-        $delete = Designation::find($this->approveConfirmed);
+        $delete = EmailVariable::find($this->approveConfirmed);
         $name = $delete->name;
         $delete->delete();
         if($delete){
             $this->alert('success', $name.' has been removed!');
         }
-    }
-
-    public function export()
-    {
-        return Excel::download(new DesignationExport, 'designation.xlsx');
     }
 }

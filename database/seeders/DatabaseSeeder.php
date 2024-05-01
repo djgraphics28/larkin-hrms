@@ -14,6 +14,7 @@ use Database\Seeders\DepartmentSeeder;
 use Database\Seeders\DesignationSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Database\Seeders\EmployeeStatusSeeder;
+use Database\Seeders\EmailTemplateTypeSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,6 +32,8 @@ class DatabaseSeeder extends Seeder
         $this->call(EmployeeStatusSeeder::class);
         $this->call(LeaveTypeSeeder::class);
         $this->call(LoanTypeSeeder::class);
+        $this->call(EmailTemplateTypeSeeder::class);
+        $this->call(EmailVariableSeeder::class);
 
         Artisan::call('app:generate-fortnight 2023-12-28');
     }
