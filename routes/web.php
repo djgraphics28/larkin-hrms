@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Tax\TaxTablesComponent;
 use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\Payroll\PayslipComponent;
+use App\Livewire\Loan\LoanRequestComponent;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
 use App\Http\Controllers\ApproveLeaveRequest;
@@ -23,9 +24,12 @@ use App\Livewire\Employee\ImportEmployeeComponent;
 use App\Livewire\Attendance\AttendanceLogComponent;
 use App\Livewire\CompanyDetails\BankDetailsComponent;
 use App\Livewire\Attendance\AttendanceImportComponent;
+use App\Livewire\EmailTemplate\EmailTemplateComponent;
+use App\Livewire\EmailTemplate\EmailVariableComponent;
 use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
+use App\Livewire\EmailTemplate\EmailTemplateTypeComponent;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
@@ -87,6 +91,21 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
     Route::group(['prefix' => 'leave'], function () {
         Route::get('/request', LeaveRequestComponent::class)->name('leave-request');
         Route::get('/types', LeaveTypeComponent::class)->name('leave-types');
+    });
+
+    // Loan routes
+    Route::group(['prefix' => 'loan'], function () {
+        Route::get('/cash-advance', LoanRequestComponent::class)->name('cash-advance');
+    });
+
+    // General Settings
+
+    // Email Template routes
+    Route::group(['prefix' => 'email-template'], function () {
+
+        Route::get('/type', EmailTemplateTypeComponent::class)->name('email-template-type');
+        Route::get('/variable', EmailVariableComponent::class)->name('email-variable');
+        Route::get('/', EmailTemplateComponent::class)->name('email-template');
     });
 });
 

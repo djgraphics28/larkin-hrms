@@ -233,7 +233,55 @@
                     </ul>
                 </li>
 
+                <li class="nav-item {{ request()->is('loan/*') ? 'menu-open' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link {{ request()->is('loan/*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-dollar-sign"></i>
+                        <p>
+                            Loan Management
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('cash-advance') }}" class="nav-link {{ request()->is('loan/cash-advance') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Loan Request</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
+                {{-- GENERAL SETTINGS --}}
+                <li class="nav-header">GENERAL SETTINGS</li>
+                <li class="nav-item {{ request()->is('email-template/*') ? 'menu-open' : '' }}">
+                    <a href="javascript:void(0)" class="nav-link {{ request()->is('email-template/*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-dollar-sign"></i>
+                        <p>
+                            Email Templates
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('email-template-type') }}" class="nav-link {{ request()->is('email-template/type') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Email Template Type</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('email-template') }}" class="nav-link {{ request()->is('email-template/') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Email Template</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('email-variable') }}" class="nav-link {{ request()->is('email-template/variable') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Email Variable</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 {{-- <li class="nav-item {{ request()->is('employee/*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('employee/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users"></i>

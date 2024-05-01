@@ -37,11 +37,31 @@
     <link rel="stylesheet" href="{{ asset('theme/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('theme/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 
+    @yield('css')
+
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/custom.css'])
 
     @livewireStyles
+
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script>
+
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('934e51f172bf06782f9f', {
+
+             cluster: 'ap1'
+        });
+
+        var channel = pusher.subscribe('notify-channel');
+        channel.bind('notify-event', function(data) {
+            toastr.success(JSON.stringify(data.name));
+            // alert(JSON.stringify(data));
+        });
+    </script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
