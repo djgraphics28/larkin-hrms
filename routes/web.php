@@ -10,6 +10,7 @@ use App\Livewire\Asset\AssetComponent;
 use App\Livewire\Tax\TaxTablesComponent;
 use App\Livewire\Asset\AssetTypeComponent;
 use App\Livewire\Leave\LeaveTypeComponent;
+use App\Livewire\Nasfund\NasfundComponent;
 use App\Livewire\Payroll\PayslipComponent;
 use App\Livewire\Loan\LoanRequestComponent;
 use App\Livewire\Business\BusinessComponent;
@@ -18,12 +19,14 @@ use App\Http\Controllers\ApproveLeaveRequest;
 use App\Livewire\Holiday\SetHolidayComponent;
 use App\Livewire\Leave\LeaveRequestComponent;
 use App\Livewire\Workshift\WorkshiftComponent;
+use App\Http\Controllers\AbaGenerateController;
 use App\Livewire\Department\DepartmentComponent;
 use App\Livewire\Employee\EmployeeInfoComponent;
 use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
 use App\Livewire\Employee\ImportEmployeeComponent;
 use App\Livewire\Attendance\AttendanceLogComponent;
+use App\Livewire\AbaGenerator\AbaGeneratorComponent;
 use App\Livewire\CompanyDetails\BankDetailsComponent;
 use App\Livewire\Attendance\AttendanceImportComponent;
 use App\Livewire\EmailTemplate\EmailTemplateComponent;
@@ -33,8 +36,6 @@ use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Livewire\EmailTemplate\EmailTemplateTypeComponent;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Livewire\AbaGenerator\AbaGeneratorComponent;
-use App\Livewire\Nasfund\NasfundComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -133,5 +134,6 @@ Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->n
 
 // Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 
+Route::get('/aba-download/{businessId}/{selectedFN}/{employeeIds}', [AbaGenerateController::class, 'generate'])->name('aba-download');
 // Route::post('login', [AuthenticatedSessionController::class, 'store']);
 require __DIR__ . '/auth.php';
