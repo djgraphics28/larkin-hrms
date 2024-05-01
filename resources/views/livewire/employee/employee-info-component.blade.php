@@ -32,7 +32,7 @@
                         <div class="card-body box-profile">
                             <div class="text-center">
                                 @if ($image)
-                                    <img class="profile-user-img img-fluid img-circle w-150" src="{{ $image }}"
+                                    <img class="profile-user-img img-fluid img-circle w-150" src="{{ $image->temporaryUrl() }}"
                                         alt="User profile picture">
                                 @else
                                     <img class="profile-user-img img-fluid img-circle w-150"
@@ -45,9 +45,13 @@
                             <h5 class="text-center">{{ $age }} years old</h5>
 
                             <p class="text-muted text-center">{{ $position }}</p>
-                            <button class="btn btn-primary btn-block"><b>Change Photo</b></button>
+                            <input type="file" wire:model="image" class="form-control" title="upload image">
+                            @error('image') <span class="error">{{ $message }}</span> @enderror
                         </div>
                         <!-- /.card-body -->
+                        <div class="card-footer">
+                            <button wire:click="uploadImage({{ $id }})" class="btn btn-primary">Update</button>
+                        </div>
                     </div>
                     <!-- /.card -->
 

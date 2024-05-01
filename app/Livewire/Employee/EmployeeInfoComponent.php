@@ -6,13 +6,18 @@ use Carbon\Carbon;
 use Livewire\Component;
 use App\Models\Employee;
 use App\Models\BusinessUser;
+use Livewire\WithFileUploads;
+use Livewire\Attributes\Validate;
 use Illuminate\Support\Facades\Auth;
+use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 class EmployeeInfoComponent extends Component
 {
+    use WithFileUploads, LivewireAlert;
     public $businessId;
     public $label;
     public $id;
+    #[Validate('image|max:1024')]
     public $image = '';
     public $fullName = '';
     public $position = '';
@@ -50,4 +55,10 @@ class EmployeeInfoComponent extends Component
         $this->age = Carbon::parse($employee->birth_date)->age;
     }
 
+    public function uploadImage(Employee $employee)
+    {
+        $employee->addMedia($this->image)->toMediaCollection('profile_picture', 'local');
+
+        $this->alert('success', 'Image Updated successfully!');
+    }
 }

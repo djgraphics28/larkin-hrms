@@ -79,4 +79,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(BusinessUser::class, 'user_id', 'id')->where('is_active', true)->select('business_id');
     }
+
+    public function avatarUrl()
+    {
+        return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email)));
+    }
 }
