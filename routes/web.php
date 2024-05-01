@@ -28,6 +28,7 @@ use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Livewire\AbaGenerator\AbaGeneratorComponent;
 use App\Livewire\Nasfund\NasfundComponent;
 
 /*
@@ -84,6 +85,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
     // Payroll routes
     Route::group(['prefix' => 'payroll'], function () {
         Route::get('/payslip', PayslipComponent::class)->name('payslip');
+        Route::get('/aba-generate', AbaGeneratorComponent::class)->name('aba-generate');
     });
 
     // Leave routes
