@@ -24,6 +24,8 @@ class EmailVariableSeeder extends Seeder
             'Approved By',
             'Date Approved',
             'Date Requested',
+            'Date Start',
+            'Date End',
             'Status',
         ];
 

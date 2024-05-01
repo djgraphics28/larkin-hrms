@@ -26,7 +26,7 @@ class EmailTemplateComponent extends Component
 
     public $title;
     public $subject;
-    public $body;
+    public $body = '';
     public $email_template_type;
     public $edit_id;
 
@@ -55,7 +55,7 @@ class EmailTemplateComponent extends Component
     public function getRecordsProperty()
     {
         return EmailTemplate::search(trim($this->search))
-            ->latest()
+            ->orderBy('email_template_type_id','asc')
             ->paginate($this->perPage);
     }
 
@@ -117,6 +117,7 @@ class EmailTemplateComponent extends Component
         $this->edit_id = $id;
         $this->dispatch('show-add-modal');
         $data = EmailTemplate::find($id);
+
         $this->title = $data->title;
         $this->subject = $data->subject;
         $this->body = $data->body;
@@ -171,9 +172,9 @@ class EmailTemplateComponent extends Component
         }
     }
 
-    public function insertVariable($variable)
-    {
-        $this->body .= "{{$variable}}"; // Append the selected variable to the body
+    // public function insertVariable($variable)
+    // {
+    //     $this->body .= "{{$variable}}"; // Append the selected variable to the body
 
-    }
+    // }
 }

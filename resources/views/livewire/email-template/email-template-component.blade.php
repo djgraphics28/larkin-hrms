@@ -4,6 +4,8 @@
 
     <!-- JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
+    {{-- <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> --}}
 @endsection
 
 <div>
@@ -65,7 +67,7 @@
                                         <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
                                         <th class="text-start">Title</th>
                                         <th class="text-start">Subject</th>
-                                        <th class="text-start">Body</th>
+                                        <th class="text-start">Email Type</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
@@ -77,7 +79,7 @@
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
                                             <td class="text-start">{{ $data->title }}</td>
                                             <td class="text-start">{{ $data->subject }}</td>
-                                            <td class="text-start">{{ $data->body }}</td>
+                                            <td class="text-start">{{ $data->email_template_type->name }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group">
                                                     <a wire:click="edit({{ $data->id }})"
@@ -112,7 +114,7 @@
 
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
         aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-dialog modal-xxl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">{{ $modalTitle }}</h5>
@@ -124,47 +126,56 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-3">
-                                <h4>Email Variables</h4>
-                                @foreach ($variables as $item)
-                                    <a class="btn btn-primary mr-2 mb-2"
-                                        wire:click.live="insertVariable('{{ $item->variable }}')">{{ $item->name }}</a><br>
-                                @endforeach
-                            </div>
-                            <div class="col-md-9">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="title">Title</label>
-                                            <input wire:model="title" type="text" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="subject">Subject</label>
-                                            <input wire:model="subject" type="text" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="email_template_type">Email Template Type</label>
-                                            <select wire:model="email_template_type" class="form-control">
-                                                <option value="">Select ...</option>
-                                                @foreach ($emailTemplateTypes as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                                @endforeach
-                                            </select>
-
-                                        </div>
+                                <div class="card card-outline card-primary">
+                                    <div class="card-body">
+                                        <h4>Email Variables</h4>
+                                        @foreach ($variables as $item)
+                                            <a class="btn btn-primary form-control mb-2"
+                                                onclick="insertVariable('{{ $item->variable }}')">{{ $item->name }}</a><br>
+                                        @endforeach
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="body">Email Content/Body</label>
-                                            {{-- <div wire:ignore>
-                                                <textarea id="summernote" class="form-control" wire:model.lazy="body">{{ $body }}</textarea>
-                                            </div> --}}
-                                            <livewire:quill :value="$body">
+                            </div>
+
+                            <div class="col-md-9">
+                                <div class="card card-outline card-primary">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="title">Title</label>
+                                                    <input wire:model="title" type="text" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="subject">Subject</label>
+                                                    <input wire:model="subject" type="text" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="email_template_type">Email Template Type</label>
+                                                    <select wire:model="email_template_type" class="form-control">
+                                                        <option value="">Select ...</option>
+                                                        @foreach ($emailTemplateTypes as $item)
+                                                            <option value="{{ $item->id }}">{{ $item->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="body">Email Content/Body</label>
+                                                    <div wire:ignore>
+                                                        <textarea id="summernote" class="summernote" wire:model="body"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -197,19 +208,20 @@
     </script>
 
     <script>
-        $(document).ready(function() {
-            // $('#summernote').summernote({
-            //     height: 300, // set editor height
-            //     minHeight: null, // set minimum height of editor
-            //     maxHeight: null, // set maximum height of editor
-            //     focus: true // set focus to editable area after initializing summernote
-            // });
-            $('#summernote').summernote({
-                placeholder: 'Note Body...',
+        $(function() {
+            $('.summernote').summernote({
+                placeholder: 'Email Content...',
                 height: 300,
-                codemirror: {
-                    theme: 'monokai'
-                },
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']],
+                ],
                 callbacks: {
                     onChange: function(contents, $editable) {
                         @this.set('body', contents);
@@ -217,5 +229,10 @@
                 }
             });
         });
+
+        function insertVariable(variableContent) {
+            var variableContent = "[[" + variableContent + "]]";
+            $('#summernote').summernote('pasteHTML', variableContent);
+        }
     </script>
 @endpush

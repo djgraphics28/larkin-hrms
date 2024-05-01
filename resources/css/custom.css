@@ -1,0 +1,9 @@
+.modal-xxl {
+    max-width: 90%; /* Adjust this value to your preference */
+}
+
+.modal-xxl .modal-dialog {
+    max-width: none;
+    width: 90%; /* Adjust this value to your preference */
+    margin: 1.75rem auto;
+}
