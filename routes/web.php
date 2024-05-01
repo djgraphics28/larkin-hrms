@@ -10,7 +10,6 @@ use App\Livewire\Asset\AssetComponent;
 use App\Livewire\Tax\TaxTablesComponent;
 use App\Livewire\Asset\AssetTypeComponent;
 use App\Livewire\Leave\LeaveTypeComponent;
-use App\Livewire\Nasfund\NasfundComponent;
 use App\Livewire\Payroll\PayslipComponent;
 use App\Livewire\Loan\LoanRequestComponent;
 use App\Livewire\Business\BusinessComponent;
@@ -34,6 +33,8 @@ use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Livewire\EmailTemplate\EmailTemplateTypeComponent;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Livewire\AbaGenerator\AbaGeneratorComponent;
+use App\Livewire\Nasfund\NasfundComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +90,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
     // Payroll routes
     Route::group(['prefix' => 'payroll'], function () {
         Route::get('/payslip', PayslipComponent::class)->name('payslip');
+        Route::get('/aba-generate', AbaGeneratorComponent::class)->name('aba-generate');
     });
 
     // Leave routes
@@ -112,8 +114,8 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/', EmailTemplateComponent::class)->name('email-template');
     });
 
-     // Asset routes
-     Route::group(['prefix' => 'asset'], function () {
+    // Asset routes
+    Route::group(['prefix' => 'asset'], function () {
         Route::get('/', AssetComponent::class)->name('asset');
         Route::get('/type', AssetTypeComponent::class)->name('asset-type');
     });
