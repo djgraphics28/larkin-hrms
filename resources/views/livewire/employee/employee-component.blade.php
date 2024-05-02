@@ -127,7 +127,7 @@
                                     </tr>
 
                                     @forelse ($records as $data)
-                                        <tr>
+                                        <tr wire:key="search-{{ $data->id }}">
                                             <td width="3%" class="text-start {{ $data->is_discontinued ? 'bg-danger' : '' }}"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"><strong>{{ $data->is_discontinued ? ' D' : '' }}</strong></td>
                                             <td class="text-center">{{ $data->employee_number }}</td>
