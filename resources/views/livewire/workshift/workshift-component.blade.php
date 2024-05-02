@@ -139,31 +139,30 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="submit()">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="">Workshift Title</label>
-                            <input wire:model="title" type="text"
-                                class="form-control form-control-lg @error('title') is-invalid @enderror">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Workshift Title</label>
+                        <input wire:model="title" type="text"
+                            class="form-control form-control-lg @error('title') is-invalid @enderror">
 
-                            @error('title')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="">Workshift Description</label>
-                            <input wire:model="description" type="text"
-                                class="form-control form-control-lg @error('description') is-invalid @enderror">
+                        @error('title')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="">Workshift Description</label>
+                        <input wire:model="description" type="text"
+                            class="form-control form-control-lg @error('description') is-invalid @enderror">
 
-                            @error('description')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        {{-- <div class="form-group">
+                        @error('description')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                    {{-- <div class="form-group">
                             <label for="">Number of Hours Shift
                             </label>
                             <input wire:model="number_of_hours" type="number"
@@ -175,55 +174,55 @@
                                 </span>
                             @enderror
                         </div> --}}
-                        <div class="row">
-                            <div class="form-group col-6">
-                                <label>Start:</label>
-                                <input wire:model="start" type="time"
-                                    class="form-control @error('start') is-invalid @enderror">
-                                @error('start')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            <div class="form-group col-6">
-                                <label>End:</label>
-                                <input wire:model="end" type="time"
-                                    class="form-control @error('end') is-invalid @enderror">
-                                @error('end')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label>Start:</label>
+                            <input wire:model="start" type="time"
+                                class="form-control @error('start') is-invalid @enderror">
+                            @error('start')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
-                        <div class="row">
-                            <div class="form-group" wire:ignore>
-                                <label>Select Day-Off</label>
-                                <div>
-                                    @foreach ($weekDays as $data)
-                                        <span class="mr-3">
-                                            <input id="{{ $data->day }}" type="checkbox"
-                                                wire:model.prevent="selectedDayRows" value="{{ $data->id }}">
-                                            <label for="{{ $data->day }}">{{ $data->day }}</label>
-                                        </span>
-                                    @endforeach
-                                </div>
+                        <div class="form-group col-6">
+                            <label>End:</label>
+                            <input wire:model="end" type="time"
+                                class="form-control @error('end') is-invalid @enderror">
+                            @error('end')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="form-group" wire:ignore>
+                            <label>Select Day-Off</label>
+                            <div>
+                                @foreach ($weekDays as $data)
+                                    <span class="mr-3">
+                                        <input id="{{ $data->day }}" type="checkbox"
+                                            wire:model.prevent="selectedDayRows" value="{{ $data->id }}">
+                                        <label for="{{ $data->day }}">{{ $data->day }}</label>
+                                    </span>
+                                @endforeach
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        @if ($updateMode == true)
-                            <button wire:click.prevent="update()" class="btn btn-success">Update</button>
-                        @else
-                            <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
-                            <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create
-                                New</button>
-                        @endif
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    @if ($updateMode == true)
+                        <button wire:click.prevent="update()" class="btn btn-success">Update</button>
+                    @else
+                        <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
+                        <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create
+                            New</button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

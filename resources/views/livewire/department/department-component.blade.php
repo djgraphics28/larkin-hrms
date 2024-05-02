@@ -27,8 +27,8 @@
                             <div class="btn-group float-right" role="group" aria-label="Groups">
                                 <button type="button" class="btn btn-warning btn-sm mr-2"><i class="fa fa-upload"
                                         aria-hidden="true"></i> Import</button>
-                                <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i class="fa fa-file-excel"
-                                        aria-hidden="true"></i> Export</button>
+                                <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i
+                                        class="fa fa-file-excel" aria-hidden="true"></i> Export</button>
                                 <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
                                         aria-hidden="true"></i> PDF</button>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
@@ -70,7 +70,8 @@
                                 <tbody>
                                     <tr>
                                         <td colspan="5" class="text-center align-items-center">
-                                            <div wire:loading wire:target="search" class="overlay dark"><livewire:table-loader /></div>
+                                            <div wire:loading wire:target="search" class="overlay dark">
+                                                <livewire:table-loader /></div>
                                         </td>
                                     </tr>
                                     @forelse ($records as $data)
@@ -123,29 +124,28 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="submit()">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="">Department Name</label>
-                            <input wire:model="name" type="text"
-                                class="form-control form-control-lg @error('name') is-invalid @enderror">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Department Name</label>
+                        <input wire:model="name" type="text"
+                            class="form-control form-control-lg @error('name') is-invalid @enderror">
 
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+                        @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        @if ($updateMode == true)
-                            <button wire:click.prevent="update()" class="btn btn-success">Update</button>
-                        @else
-                            <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
-                            <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
-                        @endif
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    @if ($updateMode == true)
+                        <button wire:click.prevent="update()" class="btn btn-success">Update</button>
+                    @else
+                        <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
+                        <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
