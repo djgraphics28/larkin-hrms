@@ -67,6 +67,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td colspan="11" class="text-center align-items-center">
+                                            <div wire:loading wire:target="search"><livewire:table-loader /></div>
+                                        </td>
+                                    </tr>
                                     @forelse ($records as $data)
                                         <tr>
                                             <td class="text-start"><input type="checkbox"
@@ -107,8 +112,9 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td rowspan="5" colspan="11" class="text-center"><i class="fa fa-ban"
-                                                    aria-hidden="true"></i> No Result Found</td>
+                                            <td colspan="11">
+                                                <livewire:no-data-found />
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>

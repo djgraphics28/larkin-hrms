@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Asset;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -61,5 +62,15 @@ class Business extends Model
     public function banks(): HasMany
     {
         return $this->hasMany(BusinessCompanyBank::class);
+    }
+
+    /**
+     * Get all of the assets for the Business
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function assets(): HasMany
+    {
+        return $this->hasMany(Asset::class, 'business_id', 'id');
     }
 }

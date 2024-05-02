@@ -89,13 +89,17 @@
 
                         <div class="card-body">
                             <div>
-                                <div class="d-flex justify-content-center items-align-center">
+                                {{-- <div class="d-flex justify-content-center items-align-center">
                                     <div class="overlay-wrapper mt-10 mb-10" wire:loading wire:target="generate">
                                         <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i>
                                             <div class="text-bold pt-2">Loading...</div>
                                         </div>
                                     </div>
+                                </div> --}}
+                                <div wire:loading wire:target="generate">
+                                    <livewire:table-loader />
                                 </div>
+
                                 <table class="table table-sm table-hover table-bordered" wire:loading.remove>
                                     <thead>
                                         <tr>
@@ -114,22 +118,25 @@
                                             <th rowspan="2" class="text-center align-middle"><small
                                                     class="text-center text-bold">HOL.</small></th>
                                             @forelse ($ranges as $dr)
-                                                @forelse ($holidays as $holiday)
-                                                    @if($holiday->holiday_date === $dr['full_date'])
-                                                        <th
-                                                            class="text-center bg-success">
-                                                            <small class="text-center text-bold">{{ $dr['day'] }}</small>
-                                                        </th>
-                                                    @else
-                                                        <th
-                                                            class="text-center @if ($dr['day'] == 'Sun' || $dr['day'] == 'Sun2') bg-danger @endif">
-                                                            <small class="text-center text-bold">{{ $dr['day'] }}</small>
-                                                        </th>
 
-                                                    @endif
-                                                @empty
+                                                @php
 
-                                                @endforelse
+                                                    $isHoliday = $holidays->where('holiday_date', $dr['full_date'])->isNotEmpty();
+
+                                                @endphp
+
+                                                @if($isHoliday)
+                                                    <th
+                                                        class="text-center bg-success">
+                                                        <small class="text-center text-bold">{{ $dr['day'] }}</small>
+                                                    </th>
+                                                @else
+                                                    <th
+                                                        class="text-center @if ($dr['day'] == 'Sun' || $dr['day'] == 'Sun2') bg-danger @endif">
+                                                        <small class="text-center text-bold">{{ $dr['day'] }}</small>
+                                                    </th>
+                                                @endif
+
                                             @empty
                                                 <th>No Records</th>
                                             @endforelse
@@ -137,22 +144,24 @@
                                         </tr>
                                         <tr>
                                             @forelse ($ranges as $dr)
-                                                @forelse ($holidays as $holiday)
-                                                    @if($holiday->holiday_date === $dr['full_date'])
-                                                        <th
-                                                            class="text-center bg-success">
-                                                            <small class="text-center text-bold">{{ $dr['date'] }}</small>
-                                                        </th>
-                                                    @else
-                                                        <th
-                                                            class="text-center @if ($dr['day'] == 'Sun' || $dr['day'] == 'Sun2') bg-danger @endif">
-                                                            <small class="text-center text-bold">{{ $dr['date'] }}</small>
-                                                        </th>
 
-                                                    @endif
-                                                @empty
+                                                @php
 
-                                                @endforelse
+                                                    $isHoliday = $holidays->where('holiday_date', $dr['full_date'])->isNotEmpty();
+
+                                                @endphp
+
+                                                @if($isHoliday)
+                                                    <th
+                                                        class="text-center bg-success">
+                                                        <small class="text-center text-bold">{{ $dr['date'] }}</small>
+                                                    </th>
+                                                @else
+                                                    <th
+                                                        class="text-center @if ($dr['day'] == 'Sun' || $dr['day'] == 'Sun2') bg-danger @endif">
+                                                        <small class="text-center text-bold">{{ $dr['date'] }}</small>
+                                                    </th>
+                                                @endif
 
                                             @empty
                                                 <th>No Records</th>

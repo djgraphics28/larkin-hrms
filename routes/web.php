@@ -6,8 +6,11 @@ use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
 use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Asset\AssetComponent;
 use App\Livewire\Tax\TaxTablesComponent;
+use App\Livewire\Asset\AssetTypeComponent;
 use App\Livewire\Leave\LeaveTypeComponent;
+use App\Livewire\Nasfund\NasfundComponent;
 use App\Livewire\Payroll\PayslipComponent;
 use App\Livewire\Loan\LoanRequestComponent;
 use App\Livewire\Business\BusinessComponent;
@@ -62,7 +65,8 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/users', UserComponent::class)->name('users');
         Route::get('/bank-details', BankDetailsComponent::class)->name('bank-details');
         Route::get('/tax-table', TaxTablesComponent::class)->name('tax-table');
-        Route::get('set-holiday', SetHolidayComponent::class)->name('set-holiday');
+        Route::get('/set-holiday', SetHolidayComponent::class)->name('set-holiday');
+        Route::get('/nasfund', NasfundComponent::class)->name('nasfund');
     });
 
     // Employee routes
@@ -107,6 +111,12 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/variable', EmailVariableComponent::class)->name('email-variable');
         Route::get('/', EmailTemplateComponent::class)->name('email-template');
     });
+
+     // Asset routes
+     Route::group(['prefix' => 'asset'], function () {
+        Route::get('/', AssetComponent::class)->name('asset');
+        Route::get('/type', AssetTypeComponent::class)->name('asset-type');
+    });
 });
 
 // Authentication routes
@@ -122,4 +132,4 @@ Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->n
 // Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 
 // Route::post('login', [AuthenticatedSessionController::class, 'store']);
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

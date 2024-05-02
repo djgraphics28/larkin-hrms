@@ -55,16 +55,7 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="d-flex justify-content-center items-align-center">
-                                <div wire:loading wire:target="generate">
-                                    <div class="spinner-border" role="status">
-                                        <span class="sr-only">Loading...</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <table class="table table-condensed table-sm table-hover table-bordered"
-                                wire:loading.remove>
+                            <table class="table table-condensed table-sm table-hover">
                                 <thead>
                                     <tr>
                                         <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
@@ -79,6 +70,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td colspan="9" class="text-center align-items-center">
+                                            <div wire:loading wire:target="search"><livewire:table-loader /></div>
+                                        </td>
+                                    </tr>
                                     @forelse ($records as $data)
                                         <tr>
                                             <td class="text-start"><input type="checkbox"
@@ -102,9 +98,6 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a wire:click="view({{ $data->id }})"
-                                                        class="dropdown-item text-primary" href="javascript:void(0)"><i
-                                                            class="fa fa-eye" aria-hidden="true"></i></a>
                                                     <a wire:click="edit({{ $data->id }})"
                                                         class="dropdown-item text-warning" href="javascript:void(0)"><i
                                                             class="fa fa-edit" aria-hidden="true"></i></a>
@@ -117,8 +110,9 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td rowspan="5" colspan="9" class="text-center"><i
-                                                    class="fa fa-ban" aria-hidden="true"></i> No Result Found</td>
+                                            <td colspan="9">
+                                                <livewire:no-data-found />
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>

@@ -96,7 +96,8 @@
                                 <li class="nav-item"><a class="nav-link active" href="#basic" data-toggle="tab">Basic
                                         Info</a></li>
 
-                                <li class="nav-item"><a class="nav-link" href="#work_info" data-toggle="tab">Work Info</a>
+                                <li class="nav-item"><a class="nav-link" href="#work_info" data-toggle="tab">Work
+                                        Info</a>
                                 <li class="nav-item"><a class="nav-link" href="#salary_history" data-toggle="tab">Salary
                                         History</a>
                                 </li>
@@ -112,9 +113,12 @@
                                 <li class="nav-item"><a class="nav-link" href="#attendance_logs"
                                         data-toggle="tab">Attendance Logs</a>
                                 </li>
-                                <li class="nav-item"><a class="nav-link" href="#loan_history"
-                                    data-toggle="tab">Loan History</a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#loan_history" data-toggle="tab">Loan History</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#assets" data-toggle="tab">Assets</a>
+                                </li>
                             </ul>
                         </div><!-- /.card-header -->
                         <div class="card-body">
@@ -156,6 +160,11 @@
 
                                 <div class="tab-pane" id="loan_history">
                                     @livewire('employee.partials.loan-history-component', ['id' => $id])
+                                </div>
+                                <!-- /.tab-pane -->
+
+                                <div class="tab-pane" id="assets">
+                                    @livewire('employee.partials.asset-component', ['id' => $id])
                                 </div>
                                 <!-- /.tab-pane -->
                             </div>
