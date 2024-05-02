@@ -24,6 +24,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
+
                             <div class="btn-group float-right" role="group" aria-label="Groups">
                                 <button wire:click="openImportModal()" type="button"
                                     class="btn btn-warning btn-sm mr-2"><i class="fa fa-upload" aria-hidden="true"></i>
@@ -101,7 +102,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                            {{ $records->links() }}
                             <table class="table table-condensed table-sm table-hover">
                                 <thead>
                                     <tr>
@@ -119,7 +120,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @include('shared.table-loader')
+                                    <tr>
+                                        <td colspan="10" class="text-center align-items-center">
+                                            <div wire:loading wire:target="search"><livewire:table-loader /></div>
+                                        </td>
+                                    </tr>
+
                                     @forelse ($records as $data)
                                         <tr>
                                             <td width="3%" class="text-start {{ $data->is_discontinued ? 'bg-danger' : '' }}"><input type="checkbox"
@@ -163,8 +169,10 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td rowspan="5" colspan="8" class="text-center"><i
-                                                    class="fa fa-ban" aria-hidden="true"></i> No Result Found</td>
+                                            <td colspan="10">
+                                                <livewire:no-data-found />
+                                            </td>
+
                                         </tr>
                                     @endforelse
                                 </tbody>

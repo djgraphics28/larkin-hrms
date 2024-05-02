@@ -4,12 +4,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">User Management</h1>
+                    <h1 class="m-0">Asset Type</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">User Management</li>
+                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('asset') }}">Assets</a></li>
+                        <li class="breadcrumb-item active">Asset Type</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -25,12 +26,8 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <button type="button" class="btn btn-warning btn-sm mr-2"><i class="fa fa-upload"
-                                        aria-hidden="true"></i> Import</button>
-                                <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i class="fa fa-file-excel"
-                                        aria-hidden="true"></i> Export</button>
-                                <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
-                                        aria-hidden="true"></i> PDF</button>
+                                <a wire:navigate href="{{ route('asset') }}" type="button" class="btn btn-secondary btn-sm mr-2"><i
+                                    class="fa fa-arrow-left" aria-hidden="true"></i> Return to Assets</a>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
                                         class="fa fa-plus" aria-hidden="true"></i> Add New</button>
                             </div>
@@ -61,33 +58,19 @@
                                 <thead>
                                     <tr>
                                         <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
-                                        <th class="text-start">Name</th>
-                                        <th class="text-start">Email</th>
+                                        <th class="text-start">Asset Type Name</th>
                                         <th class="text-center">Status</th>
-                                        <th class="text-start">Business Handled</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td colspan="6" class="text-center align-items-center">
-                                            <div wire:loading wire:target="search"><livewire:table-loader /></div>
-                                        </td>
-                                    </tr>
+                                   @include('shared.table-loader')
                                     @forelse ($records as $data)
                                         <tr>
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
                                             <td class="text-start">{{ $data->name }}</td>
-                                            <td class="text-start">{{ $data->email }}</td>
                                             <td class="text-center">@livewire('active-status', ['model' => $data, 'field' => 'is_active'], key($data->id))</td>
-                                            <td width="40%" class="text-start">
-                                                    @forelse ($data->businesses as $busi)
-                                                        <span class="badge badge-primary">{{ $busi->name }}</span>
-                                                    @empty
-                                                        <span class="badge badge-danger">no department</span>
-                                                    @endforelse
-                                            </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
                                                     <a wire:click="edit({{ $data->id }})"
@@ -102,9 +85,8 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6">
-                                                <livewire:no-data-found />
-                                            </td>
+                                            <td rowspan="5" colspan="4" class="text-center"><i class="fa fa-ban"
+                                                    aria-hidden="true"></i> No Result Found</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -134,7 +116,7 @@
                 <form wire:submit.prevent="submit()">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="">Name</label>
+                            <label for="">Asset Type Name</label>
                             <input wire:model="name" type="text"
                                 class="form-control form-control-lg @error('name') is-invalid @enderror">
 
@@ -143,46 +125,6 @@
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="">Email</label>
-                            <input wire:model="email" type="text"
-                                class="form-control form-control-lg @error('email') is-invalid @enderror">
-
-                            @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="">Password</label>
-                            @if ($updateMode)
-                                <small>If you don't want to change the password, leave it blank</small>
-                            @endif
-                            <input wire:model="password" type="text"
-                                class="form-control form-control-lg @error('password') is-invalid @enderror">
-
-                            @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        <div class="form-group" wire:ignore>
-                            <label>Assign Businesses</label>
-                            <table class="table table-sm table-condensed">
-                                <tbody>
-                                    @foreach ($businesses as $data)
-                                        <tr>
-                                            <td class="text-start"><input id="{{ $data->name }}" type="checkbox"
-                                                    wire:model.prevent="selectedBusinessRows"
-                                                    value="{{ $data->id }}"></td>
-                                            <td><label for="{{ $data->name }}">{{ $data->name }}</label></td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                     <div class="modal-footer">

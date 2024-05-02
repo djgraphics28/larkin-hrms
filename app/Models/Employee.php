@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Asset;
 use App\Models\Workshift;
 use App\Models\BankDetail;
 use App\Models\LeaveCredit;
@@ -155,5 +156,15 @@ class Employee extends Model implements HasMedia
     public function nasfund(): HasMany
     {
         return $this->hasMany(Nasfund::class, 'employee_id', 'id');
+    }
+
+    /**
+     * Get all of the assets for the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function assets(): HasMany
+    {
+        return $this->hasMany(Asset::class, 'employee_id', 'id');
     }
 }

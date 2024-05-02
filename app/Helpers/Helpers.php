@@ -4,6 +4,9 @@ namespace App\Helpers;
 
 use DateTime;
 use Carbon\Carbon;
+use App\Models\Asset;
+use App\Models\Holiday;
+use App\Models\Nasfund;
 use App\Models\Payslip;
 use App\Models\Business;
 use App\Models\Employee;
@@ -11,8 +14,6 @@ use App\Models\Fortnight;
 use App\Models\Attendance;
 use App\Models\BusinessUser;
 use App\Models\EmployeeHours;
-use App\Models\Holiday;
-use App\Models\Nasfund;
 use App\Models\SalaryHistory;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,7 +32,7 @@ class Helpers
 
         if ($lastEmployee) {
             $existingNumber = explode('-', $lastEmployee->employee_number)[1];
-            $employeeNumber = (int)$existingNumber + 1;
+            $employeeNumber = (int) $existingNumber + 1;
         } else {
             $employeeNumber = 1; // Start from 1 for new employee
         }
@@ -45,6 +46,29 @@ class Helpers
 
         return $code . '-' . $paddedEmployeeNumber;
     }
+
+    public static function generateAssetCode($businessId)
+    {
+        $code = Business::find($businessId)->code;
+        $lastAsset = Asset::where('business_id', $businessId)->orderBy('asset_code', 'desc')->first();
+
+        if ($lastAsset) {
+            $existingNumber = explode('-', $lastAsset->asset_code)[2]; // Change index to 2
+            $assetCode = (int) $existingNumber + 1;
+        } else {
+            $assetCode = 1; // Start from 1 for new asset for specific business
+        }
+
+        // Calculate the number of leading zeros required based on the desired format (e.g., 7 digits)
+        $desiredLength = 7;
+        $leadingZeros = str_repeat('0', $desiredLength - strlen($assetCode));
+
+        // Concatenate the leading zeros with the asset number
+        $paddedAssetCode = $leadingZeros . $assetCode;
+
+        return $code . '-A-' . $paddedAssetCode; // 'A' stands for asset
+    }
+
     /**
      * Formats a date to a desired format.
      *
@@ -95,7 +119,7 @@ class Helpers
 
         foreach ($getEmployee as $employee) {
             //check existing record
-            $check_salary  = EmployeeHours::where('employee_id', $employee->id)
+            $check_salary = EmployeeHours::where('employee_id', $employee->id)
                 ->where('fortnight_id', $getDates->id)->first();
 
             $current_salary = SalaryHistory::where('is_active', 1)
@@ -131,7 +155,7 @@ class Helpers
                 $computed_hour = $hours->hours;
 
                 if ($checkHoliday) {
-                    $holiday_hours =  $holiday_hours + $computed_hour;
+                    $holiday_hours = $holiday_hours + $computed_hour;
                 }
                 if ($hours->day_name == 'Sunday') {
                     $sunday_total_hours = $sunday_total_hours + ($computed_hour);
