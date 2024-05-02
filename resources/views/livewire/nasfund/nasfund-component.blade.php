@@ -140,7 +140,7 @@
                                         </tr>
 
                                         @forelse ($records as $data)
-                                            <tr>
+                                            <tr wire:key="search-{{ $data->id }}">
                                                 <td class="text-center">{{ $data->employee_number }}</td>
                                                 <td class="text-start">{{ $data->last_name }} </td>
                                                 <td class="text-start">{{ $data->first_name }} </td>

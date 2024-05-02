@@ -69,9 +69,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                   @include('shared.table-loader')
+                                    <tr>
+                                        <td colspan="6" class="text-center align-items-center">
+                                            <div wire:loading wire:target="search"><livewire:table-loader /></div>
+                                        </td>
+                                    </tr>
                                     @forelse ($records as $data)
-                                        <tr>
+                                        <tr wire:key="search-{{ $data->id }}">
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
                                             <td class="text-start">{{ $data->description }}</td>
@@ -96,8 +100,9 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td rowspan="5" colspan="7" class="text-center"><i class="fa fa-ban"
-                                                    aria-hidden="true"></i> No Result Found</td>
+                                            <td colspan="6">
+                                                <livewire:no-data-found />
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>
