@@ -71,7 +71,7 @@
                                 <tbody>
                                     @include('shared.table-loader')
                                     @forelse ($records as $data)
-                                        <tr>
+                                        <tr wire:key="search-{{ $data->id }}">
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
                                             <td class="text-start">{{ $data->asset_code }}</td>
