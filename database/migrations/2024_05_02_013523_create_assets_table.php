@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('date_returned')->nullable();
             $table->unsignedBigInteger('transfered_by')->nullable();
             $table->date('date_transfered')->nullable();
-            $table->boolean('is_working')->default(true);
+            $table->enum('is_working',['yes','no','maintenance'])->default('yes');
             $table->string('serial_number')->nullable();
             $table->unsignedBigInteger('approved_by')->nullable();
             $table->date('date_approved')->nullable();

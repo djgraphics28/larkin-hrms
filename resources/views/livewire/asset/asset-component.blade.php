@@ -78,7 +78,8 @@
                                             <td class="text-start">{{ $data->name }}</td>
                                             <td class="text-start">{{ $data->asset_type->name }}</td>
                                             <td class="text-start">{{ $data->quantity }}</td>
-                                            <td class="text-start">{{ $data->employee->first_name ?? "Not yet Assigned" }}</td>
+                                            <td class="text-start">
+                                                {{ $data->employee->first_name ?? 'Not yet Assigned' }}</td>
                                             <td class="text-start">{{ $data->date_received }}</td>
                                             <td class="text-center">@livewire('active-status', ['model' => $data, 'field' => 'is_working'], key($data->id))</td>
                                             <td class="text-center">
@@ -115,7 +116,7 @@
 
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
         aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">{{ $modalTitle }}</h5>
@@ -123,106 +124,101 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="submit()">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Asset Code</label>
-                                    <input readonly wire:model="asset_code" type="text" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Asset Name</label>
-                                    <input wire:model="name" type="text"
-                                        class="form-control @error('name') is-invalid @enderror">
-                                    @error('name')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="">Serial Number</label>
-                                    <input wire:model="serial_number" type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="">Quantity</label>
-                                    <input wire:model="quantity" type="number" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Asset Type</label>
-                                    <select wire:model="asset_type" class="form-control @error('asset_type') is-invalid @enderror">
-                                        <option value="">Choose Asset Type ...</option>
-                                        @foreach ($assetTypes as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('asset_type')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Employee</label>
-                                    <select wire:model="employee" class="form-control">
-                                        <option value="">Choose Employee ...</option>
-                                        @foreach ($employees as $employee)
-                                            <option value="{{ $employee->id }}">{{ $employee->employee_number }} -
-                                                {{ $employee->first_name }} {{ $employee->last_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="">Note</label>
-                                    <textarea wire:model="note" cols="30" rows="5" class="form-control"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Date Received</label>
-                                    <input wire:model="date_received" type="date" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Date Returned</label>
-                                    <input wire:model="date_returned" type="date" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Asset Code</label>
+                        <input readonly wire:model="asset_code" type="text" class="form-control">
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        @if ($updateMode == true)
-                            <button wire:click.prevent="update()" class="btn btn-success">Update</button>
-                        @else
-                            <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
-                            <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
-                        @endif
+                    <div class="form-group">
+                        <label for="">Asset Name</label>
+                        <input wire:model="name" type="text"
+                            class="form-control @error('name') is-invalid @enderror">
+                        @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
+                    <div class="form-group">
+                        <label for="">Serial Number</label>
+                        <input wire:model="serial_number" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Quantity</label>
+                        <input wire:model="quantity" type="number" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Is Working?</label><br>
+                        <div class="form-check form-check-inline">
+                            <input wire:model="status" class="form-check-input" type="radio"
+                                name="inlineRadioOptions" id="inlineRadio1" value="Yes">
+                            <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input wire:model="status" class="form-check-input" type="radio"
+                                name="inlineRadioOptions" id="inlineRadio2" value="No">
+                            <label class="form-check-label" for="inlineRadio2">No</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input wire:model="status" class="form-check-input" type="radio"
+                                name="inlineRadioOptions" id="inlineRadio" value="Maintenance">
+                            <label class="form-check-label" for="inlineRadio">Maintenance</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Asset Type</label>
+                        <select wire:model="asset_type"
+                            class="form-control @error('asset_type') is-invalid @enderror">
+                            <option value="">Choose Asset Type ...</option>
+                            @foreach ($assetTypes as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('asset_type')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="">Assign Employee</label>
+                        <select wire:model="employee" class="form-control">
+                            <option value="">Choose Employee ...</option>
+                            @foreach ($employees as $employee)
+                                <option value="{{ $employee->id }}">{{ $employee->employee_number }} -
+                                    {{ $employee->first_name }} {{ $employee->last_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Note</label>
+                        <textarea wire:model="note" cols="30" rows="3" class="form-control"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Date Received</label>
+                                <input wire:model="date_received" type="date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Date Returned</label>
+                                <input wire:model="date_returned" type="date" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    @if ($updateMode == true)
+                        <button wire:click.prevent="update()" class="btn btn-success">Update</button>
+                    @else
+                        <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
+                        <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
