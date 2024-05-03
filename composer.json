@@ -19,6 +19,7 @@
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-backup": "^8.6",
         "spatie/laravel-medialibrary": "^10.0.0",
+        "spatie/laravel-permission": "^6.7",
         "yoeunes/toastr": "^2.3"
     },
     "require-dev": {

@@ -64,6 +64,7 @@
                                         <th class="text-start">Name</th>
                                         <th class="text-start">Email</th>
                                         <th class="text-center">Status</th>
+                                        <th class="text-center">Roles</th>
                                         <th class="text-start">Business Handled</th>
                                         <th class="text-center">Action</th>
                                     </tr>
@@ -81,6 +82,7 @@
                                             <td class="text-start">{{ $data->name }}</td>
                                             <td class="text-start">{{ $data->email }}</td>
                                             <td class="text-center">@livewire('active-status', ['model' => $data, 'field' => 'is_active'], key($data->id))</td>
+                                            <td class="text-start"></td>
                                             <td width="40%" class="text-start">
                                                     @forelse ($data->businesses as $busi)
                                                         <span class="badge badge-primary">{{ $busi->name }}</span>
