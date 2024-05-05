@@ -2,11 +2,13 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\User\RoleComponent;
 use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
 use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Asset\AssetComponent;
+use App\Livewire\Loan\LoanTypeComponent;
 use App\Livewire\Tax\TaxTablesComponent;
 use App\Livewire\Asset\AssetTypeComponent;
 use App\Livewire\Leave\LeaveTypeComponent;
@@ -63,6 +65,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/fortnight-generator', FortnightGeneratorComponent::class)->name('fortnight-generator');
         Route::get('/workshift', WorkshiftComponent::class)->name('workshift');
         Route::get('/users', UserComponent::class)->name('users');
+        Route::get('/roles', RoleComponent::class)->name('roles');
         Route::get('/bank-details', BankDetailsComponent::class)->name('bank-details');
         Route::get('/tax-table', TaxTablesComponent::class)->name('tax-table');
         Route::get('/set-holiday', SetHolidayComponent::class)->name('set-holiday');
@@ -99,7 +102,8 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
 
     // Loan routes
     Route::group(['prefix' => 'loan'], function () {
-        Route::get('/cash-advance', LoanRequestComponent::class)->name('cash-advance');
+        Route::get('/request', LoanRequestComponent::class)->name('loans');
+        Route::get('/type', LoanTypeComponent::class)->name('loan-type');
     });
 
     // General Settings
@@ -112,8 +116,8 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/', EmailTemplateComponent::class)->name('email-template');
     });
 
-     // Asset routes
-     Route::group(['prefix' => 'asset'], function () {
+    // Asset routes
+    Route::group(['prefix' => 'asset'], function () {
         Route::get('/', AssetComponent::class)->name('asset');
         Route::get('/type', AssetTypeComponent::class)->name('asset-type');
     });

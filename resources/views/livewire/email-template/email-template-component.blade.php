@@ -35,8 +35,20 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
-                                        class="fa fa-plus" aria-hidden="true"></i> Add New</button>
+                                @can('access_email_variables')
+                                    <a wire:navigate href="{{ route('email-variable') }}" type="button"
+                                        class="btn btn-success btn-sm mr-2"><i class="fa fa-tasks" aria-hidden="true"></i>
+                                        Email Variables</a>
+                                @endcan
+                                @can('access_email_template_types')
+                                    <a wire:navigate href="{{ route('email-template-type') }}" type="button"
+                                        class="btn btn-success btn-sm mr-2"><i class="fa fa-tasks" aria-hidden="true"></i>
+                                        Email Types</a>
+                                @endcan
+                                @can('create_email_templates')
+                                    <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
+                                            class="fa fa-plus" aria-hidden="true"></i> Add New</button>
+                                @endcan
                             </div>
                         </div>
                         <div class="card-body">
@@ -119,7 +131,7 @@
 
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
         aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-xxl" role="document">
+        <div class="modal-dialog modal-xxl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">{{ $modalTitle }}</h5>
@@ -127,58 +139,56 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="submit()">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="card card-outline card-primary">
-                                    <div class="card-body">
-                                        <h4>Email Variables</h4>
-                                        @foreach ($variables as $item)
-                                            <a class="btn btn-primary form-control mb-2"
-                                                onclick="insertVariable('{{ $item->variable }}')">{{ $item->name }}</a><br>
-                                        @endforeach
-                                    </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card card-outline card-primary">
+                                <div class="card-body">
+                                    <h4>Email Variables</h4>
+                                    @foreach ($variables as $item)
+                                        <a class="btn btn-primary form-control mb-2"
+                                            onclick="insertVariable('{{ $item->variable }}')">{{ $item->name }}</a><br>
+                                    @endforeach
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-md-9">
-                                <div class="card card-outline card-primary">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="title">Title</label>
-                                                    <input wire:model="title" type="text" class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="subject">Subject</label>
-                                                    <input wire:model="subject" type="text" class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="email_template_type">Email Template Type</label>
-                                                    <select wire:model="email_template_type" class="form-control">
-                                                        <option value="">Select ...</option>
-                                                        @foreach ($emailTemplateTypes as $item)
-                                                            <option value="{{ $item->id }}">{{ $item->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-
-                                                </div>
+                        <div class="col-md-9">
+                            <div class="card card-outline card-primary">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="title">Title</label>
+                                                <input wire:model="title" type="text" class="form-control">
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="body">Email Content/Body</label>
-                                                    <div wire:ignore>
-                                                        <textarea id="summernote" class="summernote" wire:model="body"></textarea>
-                                                    </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="subject">Subject</label>
+                                                <input wire:model="subject" type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="email_template_type">Email Template Type</label>
+                                                <select wire:model="email_template_type" class="form-control">
+                                                    <option value="">Select ...</option>
+                                                    @foreach ($emailTemplateTypes as $item)
+                                                        <option value="{{ $item->id }}">{{ $item->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="body">Email Content/Body</label>
+                                                <div wire:ignore>
+                                                    <textarea id="summernote" class="summernote" wire:model="body"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -187,15 +197,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        @if ($updateMode == true)
-                            <button wire:click.prevent="update()" class="btn btn-success">Update</button>
-                        @else
-                            <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
-                            <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
-                        @endif
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    @if ($updateMode == true)
+                        <button wire:click.prevent="update()" class="btn btn-success">Update</button>
+                    @else
+                        <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
+                        <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

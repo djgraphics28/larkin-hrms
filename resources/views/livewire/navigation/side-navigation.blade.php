@@ -81,10 +81,10 @@
                         @endcan
                         <li class="nav-item">
                             <a wire:navigate href="{{ route('users') }}"
-                                class="nav-link {{ request()->is('apps/users') ? 'active' : '' }}">
+                                class="nav-link {{ request()->is('apps/users') || request()->is('apps/roles') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-users"></i>
                                 <p>
-                                    User Managment
+                                    User & Roles
                                 </p>
                             </a>
                         </li>
@@ -281,19 +281,28 @@
 
                 <li class="nav-item {{ request()->is('loan/*') ? 'menu-open' : '' }}">
                     <a href="javascript:void(0)" class="nav-link {{ request()->is('loan/*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-dollar-sign"></i>
+                        <i class="nav-icon fas fa-comments-dollar"></i>
                         <p>
-                            Loan Management
+                            Loans
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         @can('access_loans')
                             <li class="nav-item">
-                                <a href="{{ route('cash-advance') }}"
-                                    class="nav-link {{ request()->is('loan/cash-advance') ? 'active' : '' }}">
+                                <a href="{{ route('loans') }}"
+                                    class="nav-link {{ request()->is('loan/request') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Loan Request</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('access_loans')
+                            <li class="nav-item">
+                                <a href="{{ route('loan-type') }}"
+                                    class="nav-link {{ request()->is('loan/type') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Loan Type</p>
                                 </a>
                             </li>
                         @endcan
@@ -301,9 +310,9 @@
                 </li>
                 <li class="nav-item {{ request()->is('asset*') ? 'menu-open' : '' }}">
                     <a href="javascript:void(0)" class="nav-link {{ request()->is('asset*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-dollar-sign"></i>
+                        <i class="nav-icon fas fa-hat-wizard"></i>
                         <p>
-                            Asset Management
+                            Assets
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -311,9 +320,18 @@
                         @can('access_assets')
                             <li class="nav-item">
                                 <a href="{{ route('asset') }}"
-                                    class="nav-link {{ request()->is('asset*') ? 'active' : '' }}">
+                                    class="nav-link {{ request()->is('asset') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Assets</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('access_asset_types')
+                            <li class="nav-item">
+                                <a href="{{ route('asset-type') }}"
+                                    class="nav-link {{ request()->is('asset/type') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Asset Type</p>
                                 </a>
                             </li>
                         @endcan
@@ -325,7 +343,7 @@
                 <li class="nav-item {{ request()->is('email-template/*') ? 'menu-open' : '' }}">
                     <a href="javascript:void(0)"
                         class="nav-link {{ request()->is('email-template/*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-dollar-sign"></i>
+                        <i class="nav-icon fas fa-envelope"></i>
                         <p>
                             Email Templates
                             <i class="right fas fa-angle-left"></i>

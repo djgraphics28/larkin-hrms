@@ -9,6 +9,9 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('email-template') }}">Email
+                                Templates</a>
+                        </li>
                         <li class="breadcrumb-item active">Email Variables</li>
                     </ol>
                 </div><!-- /.col -->
@@ -25,6 +28,9 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
+                                <a wire:navigate href="{{ route('email-template') }}" type="button"
+                                    class="btn btn-secondary btn-sm mr-2"><i class="fa fa-arrow-left"
+                                        aria-hidden="true"></i> Return to Email Templates</a>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
                                         class="fa fa-plus" aria-hidden="true"></i> Add New</button>
                             </div>

@@ -2,34 +2,26 @@
 
 namespace App\Livewire\User;
 
-use App\Models\User;
 use Livewire\Component;
-use App\Models\Business;
-use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Hash;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
-class UserComponent extends Component
+class RoleComponent extends Component
 {
     use WithPagination, LivewireAlert;
 
     protected $listeners = ['remove'];
     public $approveConfirmed;
     // filters
-    #[Url]
     public $perPage = 10;
     #[Url]
     public $search = '';
-    public $modalTitle = 'Add New User';
+    public $modalTitle = 'Add New Department';
     public $updateMode = false;
 
     public $name;
-    public $email;
-    public $password;
-    public $role;
     public $edit_id;
 
     protected $paginationTheme = 'bootstrap';
@@ -37,29 +29,17 @@ class UserComponent extends Component
     public $selectAll = false;
     public $selectedRows = [];
 
-    public $selectAllBusiness = false;
-    public $selectedBusinessRows = [];
-    public $businesses = [];
-    public $roles = [];
-
-    #[Title('Users')]
+    #[Title('Roles')]
     public function render()
     {
-        return view('livewire.user.user-component', [
+        return view('livewire.user.role-component', [
             'records' => $this->records
         ]);
     }
 
-    public function mount()
-    {
-        $this->businesses = Business::where('is_active', 1)->get();
-        $this->roles = Role::all();
-    }
-
     public function getRecordsProperty()
     {
-        return User::with(['businesses', 'roles'])->search(trim($this->search))
-            ->paginate($this->perPage);
+        return Role::paginate($this->perPage);
     }
 
     public function updatedSelectAll($value)
@@ -75,7 +55,7 @@ class UserComponent extends Component
     {
         $this->resetInputFields();
         $this->dispatch('show-add-modal');
-        $this->modalTitle = 'Add New User';
+        $this->modalTitle = 'Add New Role';
         $this->updateMode = false;
 
     }
@@ -83,28 +63,20 @@ class UserComponent extends Component
     public function submit($saveAndCreateNew)
     {
         $this->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'password' => 'required',
+            'name' => 'required'
         ]);
 
-        $create = User::create([
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => Hash::make($this->password),
+        $create = Role::create([
+            'name' => $this->name
         ]);
-
-        $create->assignRole($this->role);
-
-        $create->businesses()->sync($this->selectedBusinessRows);
 
         if ($create) {
             $this->resetInputFields();
             if ($saveAndCreateNew) {
-                $this->alert('success', 'New User has been save successfully!');
+                $this->alert('success', 'New Role has been save successfully!');
             } else {
                 $this->dispatch('hide-add-modal');
-                $this->alert('success', 'New User has been save successfully!');
+                $this->alert('success', 'New Role has been save successfully!');
             }
         }
     }
@@ -112,21 +84,14 @@ class UserComponent extends Component
     public function resetInputFields()
     {
         $this->name = '';
-        $this->email = '';
-        $this->password = '';
-        $this->role = '';
-        $this->selectedBusinessRows = [];
     }
 
     public function edit($id)
     {
         $this->edit_id = $id;
         $this->dispatch('show-add-modal');
-        $data = User::find($id);
+        $data = Role::find($id);
         $this->name = $data->name;
-        $this->email = $data->email;
-        $this->role = $data->roles()->pluck('name')->toArray();
-        $this->selectedBusinessRows = $data->businesses()->pluck('business_id')->toArray();
         $this->modalTitle = 'Edit ' . $this->name;
         $this->updateMode = true;
     }
@@ -134,23 +99,13 @@ class UserComponent extends Component
     public function update()
     {
         $this->validate([
-            'name' => 'required',
-            'email' => 'required'
+            'name' => 'required'
         ]);
 
-        $data = User::find($this->edit_id);
-
-        if ($this->password !== '') {
-            $data->password = Hash::make($this->password);
-        }
-
-        $data->name = $this->name;
-        $data->email = $this->email;
-        $data->save();
-
-        $data->syncRoles($this->role);
-
-        $data->businesses()->sync($this->selectedBusinessRows);
+        $data = Role::find($this->edit_id);
+        $data->update([
+            'name' => $this->name
+        ]);
 
         if ($data) {
             $this->dispatch('hide-add-modal');
@@ -173,7 +128,7 @@ class UserComponent extends Component
 
     public function remove()
     {
-        $delete = User::find($this->approveConfirmed);
+        $delete = Role::find($this->approveConfirmed);
         $name = $delete->name;
         $delete->delete();
         if ($delete) {
