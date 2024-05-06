@@ -36,6 +36,7 @@ use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Livewire\EmailTemplate\EmailTemplateTypeComponent;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Livewire\Payroll\PayrunComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,6 +93,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
     Route::group(['prefix' => 'payroll'], function () {
         Route::get('/payslip', PayslipComponent::class)->name('payslip');
         Route::get('/aba-generate', AbaGeneratorComponent::class)->name('aba-generate');
+        Route::get('/payrun', PayrunComponent::class)->name('payrun');
     });
 
     // Leave routes

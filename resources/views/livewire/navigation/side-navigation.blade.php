@@ -233,9 +233,17 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a href="{{ route('payrun') }}" class="nav-link {{ request()->is('payroll/payrun') ? 'active' : '' }}">
+                                <i class="far fa-print nav-icon"></i>
+                                <p> Payrun</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
                             <a href="{{ route('payslip') }}" class="nav-link {{ request()->is('payroll/payslip') ? 'active' : '' }}">
                                 <i class="far fa-print nav-icon"></i>
-                                <p> Generate Payslip</p>
+                                <p> Payslip</p>
                             </a>
                         </li>
                     </ul>
