@@ -86,6 +86,7 @@ class UserComponent extends Component
             'name' => 'required',
             'email' => 'required',
             'password' => 'required',
+            'role' => 'required',
         ]);
 
         $create = User::create([
@@ -135,7 +136,8 @@ class UserComponent extends Component
     {
         $this->validate([
             'name' => 'required',
-            'email' => 'required'
+            'email' => 'required',
+            'role' => 'required'
         ]);
 
         $data = User::find($this->edit_id);

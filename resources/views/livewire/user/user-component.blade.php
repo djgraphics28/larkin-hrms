@@ -176,12 +176,17 @@
                     </div>
                     <div class="form-group">
                         <label for="">Roles</label>
-                        <select wire:model="role" class="form-control">
+                        <select wire:model="role" class="form-control @error('role') is-invalid @enderror">">
                             <option value="">Choose Role ...</option>
                             @foreach ($roles as $role)
                                 <option value="{{ $role->name }}">{{ $role->name }}</option>
                             @endforeach
                         </select>
+                        @error('role')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
                     <div class="form-group" wire:ignore>
                         <label>Assign Businesses</label>
