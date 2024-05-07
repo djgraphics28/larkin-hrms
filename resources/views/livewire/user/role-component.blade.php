@@ -138,11 +138,34 @@
                     <label for="">Permissions</label>
                     {{-- PERMISSIONS --}}
                     {{-- APPS MANAGEMENT --}}
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="select-all">
+                            <label class="custom-control-label" for="select-all">Give All Permissions</label>
+                        </div>
+                    </div>
+                    @foreach ($allPermissions as $permission)
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="{{ $permission->id }}"
+                                wire:model="permissions" value="{{ $permission->id }}"
+                                {{ in_array($permission->id, $permissions) ? 'checked' : '' }}>
+                            <label class="custom-control-label" for="{{ $permission->id }}">
+                                {{ $permission->name }}
+                            </label>
+                        </div>
+                    @endforeach
                     <div class="card">
                         <div class="card-header">
 
-                            <h3 class="card-title"><input type="checkbox" name="" id=""> APPS
-                                MANAGEMENT</h3>
+                            <h3 class="card-title">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="access_apps_management"
+                                        wire:model="permissions" value="access_apps_management"
+                                        {{ old('access_apps_management') ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="access_apps_management">Apps
+                                        Management</label>
+                                </div>
+                            </h3>
                             <div class="card-tools">
                                 <!-- Collapse Button -->
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -153,61 +176,20 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                             <div class="checkbox-list">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox1">
-                                    <label class="form-check-label" for="checkbox1">
-                                        Access to Businesses
-                                    </label>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="access_to_businesses"
+                                        wire:model="permissions" value="access_to_businesses"
+                                        {{ old('access_to_businesses') ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="access_to_businesses">Access to
+                                        Businesses</label>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox2">
-                                    <label class="form-check-label" for="checkbox2">
-                                        Access to Departments
-                                    </label>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="access_to_departments"
+                                        wire:model="permissions" value="access_to_departments"
+                                        {{ old('access_to_departments') ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="access_to_departments">Access to
+                                        Departments</label>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
-                                    <label class="form-check-label" for="checkbox3">
-                                        Access to Workshifts
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
-                                    <label class="form-check-label" for="checkbox3">
-                                        Access to Fortnight Generator
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
-                                    <label class="form-check-label" for="checkbox3">
-                                        Access to Users & Roles
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
-                                    <label class="form-check-label" for="checkbox3">
-                                        Access to Company Bank Details
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
-                                    <label class="form-check-label" for="checkbox3">
-                                        Access to Tax Tables
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
-                                    <label class="form-check-label" for="checkbox3">
-                                        Access to Holidays
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
-                                    <label class="form-check-label" for="checkbox3">
-                                        Access to Nasfund
-                                    </label>
-                                </div>
-
                                 <!-- Add more checkboxes as needed -->
                             </div>
                             <!-- /.card-body -->
@@ -218,8 +200,8 @@
                     <div class="card">
                         <div class="card-header">
 
-                            <h3 class="card-title"><input type="checkbox" name="" id=""> EMPLOYEE
-                                MANAGEMENT</h3>
+                            <h3 class="card-title"><input type="checkbox" name="" id=""> Employee
+                                Management</h3>
                             <div class="card-tools">
                                 <!-- Collapse Button -->
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -267,8 +249,8 @@
                     <div class="card">
                         <div class="card-header">
 
-                            <h3 class="card-title"><input type="checkbox" name="" id=""> ATTENDANCE
-                                MANAGEMENT</h3>
+                            <h3 class="card-title"><input type="checkbox" name="" id=""> Attendance
+                                Management</h3>
                             <div class="card-tools">
                                 <!-- Collapse Button -->
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -306,8 +288,8 @@
                     <div class="card">
                         <div class="card-header">
 
-                            <h3 class="card-title"><input type="checkbox" name="" id=""> LEAVE
-                                MANAGEMENT</h3>
+                            <h3 class="card-title"><input type="checkbox" name="" id=""> Leave
+                                Management</h3>
                             <div class="card-tools">
                                 <!-- Collapse Button -->
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -351,8 +333,8 @@
                     <div class="card">
                         <div class="card-header">
 
-                            <h3 class="card-title"><input type="checkbox" name="" id=""> PAYROLL
-                                MANAGEMENT</h3>
+                            <h3 class="card-title"><input type="checkbox" name="" id=""> Payroll
+                                Management</h3>
                             <div class="card-tools">
                                 <!-- Collapse Button -->
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -366,25 +348,13 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" id="checkbox1">
                                     <label class="form-check-label" for="checkbox1">
-                                        Access to Leaves
+                                        Access to Payruns
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" id="checkbox2">
                                     <label class="form-check-label" for="checkbox2">
-                                        Can Create New Leave
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
-                                    <label class="form-check-label" for="checkbox3">
-                                        Can Edit Leave
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
-                                    <label class="form-check-label" for="checkbox3">
-                                        Can Delete Leave
+                                        Access to Payslips
                                     </label>
                                 </div>
                                 <!-- Add more checkboxes as needed -->
@@ -396,8 +366,8 @@
                     <div class="card">
                         <div class="card-header">
 
-                            <h3 class="card-title"><input type="checkbox" name="" id=""> LOAN
-                                MANAGEMENT</h3>
+                            <h3 class="card-title"><input type="checkbox" name="" id=""> Loan
+                                Management</h3>
                             <div class="card-tools">
                                 <!-- Collapse Button -->
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -441,8 +411,8 @@
                     <div class="card">
                         <div class="card-header">
 
-                            <h3 class="card-title"><input type="checkbox" name="" id=""> ASSET
-                                MANAGEMENT</h3>
+                            <h3 class="card-title"><input type="checkbox" name="" id=""> Asset
+                                Management</h3>
                             <div class="card-tools">
                                 <!-- Collapse Button -->
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -486,9 +456,8 @@
                     <div class="card">
                         <div class="card-header">
 
-                            <h3 class="card-title"><input type="checkbox" name="" id=""> EMAIL
-                                TEMPLATES
-                                MANAGEMENT</h3>
+                            <h3 class="card-title"><input type="checkbox" name="" id=""> Email
+                                Templates</h3>
                             <div class="card-tools">
                                 <!-- Collapse Button -->
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
@@ -545,6 +514,30 @@
                                     <input class="form-check-input" type="checkbox" value="" id="checkbox3">
                                     <label class="form-check-label" for="checkbox3">
                                         Can Delete Email Template Type
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
+                                    <label class="form-check-label" for="checkbox3">
+                                        Access to Email Variables
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
+                                    <label class="form-check-label" for="checkbox3">
+                                        Can Create New Email Variable
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
+                                    <label class="form-check-label" for="checkbox3">
+                                        Can Edit Email Variable
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkbox3">
+                                    <label class="form-check-label" for="checkbox3">
+                                        Can Delete Email Variable
                                     </label>
                                 </div>
                                 <!-- Add more checkboxes as needed -->

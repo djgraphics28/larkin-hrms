@@ -5,6 +5,7 @@ namespace App\Livewire\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
@@ -28,6 +29,7 @@ class RoleComponent extends Component
 
     public $selectAll = false;
     public $selectedRows = [];
+    public $allPermissions = [];
 
     #[Title('Roles')]
     public function render()
@@ -35,6 +37,12 @@ class RoleComponent extends Component
         return view('livewire.user.role-component', [
             'records' => $this->records
         ]);
+    }
+
+    public function mount()
+    {
+        $this->allPermissions = Permission::all()->pluck('id')->toArray();
+        dd($this->allPermissions);
     }
 
     public function getRecordsProperty()

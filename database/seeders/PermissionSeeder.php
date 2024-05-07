@@ -130,6 +130,13 @@ class PermissionSeeder extends Seeder
             'edit_payroll',
             'delete_payroll',
             'export_payroll',
+            //Payruns
+            'access_payruns',
+            'create_payruns',
+            'show_payruns',
+            'edit_payruns',
+            'delete_payruns',
+            'export_payruns',
             //Payslip
             'access_payslip',
             'create_payslip',
