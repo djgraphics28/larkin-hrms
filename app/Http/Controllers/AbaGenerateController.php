@@ -60,7 +60,7 @@ class AbaGenerateController extends Controller
                         'account_name'  => $employee->active_bank_detail->account_name,
                         'reference' => 'Payroll number',
                         'transaction_code'  => '53',
-                        'amount' => $total_amount
+                        'amount' => $payslip_amount
                     ];
                 }
             }
