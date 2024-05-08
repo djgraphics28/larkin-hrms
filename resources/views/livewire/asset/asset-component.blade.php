@@ -26,7 +26,7 @@
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
                                 <a wire:navigate href="{{ route('asset-type') }}" type="button"
-                                    class="btn btn-success btn-sm mr-2"><i class="fa fa-plus" aria-hidden="true"></i>
+                                    class="btn btn-success btn-sm mr-2"><i class="fa fa-tasks" aria-hidden="true"></i>
                                     Asset Type</a>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
                                         class="fa fa-plus" aria-hidden="true"></i> Add New</button>
@@ -69,7 +69,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @include('shared.table-loader')
+                                    <tr>
+                                        <td colspan="9" class="text-center align-items-center">
+                                            <div wire:loading wire:target="search"><livewire:table-loader /></div>
+                                        </td>
+                                    </tr>
                                     @forelse ($records as $data)
                                         <tr wire:key="search-{{ $data->id }}">
                                             <td class="text-start"><input type="checkbox"
@@ -96,8 +100,9 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td rowspan="5" colspan="9" class="text-center"><i class="fa fa-ban"
-                                                    aria-hidden="true"></i> No Result Found</td>
+                                            <td colspan="9">
+                                                <livewire:no-data-found />
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>

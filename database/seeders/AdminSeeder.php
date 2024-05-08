@@ -7,6 +7,7 @@ use App\Models\Business;
 use Illuminate\Support\Str;
 use App\Models\BusinessUser;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -23,7 +24,7 @@ class AdminSeeder extends Seeder
         $businessIds = Business::all()->pluck('id')->toArray();
 
         $data = User::create([
-            'name' => 'Admin',
+            'name' => 'Administrator',
             'email' => 'admin@mail.com',
             'email_verified_at' => now(),
             'is_admin' => true,
@@ -37,6 +38,8 @@ class AdminSeeder extends Seeder
         BusinessUser::find(1)->update([
             'is_active' => true,
         ]);
+
+        $data->assignRole('Admin');
 
     }
 }

@@ -11,6 +11,7 @@ use Database\Seeders\LoanTypeSeeder;
 use Database\Seeders\LeaveTypeSeeder;
 use Database\Seeders\WorkshiftSeeder;
 use Database\Seeders\DepartmentSeeder;
+use Database\Seeders\PermissionSeeder;
 use Database\Seeders\DesignationSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Database\Seeders\EmployeeStatusSeeder;
@@ -23,6 +24,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(PermissionSeeder::class);
         $this->call(DepartmentSeeder::class);
         $this->call(BusinessSeeder::class);
         $this->call(AdminSeeder::class);

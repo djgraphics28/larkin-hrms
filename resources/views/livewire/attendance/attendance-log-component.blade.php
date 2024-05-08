@@ -118,16 +118,16 @@
                                             <th rowspan="2" class="text-center align-middle"><small
                                                     class="text-center text-bold">HOL.</small></th>
                                             @forelse ($ranges as $dr)
-
                                                 @php
 
-                                                    $isHoliday = $holidays->where('holiday_date', $dr['full_date'])->isNotEmpty();
+                                                    $isHoliday = $holidays
+                                                        ->where('holiday_date', $dr['full_date'])
+                                                        ->isNotEmpty();
 
                                                 @endphp
 
-                                                @if($isHoliday)
-                                                    <th
-                                                        class="text-center bg-success">
+                                                @if ($isHoliday)
+                                                    <th class="text-center bg-success">
                                                         <small class="text-center text-bold">{{ $dr['day'] }}</small>
                                                     </th>
                                                 @else
@@ -144,16 +144,16 @@
                                         </tr>
                                         <tr>
                                             @forelse ($ranges as $dr)
-
                                                 @php
 
-                                                    $isHoliday = $holidays->where('holiday_date', $dr['full_date'])->isNotEmpty();
+                                                    $isHoliday = $holidays
+                                                        ->where('holiday_date', $dr['full_date'])
+                                                        ->isNotEmpty();
 
                                                 @endphp
 
-                                                @if($isHoliday)
-                                                    <th
-                                                        class="text-center bg-success">
+                                                @if ($isHoliday)
+                                                    <th class="text-center bg-success">
                                                         <small class="text-center text-bold">{{ $dr['date'] }}</small>
                                                     </th>
                                                 @else
@@ -182,16 +182,11 @@
                                                 </td>
 
                                                 @forelse ($data->employee_hours as $hours)
-
-                                                    @if($hours->fortnight_id === $ranges[0]['fortnight_id'])
-
+                                                    @if ($hours->fortnight_id === $ranges[0]['fortnight_id'])
                                                         <td>{{ $hours->regular_hr }}</td>
                                                         <td>{{ $hours->overtime_hr }}</td>
                                                         <td>{{ $hours->sunday_ot_hr }}</td>
                                                         <td>{{ $hours->holiday_ot_hr }}</td>
-
-
-
                                                     @endif
 
                                                 @empty
@@ -208,26 +203,22 @@
                                                         $found = false;
                                                     @endphp
 
-                                                    @foreach($data->attendances as $attendance)
-
+                                                    @foreach ($data->attendances as $attendance)
                                                         @php
                                                             $time_out = new DateTime($attendance->time_out);
                                                             $time_in = new DateTime($attendance->time_in);
                                                             $interval = $time_out->diff($time_in);
                                                         @endphp
 
-                                                        @if($dr['fortnight_id'] === $attendance->fortnight_id && $time_in->format('Y-m-d') === $dr['full_date'])
-
-                                                                <td>{{ $interval->format('%h') - 1 }}</td>
-                                                                @php
-                                                                    $found = true;
-                                                                @endphp
-
+                                                        @if ($dr['fortnight_id'] === $attendance->fortnight_id && $time_in->format('Y-m-d') === $dr['full_date'])
+                                                            <td>{{ $interval->format('%h') - 1 }}</td>
+                                                            @php
+                                                                $found = true;
+                                                            @endphp
                                                         @endif
-
                                                     @endforeach
 
-                                                    @if(!$found)
+                                                    @if (!$found)
                                                         <td>0</td>
                                                     @endif
 
@@ -238,8 +229,9 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td rowspan="5" colspan="22" class="text-center"><i
-                                                        class="fa fa-ban" aria-hidden="true"></i> No Result Found</td>
+                                                <td colspan="22">
+                                                    <livewire:no-data-found />
+                                                </td>
                                             </tr>
                                         @endforelse
                                     </tbody>

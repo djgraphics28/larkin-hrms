@@ -25,6 +25,9 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
+                                <a wire:navigate href="{{ route('loan-type') }}" type="button"
+                                    class="btn btn-success btn-sm mr-2"><i class="fa fa-tasks" aria-hidden="true"></i>
+                                    Loan Types</a>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
                                         class="fa fa-paper-plane" aria-hidden="true"></i> Loan/Cash Advance
                                     Request</button>
@@ -95,30 +98,40 @@
                                             </td>
                                             <td class="text-start">{{ $data->loan_type->name }}</td>
                                             <td class="text-center">K{{ $data->amount }}</td>
-                                            <td class="text-center">{{ \Carbon\Carbon::parse($data->date_requested)->format('F j, Y') }}</td>
-                                            <td class="text-center">{{ $data->approved_by ? Auth::user()->find($data->approved_by)->name : '' }}</td>
-                                            <td class="text-center">{{ $data->date_approved ? \Carbon\Carbon::parse($data->date_approved)->format('F j, Y') : '' }}</td>
+                                            <td class="text-center">
+                                                {{ \Carbon\Carbon::parse($data->date_requested)->format('F j, Y') }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ $data->approved_by ? Auth::user()->find($data->approved_by)->name : '' }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ $data->date_approved ? \Carbon\Carbon::parse($data->date_approved)->format('F j, Y') : '' }}
+                                            </td>
                                             <td class="text-start">{{ $data->reason }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    @if ($data->status != "Approved")
+                                                    @if ($data->status != 'Approved')
                                                         <a wire:click="edit({{ $data->id }})"
-                                                            class="dropdown-item text-warning" href="javascript:void(0)"><i
-                                                                class="fa fa-edit" aria-hidden="true"></i></a>
+                                                            class="dropdown-item text-warning"
+                                                            href="javascript:void(0)"><i class="fa fa-edit"
+                                                                aria-hidden="true"></i></a>
                                                         <a wire:click="alertConfirm({{ $data->id }})"
-                                                            class="dropdown-item text-danger" href="javascript:void(0)"><i
-                                                                class="fa fa-trash" aria-hidden="true"></i></a>
+                                                            class="dropdown-item text-danger"
+                                                            href="javascript:void(0)"><i class="fa fa-trash"
+                                                                aria-hidden="true"></i></a>
                                                     @else
                                                         @if (Auth::user()->is_admin)
                                                             <a wire:click="edit({{ $data->id }})"
-                                                                class="dropdown-item text-warning" href="javascript:void(0)"><i
-                                                                    class="fa fa-edit" aria-hidden="true"></i></a>
+                                                                class="dropdown-item text-warning"
+                                                                href="javascript:void(0)"><i class="fa fa-edit"
+                                                                    aria-hidden="true"></i></a>
                                                             <a wire:click="alertConfirm({{ $data->id }})"
-                                                                class="dropdown-item text-danger" href="javascript:void(0)"><i
-                                                                    class="fa fa-trash" aria-hidden="true"></i></a>
+                                                                class="dropdown-item text-danger"
+                                                                href="javascript:void(0)"><i class="fa fa-trash"
+                                                                    aria-hidden="true"></i></a>
                                                         @else
-                                                        <span><i
-                                                            class="fa fa-lock text-warning" aria-hidden="true"></i></span>
+                                                            <span><i class="fa fa-lock text-warning"
+                                                                    aria-hidden="true"></i></span>
                                                         @endif
                                                     @endif
 

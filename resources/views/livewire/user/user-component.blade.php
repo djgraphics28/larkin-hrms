@@ -25,12 +25,9 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <button type="button" class="btn btn-warning btn-sm mr-2"><i class="fa fa-upload"
-                                        aria-hidden="true"></i> Import</button>
-                                <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i class="fa fa-file-excel"
-                                        aria-hidden="true"></i> Export</button>
-                                <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
-                                        aria-hidden="true"></i> PDF</button>
+                                <a wire:navigate href="{{ route('roles') }}" type="button"
+                                    class="btn btn-success btn-sm mr-2"><i class="fa fa-tasks" aria-hidden="true"></i>
+                                    Roles</a>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
                                         class="fa fa-plus" aria-hidden="true"></i> Add New</button>
                             </div>
@@ -64,6 +61,7 @@
                                         <th class="text-start">Name</th>
                                         <th class="text-start">Email</th>
                                         <th class="text-center">Status</th>
+                                        <th class="text-start">Roles</th>
                                         <th class="text-start">Business Handled</th>
                                         <th class="text-center">Action</th>
                                     </tr>
@@ -81,12 +79,20 @@
                                             <td class="text-start">{{ $data->name }}</td>
                                             <td class="text-start">{{ $data->email }}</td>
                                             <td class="text-center">@livewire('active-status', ['model' => $data, 'field' => 'is_active'], key($data->id))</td>
+
+                                            <td width="20%" class="text-start">
+                                                @forelse ($data->roles as $role)
+                                                    <span class="badge badge-success">{{ $role->name }}</span>
+                                                @empty
+                                                    <span class="badge badge-danger">no role</span>
+                                                @endforelse
+                                            </td>
                                             <td width="40%" class="text-start">
-                                                    @forelse ($data->businesses as $busi)
-                                                        <span class="badge badge-primary">{{ $busi->name }}</span>
-                                                    @empty
-                                                        <span class="badge badge-danger">no department</span>
-                                                    @endforelse
+                                                @forelse ($data->businesses as $busi)
+                                                    <span class="badge badge-primary">{{ $busi->name }}</span>
+                                                @empty
+                                                    <span class="badge badge-danger">no department</span>
+                                                @endforelse
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
@@ -123,7 +129,7 @@
 
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
         aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">{{ $modalTitle }}</h5>
@@ -131,69 +137,82 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="submit()">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="">Name</label>
-                            <input wire:model="name" type="text"
-                                class="form-control form-control-lg @error('name') is-invalid @enderror">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Name</label>
+                        <input wire:model="name" type="text"
+                            class="form-control form-control-lg @error('name') is-invalid @enderror">
 
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="">Email</label>
-                            <input wire:model="email" type="text"
-                                class="form-control form-control-lg @error('email') is-invalid @enderror">
-
-                            @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="">Password</label>
-                            @if ($updateMode)
-                                <small>If you don't want to change the password, leave it blank</small>
-                            @endif
-                            <input wire:model="password" type="text"
-                                class="form-control form-control-lg @error('password') is-invalid @enderror">
-
-                            @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        <div class="form-group" wire:ignore>
-                            <label>Assign Businesses</label>
-                            <table class="table table-sm table-condensed">
-                                <tbody>
-                                    @foreach ($businesses as $data)
-                                        <tr>
-                                            <td class="text-start"><input id="{{ $data->name }}" type="checkbox"
-                                                    wire:model.prevent="selectedBusinessRows"
-                                                    value="{{ $data->id }}"></td>
-                                            <td><label for="{{ $data->name }}">{{ $data->name }}</label></td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                        @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        @if ($updateMode == true)
-                            <button wire:click.prevent="update()" class="btn btn-success">Update</button>
-                        @else
-                            <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
-                            <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
+                    <div class="form-group">
+                        <label for="">Email</label>
+                        <input wire:model="email" type="text"
+                            class="form-control form-control-lg @error('email') is-invalid @enderror">
+
+                        @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="">Password</label>
+                        @if ($updateMode)
+                            <small>If you don't want to change the password, leave it blank</small>
                         @endif
+                        <input wire:model="password" type="text"
+                            class="form-control form-control-lg @error('password') is-invalid @enderror">
+
+                        @error('password')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
+                    <div class="form-group">
+                        <label for="">Roles</label>
+                        <select wire:model="role" class="form-control @error('role') is-invalid @enderror">">
+                            <option value="">Choose Role ...</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->name }}">{{ $role->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('role')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                    <div class="form-group" wire:ignore>
+                        <label>Assign Businesses</label>
+                        <table class="table table-sm table-condensed">
+                            <tbody>
+                                @foreach ($businesses as $data)
+                                    <tr>
+                                        <td class="text-start"><input id="{{ $data->name }}" type="checkbox"
+                                                wire:model.prevent="selectedBusinessRows"
+                                                value="{{ $data->id }}"></td>
+                                        <td><label for="{{ $data->name }}">{{ $data->name }}</label></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    @if ($updateMode == true)
+                        <button wire:click.prevent="update()" class="btn btn-success">Update</button>
+                    @else
+                        <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
+                        <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

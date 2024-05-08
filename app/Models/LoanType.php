@@ -22,4 +22,15 @@ class LoanType extends Model
     {
         return $this->hasMany(Loan::class, 'loan_type_id', 'id');
     }
+
+    public function scopeSearch($query, $searchTerm)
+    {
+        $searchTerm = "%$searchTerm%";
+
+        $query->where(function ($query) use ($searchTerm) {
+
+            $query->where('name', 'like', $searchTerm);
+        });
+
+    }
 }
