@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use Illuminate\Database\Seeder;
+// use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PermissionSeeder extends Seeder
@@ -16,195 +17,210 @@ class PermissionSeeder extends Seeder
     {
         $permissions = [
             //Dashboard
-            'access_dashboard',
+            ['name' => 'access_dashboard', 'group_name' => 'Dashboard'],
             //Apps ///////////////////////////>>>>>>>>>>>>>>>
-            'access_apps_management',
+            ['name' => 'access_apps_management', 'group_name' => 'Apps'],
             //Businesses
-            'access_businesses',
-            'create_businesses',
-            'show_businesses',
-            'edit_businesses',
-            'delete_businesses',
-            'export_businesses',
+            ['name' => 'access_businesses', 'group_name' => 'Businesses'],
+            ['name' => 'create_businesses', 'group_name' => 'Businesses'],
+            ['name' => 'show_businesses', 'group_name' => 'Businesses'],
+            ['name' => 'edit_businesses', 'group_name' => 'Businesses'],
+            ['name' => 'delete_businesses', 'group_name' => 'Businesses'],
+            ['name' => 'export_businesses', 'group_name' => 'Businesses'],
             //Departments
-            'access_departments',
-            'create_departments',
-            'show_departments',
-            'edit_departments',
-            'delete_departments',
-            'export_departments',
+            ['name' => 'access_departments', 'group_name' => 'Departments'],
+            ['name' => 'create_departments', 'group_name' => 'Departments'],
+            ['name' => 'show_departments', 'group_name' => 'Departments'],
+            ['name' => 'edit_departments', 'group_name' => 'Departments'],
+            ['name' => 'delete_departments', 'group_name' => 'Departments'],
+            ['name' => 'export_departments', 'group_name' => 'Departments'],
             //Workshifts
-            'access_workshifts',
-            'create_workshifts',
-            'show_workshifts',
-            'edit_workshifts',
-            'delete_workshifts',
-            'export_workshifts',
+            ['name' => 'access_workshifts', 'group_name' => 'Workshifts'],
+            ['name' => 'create_workshifts', 'group_name' => 'Workshifts'],
+            ['name' => 'show_workshifts', 'group_name' => 'Workshifts'],
+            ['name' => 'edit_workshifts', 'group_name' => 'Workshifts'],
+            ['name' => 'delete_workshifts', 'group_name' => 'Workshifts'],
+            ['name' => 'export_workshifts', 'group_name' => 'Workshifts'],
             //Fortnights
-            'access_fortnights',
-            'create_fortnights',
+            ['name' => 'access_fortnights', 'group_name' => 'Fortnights'],
+            ['name' => 'create_fortnights', 'group_name' => 'Fortnights'],
             //User & Roles
-            'access_users',
-            'create_users',
-            'show_users',
-            'edit_users',
-            'delete_users',
-            'export_users',
-            'access_roles',
-            'create_roles',
-            'show_roles',
-            'edit_roles',
-            'delete_roles',
-            'export_roles',
+            ['name' => 'access_users', 'group_name' => 'User & Roles'],
+            ['name' => 'create_users', 'group_name' => 'User & Roles'],
+            ['name' => 'show_users', 'group_name' => 'User & Roles'],
+            ['name' => 'edit_users', 'group_name' => 'User & Roles'],
+            ['name' => 'delete_users', 'group_name' => 'User & Roles'],
+            ['name' => 'export_users', 'group_name' => 'User & Roles'],
+            ['name' => 'access_roles', 'group_name' => 'User & Roles'],
+            ['name' => 'create_roles', 'group_name' => 'User & Roles'],
+            ['name' => 'show_roles', 'group_name' => 'User & Roles'],
+            ['name' => 'edit_roles', 'group_name' => 'User & Roles'],
+            ['name' => 'delete_roles', 'group_name' => 'User & Roles'],
+            ['name' => 'export_roles', 'group_name' => 'User & Roles'],
             //CompanyBank Details
-            'access_company_bank_details',
-            'create_company_bank_details',
-            'show_company_bank_details',
-            'edit_company_bank_details',
-            'delete_company_bank_details',
-            'export_company_bank_details',
+            ['name' => 'access_company_bank_details', 'group_name' => 'CompanyBank Details'],
+            ['name' => 'create_company_bank_details', 'group_name' => 'CompanyBank Details'],
+            ['name' => 'show_company_bank_details', 'group_name' => 'CompanyBank Details'],
+            ['name' => 'edit_company_bank_details', 'group_name' => 'CompanyBank Details'],
+            ['name' => 'delete_company_bank_details', 'group_name' => 'CompanyBank Details'],
+            ['name' => 'export_company_bank_details', 'group_name' => 'CompanyBank Details'],
             //Taxes
-            'access_taxes',
-            'create_taxes',
-            'show_taxes',
-            'edit_taxes',
-            'delete_taxes',
-            'export_taxes',
+            ['name' => 'access_taxes', 'group_name' => 'Taxes'],
+            ['name' => 'create_taxes', 'group_name' => 'Taxes'],
+            ['name' => 'show_taxes', 'group_name' => 'Taxes'],
+            ['name' => 'edit_taxes', 'group_name' => 'Taxes'],
+            ['name' => 'delete_taxes', 'group_name' => 'Taxes'],
+            ['name' => 'export_taxes', 'group_name' => 'Taxes'],
+
             //Holidays
-            'access_holidays',
-            'create_holidays',
-            'show_holidays',
-            'edit_holidays',
-            'delete_holidays',
-            'export_holidays',
+            ['name' => 'access_holidays', 'group_name' => 'Holidays'],
+            ['name' => 'create_holidays', 'group_name' => 'Holidays'],
+            ['name' => 'show_holidays', 'group_name' => 'Holidays'],
+            ['name' => 'edit_holidays', 'group_name' => 'Holidays'],
+            ['name' => 'delete_holidays', 'group_name' => 'Holidays'],
+            ['name' => 'export_holidays', 'group_name' => 'Holidays'],
+
             //Nasfunds
-            'access_nasfunds',
-            'create_nasfunds',
-            'show_nasfunds',
-            'edit_nasfunds',
-            'delete_nasfunds',
-            'export_nasfunds',
+            ['name' => 'access_nasfunds', 'group_name' => 'Nasfunds'],
+            ['name' => 'create_nasfunds', 'group_name' => 'Nasfunds'],
+            ['name' => 'show_nasfunds', 'group_name' => 'Nasfunds'],
+            ['name' => 'edit_nasfunds', 'group_name' => 'Nasfunds'],
+            ['name' => 'delete_nasfunds', 'group_name' => 'Nasfunds'],
+            ['name' => 'export_nasfunds', 'group_name' => 'Nasfunds'],
+
             //Hr Management ///////////////////////////>>>>>>>>>>>>>>>
-            'access_hr_management',
-            //Employees
-            'access_employees',
-            'create_employees',
-            'show_employees',
-            'edit_employees',
-            'delete_employees',
-            'import_employees',
-            'export_employees',
-            //Designations
-            'access_designations',
-            'create_designations',
-            'show_designations',
-            'edit_designations',
-            'delete_designations',
-            'export_designations',
-            //EmployeeStatuses
-            'access_employee_statuses',
-            'create_employee_statuses',
-            'show_employee_statuses',
-            'edit_employee_statuses',
-            'delete_employee_statuses',
-            'export_employee_statuses',
-            //Attendances
-            'access_logs_timesheets',
-            'create_attendances',
-            'show_attendances',
-            'edit_attendances',
-            'delete_attendances',
-            'import_attendances',
-            'export_attendances',
-            //Leaves
-            'access_leaves',
-            'create_leaves',
-            'show_leaves',
-            'edit_leaves',
-            'delete_leaves',
-            'export_leaves',
-            //Payroll
-            'access_payroll',
-            'create_payroll',
-            'show_payroll',
-            'edit_payroll',
-            'delete_payroll',
-            'export_payroll',
-            //Payruns
-            'access_payruns',
-            'create_payruns',
-            'show_payruns',
-            'edit_payruns',
-            'delete_payruns',
-            'export_payruns',
-            //Payslip
-            'access_payslip',
-            'create_payslip',
-            'show_payslip',
-            'edit_payslip',
-            'delete_payslip',
-            'export_payslip',
-            //Loans
-            'access_loans',
-            'create_loans',
-            'show_loans',
-            'edit_loans',
-            'delete_loans',
-            'export_loans',
-            //LoanTypes
-            'access_loan_types',
-            'create_loan_types',
-            'show_loan_types',
-            'edit_loan_types',
-            'delete_loan_types',
-            'export_loan_types',
-            //Assets
-            'access_assets',
-            'create_assets',
-            'show_assets',
-            'edit_assets',
-            'delete_assets',
-            'export_assets',
-            //AssetTypes
-            'access_asset_types',
-            'create_asset_types',
-            'show_asset_types',
-            'edit_asset_types',
-            'delete_asset_types',
-            'export_asset_types',
+            // Employees
+            ['name' => 'access_employees', 'group_name' => 'Hr Management'],
+            ['name' => 'create_employees', 'group_name' => 'Hr Management'],
+            ['name' => 'show_employees', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_employees', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_employees', 'group_name' => 'Hr Management'],
+            ['name' => 'import_employees', 'group_name' => 'Hr Management'],
+            ['name' => 'export_employees', 'group_name' => 'Hr Management'],
+
+            // Designations
+            ['name' => 'access_designations', 'group_name' => 'Hr Management'],
+            ['name' => 'create_designations', 'group_name' => 'Hr Management'],
+            ['name' => 'show_designations', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_designations', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_designations', 'group_name' => 'Hr Management'],
+            ['name' => 'export_designations', 'group_name' => 'Hr Management'],
+
+            // EmployeeStatuses
+            ['name' => 'access_employee_statuses', 'group_name' => 'Hr Management'],
+            ['name' => 'create_employee_statuses', 'group_name' => 'Hr Management'],
+            ['name' => 'show_employee_statuses', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_employee_statuses', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_employee_statuses', 'group_name' => 'Hr Management'],
+            ['name' => 'export_employee_statuses', 'group_name' => 'Hr Management'],
+
+            // Attendances
+            ['name' => 'access_logs_timesheets', 'group_name' => 'Hr Management'],
+            ['name' => 'create_attendances', 'group_name' => 'Hr Management'],
+            ['name' => 'show_attendances', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_attendances', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_attendances', 'group_name' => 'Hr Management'],
+            ['name' => 'import_attendances', 'group_name' => 'Hr Management'],
+            ['name' => 'export_attendances', 'group_name' => 'Hr Management'],
+
+            // Leaves
+            ['name' => 'access_leaves', 'group_name' => 'Hr Management'],
+            ['name' => 'create_leaves', 'group_name' => 'Hr Management'],
+            ['name' => 'show_leaves', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_leaves', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_leaves', 'group_name' => 'Hr Management'],
+            ['name' => 'export_leaves', 'group_name' => 'Hr Management'],
+
+            // Payroll
+            ['name' => 'access_payroll', 'group_name' => 'Hr Management'],
+            ['name' => 'create_payroll', 'group_name' => 'Hr Management'],
+            ['name' => 'show_payroll', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_payroll', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_payroll', 'group_name' => 'Hr Management'],
+            ['name' => 'export_payroll', 'group_name' => 'Hr Management'],
+
+            // Payruns
+            ['name' => 'access_payruns', 'group_name' => 'Hr Management'],
+            ['name' => 'create_payruns', 'group_name' => 'Hr Management'],
+            ['name' => 'show_payruns', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_payruns', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_payruns', 'group_name' => 'Hr Management'],
+            ['name' => 'export_payruns', 'group_name' => 'Hr Management'],
+
+            // Payslip
+            ['name' => 'access_payslip', 'group_name' => 'Hr Management'],
+            ['name' => 'create_payslip', 'group_name' => 'Hr Management'],
+            ['name' => 'show_payslip', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_payslip', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_payslip', 'group_name' => 'Hr Management'],
+            ['name' => 'export_payslip', 'group_name' => 'Hr Management'],
+
+            // Loans
+            ['name' => 'access_loans', 'group_name' => 'Hr Management'],
+            ['name' => 'create_loans', 'group_name' => 'Hr Management'],
+            ['name' => 'show_loans', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_loans', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_loans', 'group_name' => 'Hr Management'],
+            ['name' => 'export_loans', 'group_name' => 'Hr Management'],
+
+            // LoanTypes
+            ['name' => 'access_loan_types', 'group_name' => 'Hr Management'],
+            ['name' => 'create_loan_types', 'group_name' => 'Hr Management'],
+            ['name' => 'show_loan_types', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_loan_types', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_loan_types', 'group_name' => 'Hr Management'],
+            ['name' => 'export_loan_types', 'group_name' => 'Hr Management'],
+
+            // Assets
+            ['name' => 'access_assets', 'group_name' => 'Hr Management'],
+            ['name' => 'create_assets', 'group_name' => 'Hr Management'],
+            ['name' => 'show_assets', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_assets', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_assets', 'group_name' => 'Hr Management'],
+            ['name' => 'export_assets', 'group_name' => 'Hr Management'],
+
+            // AssetTypes
+            ['name' => 'access_asset_types', 'group_name' => 'Hr Management'],
+            ['name' => 'create_asset_types', 'group_name' => 'Hr Management'],
+            ['name' => 'show_asset_types', 'group_name' => 'Hr Management'],
+            ['name' => 'edit_asset_types', 'group_name' => 'Hr Management'],
+            ['name' => 'delete_asset_types', 'group_name' => 'Hr Management'],
+            ['name' => 'export_asset_types', 'group_name' => 'Hr Management'],
+
             //Genreal Settings ///////////////////////////>>>>>>>>>>>>>>>
-            'access_general_settings',
-            //EmailTemplates
-            'access_email_templates',
-            'create_email_templates',
-            'show_email_templates',
-            'edit_email_templates',
-            'delete_email_templates',
-            'export_email_templates',
-            //EmailTemplateTypes
-            'access_email_template_types',
-            'create_email_template_types',
-            'show_email_template_types',
-            'edit_email_template_types',
-            'delete_email_template_types',
-            'export_email_template_types',
-            //EmailVariables
-            'access_email_variables',
-            'create_email_variables',
-            'show_email_variables',
-            'edit_email_variables',
-            'delete_email_variables',
-            'export_email_variables',
+            ['name' => 'access_general_settings', 'group_name' => 'General Settings'],
+            // EmailTemplates
+            ['name' => 'access_email_templates', 'group_name' => 'EmailTemplates'],
+            ['name' => 'create_email_templates', 'group_name' => 'EmailTemplates'],
+            ['name' => 'show_email_templates', 'group_name' => 'EmailTemplates'],
+            ['name' => 'edit_email_templates', 'group_name' => 'EmailTemplates'],
+            ['name' => 'delete_email_templates', 'group_name' => 'EmailTemplates'],
+            ['name' => 'export_email_templates', 'group_name' => 'EmailTemplates'],
+
+            // EmailTemplateTypes
+            ['name' => 'access_email_template_types', 'group_name' => 'EmailTemplateTypes'],
+            ['name' => 'create_email_template_types', 'group_name' => 'EmailTemplateTypes'],
+            ['name' => 'show_email_template_types', 'group_name' => 'EmailTemplateTypes'],
+            ['name' => 'edit_email_template_types', 'group_name' => 'EmailTemplateTypes'],
+            ['name' => 'delete_email_template_types', 'group_name' => 'EmailTemplateTypes'],
+            ['name' => 'export_email_template_types', 'group_name' => 'EmailTemplateTypes'],
+
+            // EmailVariables
+            ['name' => 'access_email_variables', 'group_name' => 'EmailVariables'],
+            ['name' => 'create_email_variables', 'group_name' => 'EmailVariables'],
+            ['name' => 'show_email_variables', 'group_name' => 'EmailVariables'],
+            ['name' => 'edit_email_variables', 'group_name' => 'EmailVariables'],
+            ['name' => 'delete_email_variables', 'group_name' => 'EmailVariables'],
+            ['name' => 'export_email_variables', 'group_name' => 'EmailVariables'],
             //Imports
-            'access_imports_management',
+            ['name' => 'access_imports_management', 'group_name' => 'Imports'],
+
             //Reports
-            'access_reports_management',
+            ['name' => 'access_reports_management', 'group_name' => 'Reports'],
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create([
-                'name' => $permission
-            ]);
+            Permission::create([$permission]);
         }
 
         $role = Role::create([

@@ -30,6 +30,7 @@ class RoleComponent extends Component
     public $selectAll = false;
     public $selectedRows = [];
     public $allPermissions = [];
+    public $permissions = [];
 
     #[Title('Roles')]
     public function render()
@@ -41,8 +42,8 @@ class RoleComponent extends Component
 
     public function mount()
     {
-        $this->allPermissions = Permission::all()->pluck('id')->toArray();
-        dd($this->allPermissions);
+        $this->allPermissions = Permission::all();
+
     }
 
     public function getRecordsProperty()
