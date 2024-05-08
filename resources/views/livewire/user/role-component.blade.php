@@ -144,7 +144,7 @@
                             <label class="custom-control-label" for="select-all">Give All Permissions</label>
                         </div>
                     </div>
-                    @foreach ($allPermissions as $permission)
+                    {{-- @foreach ($allPermissions as $permission)
                         <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" id="{{ $permission->id }}"
                                 wire:model="permissions" value="{{ $permission->id }}"
@@ -153,48 +153,168 @@
                                 {{ $permission->name }}
                             </label>
                         </div>
-                    @endforeach
+                    @endforeach --}}
                     <div class="card">
                         <div class="card-header">
 
                             <h3 class="card-title">
                                 <div class="custom-control custom-switch">
                                     <input type="checkbox" class="custom-control-input" id="access_apps_management"
-                                        wire:model="permissions" value="access_apps_management"
-                                        {{ old('access_apps_management') ? 'checked' : '' }}>
+                                        wire:model="access_apps_management" checked>
                                     <label class="custom-control-label" for="access_apps_management">Apps
                                         Management</label>
                                 </div>
                             </h3>
                             <div class="card-tools">
-                                <!-- Collapse Button -->
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                         class="fas fa-minus"></i></button>
                             </div>
-                            <!-- /.card-tools -->
                         </div>
-                        <!-- /.card-header -->
                         <div class="card-body">
-                            <div class="checkbox-list">
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="access_to_businesses"
-                                        wire:model="permissions" value="access_to_businesses"
-                                        {{ old('access_to_businesses') ? 'checked' : '' }}>
-                                    <label class="custom-control-label" for="access_to_businesses">Access to
-                                        Businesses</label>
+                            {{-- Businesses --}}
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="checkbox-list">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="access_to_businesses" wire:model="access_businesses">
+                                            <label class="custom-control-label" for="access_to_businesses">Access to
+                                                Businesses</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="create_businesses" wire:model="create_businesses">
+                                            <label class="custom-control-label" for="create_businesses">Can Create New
+                                                Business</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="edit_businesses"
+                                                wire:model="edit_businesses">
+                                            <label class="custom-control-label" for="edit_businesses">Can Edit
+                                                Business</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="delete_businesses" wire:model="delete_businesses">
+                                            <label class="custom-control-label" for="delete_businesses">Can Delete
+                                                Business</label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="access_to_departments"
-                                        wire:model="permissions" value="access_to_departments"
-                                        {{ old('access_to_departments') ? 'checked' : '' }}>
-                                    <label class="custom-control-label" for="access_to_departments">Access to
-                                        Departments</label>
-                                </div>
-                                <!-- Add more checkboxes as needed -->
+
                             </div>
-                            <!-- /.card-body -->
+                            {{-- Businesses --}}
+                            {{-- Departments --}}
+                            <div class="card">
+                                <div class="card-body mt-2">
+                                    <div class="checkbox-list">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="access_to_departments" wire:model="access_departments">
+                                            <label class="custom-control-label" for="access_to_departments">Access to
+                                                Departments</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="create_departments" wire:model="create_departments">
+                                            <label class="custom-control-label" for="create_departments">Can Create
+                                                New
+                                                Department</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="edit_departments"
+                                                wire:model="edit_departments">
+                                            <label class="custom-control-label" for="edit_departments">Can Edit
+                                                Department</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="delete_departments" wire:model="delete_departments">
+                                            <label class="custom-control-label" for="delete_departments">Can Delete
+                                                Department</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- Departments --}}
+                            {{-- Workshifts --}}
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="checkbox-list">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="access_to_workshifts" wire:model="access_workshifts">
+                                            <label class="custom-control-label" for="access_to_workshifts">Access to
+                                                Workshifts</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="create_workshifts" wire:model="create_workshifts">
+                                            <label class="custom-control-label" for="create_workshifts">Can Create New
+                                                Workshift</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="edit_workshifts"
+                                                wire:model="edit_workshifts">
+                                            <label class="custom-control-label" for="edit_workshifts">Can Edit
+                                                Workshift</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="delete_workshifts" wire:model="delete_workshifts">
+                                            <label class="custom-control-label" for="delete_workshifts">Can Delete
+                                                Workshift</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            {{-- Workshifts --}}
+                            {{-- Fortnight Generator --}}
+                            <div class="card">
+                                <div class="card-body mt-2">
+                                    <div class="checkbox-list">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="access_fortnight_generator"
+                                                wire:model="access_fortnight_generator">
+                                            <label class="custom-control-label"
+                                                for="access_fortnight_generator">Access to
+                                                Fortnight Generator</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="create_fortnight"
+                                                wire:model="create_fortnight">
+                                            <label class="custom-control-label" for="create_fortnight">Can Generate
+                                                Fortnight</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- Fortnight Generator --}}
+                            {{-- User & Roles --}}
+                            <div class="card">
+                                <div class="card-body mt-2">
+                                    <div class="checkbox-list">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input"
+                                                id="access_users"
+                                                wire:model="access_users">
+                                            <label class="custom-control-label"
+                                                for="access_users">Access to
+                                                Fortnight Generator</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="create_fortnight"
+                                                wire:model="create_fortnight">
+                                            <label class="custom-control-label" for="create_fortnight">Can Generate
+                                                Fortnight</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- User & Roles --}}
                         </div>
-                        <!-- /.card -->
                     </div>
                     {{-- EMPLOYEE MANAGEMENT --}}
                     <div class="card">
