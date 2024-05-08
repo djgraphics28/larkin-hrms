@@ -3,6 +3,7 @@
 namespace App\Livewire\Payroll;
 
 
+use App\Models\Payrun;
 use Livewire\Component;
 use App\Helpers\Helpers;
 use App\Models\Employee;
@@ -21,6 +22,8 @@ class PayslipComponent extends Component
     public $search = '';
     public $fortnights = [];
     public $employees = [];
+    public $payruns = [];
+    public $latestByEmployee = [];
     #[Url]
     public $selectedFN;
     public $records = [];
@@ -39,27 +42,40 @@ class PayslipComponent extends Component
     public function mount()
     {
         $this->fortnights = Fortnight::all();
-        $this->employees = Employee::all();
-        $this->generate();
+        // $this->employees = Employee::all();
+        $this->view();
     }
 
-    public function generate()
+    public function view()
     {
+        $this->latestByEmployee = [];
         $this->validate([
             'selectedFN' => 'required'
         ]);
 
-        $employees = Employee::withCount('employee_hours')
-            ->search(trim($this->search))->get();
+        $payruns = Payrun::where('fortnight_id', $this->selectedFN)
+            ->get();
 
 
+        foreach ($payruns as $payrun) {
 
-        // dd($this->selectedFN);
+            if ($payrun->payslip->isEmpty()) {
+                continue;
 
-        Helpers::computePay($this->selectedFN);
+                $employeeId = $payrun->payslip->first()->employee->id;
 
-        sleep(2);
+                if (!isset($this->latestByEmployee[$employeeId])) {
+                    $this->latestByEmployee[$employeeId] = $payrun->payslip->first();
+                } else {
 
-        $this->records = $employees;
+                    $currentLatest = $this->latestByEmployee[$employeeId];
+                    $newPayslip = $payrun->payslip->first();
+
+                    if ($newPayslip->created_at > $currentLatest->created_at) {
+                        $this->latestByEmployee[$employeeId] = $newPayslip;
+                    }
+                }
+            }
+        }
     }
 }

@@ -16,4 +16,9 @@ class Payslip extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
+    public function payrun(): BelongsTo
+    {
+        return $this->belongsTo(Payrun::class);
+    }
 }
