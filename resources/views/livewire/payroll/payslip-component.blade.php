@@ -157,7 +157,10 @@
                                             </tr>
 
                                         @empty
-
+                                            <tr>
+                                                <td rowspan="5" colspan="22" class="text-center"><i
+                                                        class="fa fa-ban" aria-hidden="true"></i> No Result Found</td>
+                                            </tr>
                                         @endforelse
 
                                     </tbody>
