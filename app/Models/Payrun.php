@@ -36,6 +36,6 @@ class Payrun extends Model
 
     public function payslip(): HasMany
     {
-        return $this->hasMany(Payslip::class, 'payrun_id', 'id');
+        return $this->hasMany(Payslip::class);
     }
 }

@@ -140,6 +140,6 @@ Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->n
 
 // Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 
-Route::get('/aba-download/{businessId}/{selectedFN}/{employeeIds}', [AbaGenerateController::class, 'generate'])->name('aba-download');
+Route::get('/aba-download/{payrun_id}', [AbaGenerateController::class, 'generate'])->name('aba-download');
 // Route::post('login', [AuthenticatedSessionController::class, 'store']);
 require __DIR__ . '/auth.php';

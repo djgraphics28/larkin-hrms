@@ -176,7 +176,7 @@ class Employee extends Model implements HasMedia
      */
     public function aba_payslip(): HasOne
     {
-        return $this->hasOne(Payslip::class, 'employee_id', 'id');
+        return $this->hasOne(Payslip::class);
     }
 
     /**
