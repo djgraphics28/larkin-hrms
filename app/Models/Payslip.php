@@ -21,4 +21,9 @@ class Payslip extends Model
     {
         return $this->belongsTo(Payrun::class);
     }
+
+    public function fortnight(): BelongsTo
+    {
+        return $this->belongsTo(Fortnight::class);
+    }
 }

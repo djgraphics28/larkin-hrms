@@ -8,6 +8,7 @@ use Livewire\Component;
 use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\Fortnight;
+use App\Models\Payslip;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
@@ -22,8 +23,7 @@ class PayslipComponent extends Component
     public $search = '';
     public $fortnights = [];
     public $employees = [];
-    public $payruns = [];
-    public $latestByEmployee = [];
+    public $payslip = [];
     #[Url]
     public $selectedFN;
     public $records = [];
@@ -48,34 +48,10 @@ class PayslipComponent extends Component
 
     public function view()
     {
-        $this->latestByEmployee = [];
         $this->validate([
             'selectedFN' => 'required'
         ]);
 
-        $payruns = Payrun::where('fortnight_id', $this->selectedFN)
-            ->get();
-
-
-        foreach ($payruns as $payrun) {
-
-            if ($payrun->payslip->isEmpty()) {
-                continue;
-
-                $employeeId = $payrun->payslip->first()->employee->id;
-
-                if (!isset($this->latestByEmployee[$employeeId])) {
-                    $this->latestByEmployee[$employeeId] = $payrun->payslip->first();
-                } else {
-
-                    $currentLatest = $this->latestByEmployee[$employeeId];
-                    $newPayslip = $payrun->payslip->first();
-
-                    if ($newPayslip->created_at > $currentLatest->created_at) {
-                        $this->latestByEmployee[$employeeId] = $newPayslip;
-                    }
-                }
-            }
-        }
+        $this->payslip = Payslip::where('fortnight_id', $this->selectedFN)->get();
     }
 }

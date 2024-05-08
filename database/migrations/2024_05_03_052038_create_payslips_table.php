@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('payslips', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('fortnight_id');
             $table->unsignedBigInteger('payrun_id');
             $table->decimal('regular', 10, 2);
             $table->decimal('overtime', 10, 2);
@@ -29,6 +30,12 @@ return new class extends Migration
                 ->foreign('employee_id')
                 ->references('id')
                 ->on('employees')
+                ->onUpdate('CASCADE')
+                ->onDelete('CASCADE');
+            $table
+                ->foreign('fortnight_id')
+                ->references('id')
+                ->on('fortnights')
                 ->onUpdate('CASCADE')
                 ->onDelete('CASCADE');
             $table
