@@ -3,10 +3,12 @@
 namespace App\Livewire\Payroll;
 
 
+use App\Models\Payrun;
 use Livewire\Component;
 use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\Fortnight;
+use App\Models\Payslip;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
@@ -21,6 +23,7 @@ class PayslipComponent extends Component
     public $search = '';
     public $fortnights = [];
     public $employees = [];
+    public $payslip = [];
     #[Url]
     public $selectedFN;
     public $records = [];
@@ -39,27 +42,16 @@ class PayslipComponent extends Component
     public function mount()
     {
         $this->fortnights = Fortnight::all();
-        $this->employees = Employee::all();
-        $this->generate();
+        // $this->employees = Employee::all();
+        $this->view();
     }
 
-    public function generate()
+    public function view()
     {
         $this->validate([
             'selectedFN' => 'required'
         ]);
 
-        $employees = Employee::withCount('employee_hours')
-            ->search(trim($this->search))->get();
-
-
-
-        // dd($this->selectedFN);
-
-        Helpers::computePay($this->selectedFN);
-
-        sleep(2);
-
-        $this->records = $employees;
+        $this->payslip = Payslip::where('fortnight_id', $this->selectedFN)->get();
     }
 }

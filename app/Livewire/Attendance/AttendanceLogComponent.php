@@ -38,6 +38,7 @@ class AttendanceLogComponent extends Component
 
     public $selectAll = false;
     public $selectedRows = [];
+    public $employee_ids = [];
 
     #[Title('Attendance Logs')]
     public function render()
@@ -96,7 +97,10 @@ class AttendanceLogComponent extends Component
         $get_holiday = Holiday::whereBetween('holiday_date', [$this->fn_start, $this->fn_end])->get();
         $this->holidays = $get_holiday;
 
-        Helpers::computeHours($this->selectedFN);
+        $this->employee_ids = $employees->pluck('id')->toArray();
+
+
+        Helpers::computeHours($this->selectedFN, $this->businessId, 'attendance-logs', 0, $this->employee_ids);
     }
 
     public function getRanges()

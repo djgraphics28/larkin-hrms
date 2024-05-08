@@ -9,6 +9,7 @@ use App\Models\Business;
 use App\Models\Employee;
 use App\Models\Fortnight;
 use App\Models\Department;
+use App\Models\Payslip;
 use Livewire\WithPagination;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
@@ -168,5 +169,18 @@ class PayrunComponent extends Component
         $payrun_id = $payrun->id;
 
         Helpers::computeHours($this->fortnight_id, $this->business_id, 'payrun', $payrun_id, $this->employee_ids);
+
+        $this->resetInputFields();
+
+        $this->dispatch('hide-add-modal');
+        $this->alert('success', 'Payrun Generated');
+    }
+
+    public function generateAba($payrun_id)
+    {
+
+        return redirect()->route('aba-download', [
+            'payrun_id' => $payrun_id
+        ]);
     }
 }

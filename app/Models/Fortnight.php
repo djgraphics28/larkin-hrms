@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Fortnight extends Model
 {
@@ -26,10 +27,14 @@ class Fortnight extends Model
     {
         $searchTerm = "%$searchTerm%";
 
-        $query->where(function($query) use ($searchTerm){
+        $query->where(function ($query) use ($searchTerm) {
 
-            $query->where('year','like', $searchTerm);
+            $query->where('year', 'like', $searchTerm);
         });
+    }
 
+    public function payruns(): HasMany
+    {
+        return $this->hasMany(Payrun::class);
     }
 }

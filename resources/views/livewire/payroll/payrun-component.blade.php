@@ -81,15 +81,10 @@
 
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a wire:click="view({{ $data->id }})"
-                                                        class="dropdown-item text-primary" href="javascript:void(0)"><i
-                                                            class="fa fa-eye" aria-hidden="true"></i></a>
-                                                    <a wire:click="edit({{ $data->id }})"
-                                                        class="dropdown-item text-warning" href="javascript:void(0)"><i
-                                                            class="fa fa-edit" aria-hidden="true"></i></a>
-                                                    <a wire:click="alertConfirm({{ $data->id }})"
-                                                        class="dropdown-item text-danger" href="javascript:void(0)"><i
-                                                            class="fa fa-trash" aria-hidden="true"></i></a>
+                                                    <a wire:click.prevent="generateAba({{ $data->id }})" class="dropdown-item text-primary" href="javascript:void(0)">
+                                                        <i class="fa fa-download" aria-hidden="true"></i> Download ABA
+                                                    </a>
+
                                                 </div>
 
                                             </td>

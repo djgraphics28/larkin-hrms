@@ -216,9 +216,13 @@ class Helpers
             $holiday_ot = $hours->holiday_ot_hr * $get_rate->salary_rate;
             $npf = $regular * 0.06;
 
-            Payslip::create(
+            Payslip::updateOrCreate(
                 [
                     'employee_id' => $hours->employee_id,
+                    'fortnight_id' => $fn_id,
+                ],
+                [
+
                     'payrun_id' => $payrun_id,
 
                     'regular' => $regular,
