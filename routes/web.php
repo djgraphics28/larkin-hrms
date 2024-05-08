@@ -2,11 +2,13 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\User\RoleComponent;
 use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
 use App\Livewire\Dashboard\Dashboard;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Asset\AssetComponent;
+use App\Livewire\Loan\LoanTypeComponent;
 use App\Livewire\Tax\TaxTablesComponent;
 use App\Livewire\Asset\AssetTypeComponent;
 use App\Livewire\Leave\LeaveTypeComponent;
@@ -19,12 +21,14 @@ use App\Http\Controllers\ApproveLeaveRequest;
 use App\Livewire\Holiday\SetHolidayComponent;
 use App\Livewire\Leave\LeaveRequestComponent;
 use App\Livewire\Workshift\WorkshiftComponent;
+use App\Http\Controllers\AbaGenerateController;
 use App\Livewire\Department\DepartmentComponent;
 use App\Livewire\Employee\EmployeeInfoComponent;
 use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
 use App\Livewire\Employee\ImportEmployeeComponent;
 use App\Livewire\Attendance\AttendanceLogComponent;
+use App\Livewire\AbaGenerator\AbaGeneratorComponent;
 use App\Livewire\CompanyDetails\BankDetailsComponent;
 use App\Livewire\Attendance\AttendanceImportComponent;
 use App\Livewire\EmailTemplate\EmailTemplateComponent;
@@ -34,6 +38,7 @@ use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Livewire\EmailTemplate\EmailTemplateTypeComponent;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Livewire\Payroll\PayrunComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +68,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/fortnight-generator', FortnightGeneratorComponent::class)->name('fortnight-generator');
         Route::get('/workshift', WorkshiftComponent::class)->name('workshift');
         Route::get('/users', UserComponent::class)->name('users');
+        Route::get('/roles', RoleComponent::class)->name('roles');
         Route::get('/bank-details', BankDetailsComponent::class)->name('bank-details');
         Route::get('/tax-table', TaxTablesComponent::class)->name('tax-table');
         Route::get('/set-holiday', SetHolidayComponent::class)->name('set-holiday');
@@ -89,6 +95,8 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
     // Payroll routes
     Route::group(['prefix' => 'payroll'], function () {
         Route::get('/payslip', PayslipComponent::class)->name('payslip');
+        Route::get('/aba-generate', AbaGeneratorComponent::class)->name('aba-generate');
+        Route::get('/payrun', PayrunComponent::class)->name('payrun');
     });
 
     // Leave routes
@@ -99,7 +107,8 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
 
     // Loan routes
     Route::group(['prefix' => 'loan'], function () {
-        Route::get('/cash-advance', LoanRequestComponent::class)->name('cash-advance');
+        Route::get('/request', LoanRequestComponent::class)->name('loans');
+        Route::get('/type', LoanTypeComponent::class)->name('loan-type');
     });
 
     // General Settings
@@ -112,8 +121,8 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/', EmailTemplateComponent::class)->name('email-template');
     });
 
-     // Asset routes
-     Route::group(['prefix' => 'asset'], function () {
+    // Asset routes
+    Route::group(['prefix' => 'asset'], function () {
         Route::get('/', AssetComponent::class)->name('asset');
         Route::get('/type', AssetTypeComponent::class)->name('asset-type');
     });
@@ -131,5 +140,6 @@ Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->n
 
 // Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 
+Route::get('/aba-download/{payrun_id}', [AbaGenerateController::class, 'generate'])->name('aba-download');
 // Route::post('login', [AuthenticatedSessionController::class, 'store']);
 require __DIR__ . '/auth.php';

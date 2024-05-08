@@ -11,6 +11,7 @@ use App\Models\SalaryHistory;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -103,6 +104,16 @@ class Employee extends Model implements HasMedia
     }
 
     /**
+     * Get the active_bank_detail associated with the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function active_bank_detail(): HasOne
+    {
+        return $this->hasOne(BankDetail::class, 'employee_id', 'id')->where('is_active', 1);
+    }
+
+    /**
      * Get all of the leave_credits for the Employee
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -156,6 +167,16 @@ class Employee extends Model implements HasMedia
     public function nasfund(): HasMany
     {
         return $this->hasMany(Nasfund::class, 'employee_id', 'id');
+    }
+
+    /**
+     * Get the aba_payslip associated with the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function aba_payslip(): HasOne
+    {
+        return $this->hasOne(Payslip::class);
     }
 
     /**

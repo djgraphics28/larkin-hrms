@@ -97,9 +97,9 @@ class Helpers
         return $randomString;
     }
 
-    public static function computeHours($selected_fn)
+    public static function computeHours($fn_id, $businessId, $module, $payrun_id, $employee_ids)
     {
-        $getDates = Fortnight::where('id', $selected_fn)->first();
+        $getDates = Fortnight::where('id', $fn_id)->first();
 
         $start = $getDates->start;
         $end = $getDates->end;
@@ -111,9 +111,14 @@ class Helpers
 
         $end = $endDate->format('Y-m-d');
 
-        $businessId = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
+        // $businessId = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
 
-        $getEmployee = Employee::where('business_id', $businessId)->get();
+        $getEmployee = Employee::where('business_id', $businessId)
+            ->whereIn('id', $employee_ids)
+            ->whereHas('attendances', function ($query) use ($fn_id) {
+                $query->where('fortnight_id', $fn_id);
+            })
+            ->get();
 
 
 
@@ -190,11 +195,16 @@ class Helpers
                 );
             }
         }
+
+        if ($module === 'payrun') {
+            Helpers::computePay($payrun_id, $fn_id, $employee_ids);
+        }
     }
 
-    public static function computePay($selected_fn)
+    public static function computePay($payrun_id, $fn_id, $employee_ids)
     {
-        $get_hours = EmployeeHours::where('fortnight_id', $selected_fn)->get();
+        $get_hours = EmployeeHours::where('fortnight_id', $fn_id)
+            ->whereIn('employee_id', $employee_ids)->get();
 
         foreach ($get_hours as $hours) {
             $get_rate = SalaryHistory::where('employee_id', $hours->employee_id)
@@ -209,9 +219,12 @@ class Helpers
             Payslip::updateOrCreate(
                 [
                     'employee_id' => $hours->employee_id,
-                    'fortnight_id' => $selected_fn,
+                    'fortnight_id' => $fn_id,
                 ],
                 [
+
+                    'payrun_id' => $payrun_id,
+
                     'regular' => $regular,
                     'overtime' => $overtime,
                     'sunday_ot' => $sunday_ot,

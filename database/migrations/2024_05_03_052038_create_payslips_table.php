@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('payslips', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('fortnight_id');
             $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('fortnight_id');
+            $table->unsignedBigInteger('payrun_id');
             $table->decimal('regular', 10, 2);
             $table->decimal('overtime', 10, 2);
             $table->decimal('sunday_ot', 10, 2);
@@ -35,6 +36,12 @@ return new class extends Migration
                 ->foreign('fortnight_id')
                 ->references('id')
                 ->on('fortnights')
+                ->onUpdate('CASCADE')
+                ->onDelete('CASCADE');
+            $table
+                ->foreign('payrun_id')
+                ->references('id')
+                ->on('payruns')
                 ->onUpdate('CASCADE')
                 ->onDelete('CASCADE');
             $table->timestamps();

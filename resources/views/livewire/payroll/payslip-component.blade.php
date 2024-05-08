@@ -4,12 +4,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Payslip | Generate</h1>
+                    <h1 class="m-0">Payslip | View</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Payslip | Generate</li>
+                        <li class="breadcrumb-item active">Payslip | View</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="col-md-1">
                                     <div class="form-group">
-                                        <button wire:click="generate" class="btn btn-primary">Generate</button>
+                                        <button wire:click="show" class="btn btn-primary">View</button>
                                     </div>
                                 </div>
                             </div>
@@ -131,39 +131,38 @@
                                     </thead>
                                     <tbody>
                                         @include('shared.table-loader')
-                                        @forelse ($employees as $data)
+
+                                        @forelse ($payslip as $data)
+
                                             <tr>
                                                 <td class="text-start"><input type="checkbox"
                                                         wire:model.prevent="selectedRows" value="{{ $data->id }}">
                                                 </td>
-                                                <td class="text-center">{{ $data->employee_number }}</td>
-                                                <td class="text-start">{{ $data->first_name }} {{ $data->last_name }}</td>
 
+                                                <td class="text-center">{{ $data->employee->employee_number }}</td>
+                                                <td class="text-start">{{ $data->employee->first_name }} {{ $data->employee->last_name }}</td>
 
-                                                @forelse($data->payslip as $payslip)
-                                                    @if($selectedFN === $payslip->fortnight_id && $data->id === $payslip->employee_id)
-                                                        <td class="text-center">{{ $payslip->regular }}</td>
-                                                        <td class="text-center">{{ $payslip->overtime }}</td>
-                                                        <td class="text-center">{{ $payslip->sunday_ot }}</td>
-                                                        <td class="text-center">{{ $payslip->holiday_ot }}</td>
-                                                        <td class="text-center">{{ $payslip->plp_alp_fp }}</td>
-                                                        <td class="text-center">{{ $payslip->other }}</td>
-                                                        <td class="text-center">{{ $payslip->fn_tax }}</td>
-                                                        <td class="text-center">{{ $payslip->npf }}</td>
-                                                        <td class="text-center">{{ $payslip->ncsl }}</td>
-                                                        <td class="text-center">{{ $payslip->cash_adv }}</td>
-                                                    @endif
-                                                @empty
-                                                    <td rowspan="10" colspan="22" class="text-center"><i
-                                                        class="fa fa-ban" aria-hidden="true"></i> No Result Found</td>
-                                                @endforelse
+                                                <td class="text-center">{{ $data->regular }}</td>
+                                                <td class="text-center">{{ $data->overtime }}</td>
+                                                <td class="text-center">{{ $data->sunday_ot }}</td>
+                                                <td class="text-center">{{ $data->holiday_ot }}</td>
+                                                <td class="text-center">{{ $data->plp_alp_fp }}</td>
+                                                <td class="text-center">{{ $data->other }}</td>
+
+                                                <td class="text-center">{{ $data->fn_tax }}</td>
+                                                <td class="text-center">{{ $data->npf }}</td>
+                                                <td class="text-center">{{ $data->ncsl }}</td>
+                                                <td class="text-center">{{ $data->cash_adv }}</td>
+
                                             </tr>
+
                                         @empty
                                             <tr>
                                                 <td rowspan="5" colspan="22" class="text-center"><i
                                                         class="fa fa-ban" aria-hidden="true"></i> No Result Found</td>
                                             </tr>
                                         @endforelse
+
                                     </tbody>
                                 </table>
                             </div>

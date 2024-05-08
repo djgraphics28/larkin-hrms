@@ -4,15 +4,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Email Variables</h1>
+                    <h1 class="m-0">Loan Types</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('email-template') }}">Email
-                                Templates</a>
-                        </li>
-                        <li class="breadcrumb-item active">Email Variables</li>
+                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('loans') }}">Loans</a></li>
+                        <li class="breadcrumb-item active">Loan Types</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -28,9 +26,9 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <a wire:navigate href="{{ route('email-template') }}" type="button"
+                                <a wire:navigate href="{{ route('loans') }}" type="button"
                                     class="btn btn-secondary btn-sm mr-2"><i class="fa fa-arrow-left"
-                                        aria-hidden="true"></i> Return to Email Templates</a>
+                                        aria-hidden="true"></i> Return to Loans</a>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
                                         class="fa fa-plus" aria-hidden="true"></i> Add New</button>
                             </div>
@@ -61,15 +59,17 @@
                                 <thead>
                                     <tr>
                                         <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
-                                        <th class="text-start">Name</th>
-                                        <th class="text-start">Variable</th>
+                                        <th class="text-start">Loan Type Name</th>
+                                        <th class="text-center">Status</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td colspan="4" class="text-center align-items-center">
-                                            <div wire:loading wire:target="search"><livewire:table-loader /></div>
+                                        <td colspan="5" class="text-center align-items-center">
+                                            <div wire:loading wire:target="search" class="overlay dark">
+                                                <livewire:table-loader />
+                                            </div>
                                         </td>
                                     </tr>
                                     @forelse ($records as $data)
@@ -77,7 +77,7 @@
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
                                             <td class="text-start">{{ $data->name }}</td>
-                                            <td class="text-start">{{ $data->variable }}</td>
+                                            <td class="text-center">@livewire('active-status', ['model' => $data, 'field' => 'is_active'], key($data->id))</td>
                                             <td class="text-center">
                                                 <div class="btn-group">
                                                     <a wire:click="edit({{ $data->id }})"
@@ -92,7 +92,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4">
+                                            <td colspan="5">
                                                 <livewire:no-data-found />
                                             </td>
                                         </tr>
@@ -121,29 +121,28 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="submit()">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="">Email Variable Name</label>
-                            <input wire:model="name" type="text"
-                                class="form-control form-control-lg @error('name') is-invalid @enderror">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Loan Type Name</label>
+                        <input wire:model="name" type="text"
+                            class="form-control form-control-lg @error('name') is-invalid @enderror">
 
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+                        @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        @if ($updateMode == true)
-                            <button wire:click.prevent="update()" class="btn btn-success">Update</button>
-                        @else
-                            <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
-                            <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
-                        @endif
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    @if ($updateMode == true)
+                        <button wire:click.prevent="update()" class="btn btn-success">Update</button>
+                    @else
+                        <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
+                        <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
