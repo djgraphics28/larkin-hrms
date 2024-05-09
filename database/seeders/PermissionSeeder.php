@@ -41,8 +41,8 @@ class PermissionSeeder extends Seeder
             'delete_workshifts',
             'export_workshifts',
             //Fortnights
-            'access_fortnights',
-            'create_fortnights',
+            'access_fortnight',
+            'create_fortnight',
             //User & Roles
             'access_users',
             'create_users',
@@ -109,6 +109,7 @@ class PermissionSeeder extends Seeder
             'delete_employee_statuses',
             'export_employee_statuses',
             //Attendances
+            'access_attendances',
             'access_logs_timesheets',
             'create_attendances',
             'show_attendances',
@@ -116,6 +117,7 @@ class PermissionSeeder extends Seeder
             'delete_attendances',
             'import_attendances',
             'export_attendances',
+            'access_attendance_adjustments',
             //Leaves
             'access_leaves',
             'create_leaves',
@@ -138,12 +140,14 @@ class PermissionSeeder extends Seeder
             'delete_payruns',
             'export_payruns',
             //Payslip
-            'access_payslip',
-            'create_payslip',
-            'show_payslip',
-            'edit_payslip',
-            'delete_payslip',
-            'export_payslip',
+            'access_payslips',
+            'create_payslips',
+            'show_payslips',
+            'edit_payslips',
+            'delete_payslips',
+            'export_payslips',
+            //ABA Generator
+            'access_aba_generator',
             //Loans
             'access_loans',
             'create_loans',
