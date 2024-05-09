@@ -18,9 +18,9 @@ class Payrun extends Model
     {
         $searchTerm = "%$searchTerm%";
 
-        $query->where(function ($query) use ($searchTerm) {
+        $query->whereHas('fortnight', function ($query) use ($searchTerm) {
 
-            $query->where('fortnight_id', 'like', $searchTerm);
+            $query->where('code', 'like', $searchTerm);
         });
     }
 

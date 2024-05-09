@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
             $table->integer('number_of_hours');
+            $table->integer('number_of_hours_fn');
             $table->string('start');
             $table->string('end');
             $table->timestamps();
