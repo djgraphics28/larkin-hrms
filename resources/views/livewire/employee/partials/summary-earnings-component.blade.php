@@ -48,6 +48,10 @@
                     <td class="text-center">K {{number_format($netSalary,2)}}</td>
                 </tr>
             @empty
+                <tr>
+                    <td rowspan="5" colspan="12" class="text-center"><i
+                                                        class="fa fa-ban" aria-hidden="true"></i> No Result Found</td>
+                </tr>
             @endforelse
         </tbody>
     </table>
