@@ -13,7 +13,7 @@
         <li class="nav-item d-none d-sm-inline-block">
             <a href="#" class="nav-link">Contact</a>
         </li> --}}
-        <div class="dropdown">
+        {{-- <div class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 Quick Add
@@ -27,7 +27,7 @@
                     Status</button>
                 <button class="dropdown-item" type="button"><i class="far fa fa-plus nav-icon"></i> Employee</button>
             </div>
-        </div>
+        </div> --}}
         <div class="ml-3">
             @livewire('business-selection')
         </div>
