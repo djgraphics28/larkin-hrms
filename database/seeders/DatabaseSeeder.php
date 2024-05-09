@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Database\Seeders\AdminSeeder;
+use Database\Seeders\SuperAdminSeeder;
 use Database\Seeders\WeekDaySeeder;
 use Database\Seeders\BusinessSeeder;
 use Database\Seeders\LoanTypeSeeder;
@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeeder::class);
         $this->call(DepartmentSeeder::class);
         $this->call(BusinessSeeder::class);
-        $this->call(AdminSeeder::class);
+        $this->call(SuperAdminSeeder::class);
         $this->call(WeekDaySeeder::class);
         $this->call(WorkshiftSeeder::class);
         $this->call(DesignationSeeder::class);

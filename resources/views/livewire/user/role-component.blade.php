@@ -78,17 +78,24 @@
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
                                             <td class="text-start">{{ $data->name }}</td>
-                                            <td class="text-start"></td>
+                                            <td class="text-start">
+                                                @foreach ($data->permissions as $permission)
+                                                    <span class="badge badge-primary">{{ $permission->name }}</span>
+                                                @endforeach
+                                            </td>
                                             <td class="text-center">
-                                                <div class="btn-group">
-                                                    <a wire:click="edit({{ $data->id }})"
-                                                        class="dropdown-item text-warning" href="javascript:void(0)"><i
-                                                            class="fa fa-edit" aria-hidden="true"></i></a>
-                                                    <a wire:click="alertConfirm({{ $data->id }})"
-                                                        class="dropdown-item text-danger" href="javascript:void(0)"><i
-                                                            class="fa fa-trash" aria-hidden="true"></i></a>
-                                                </div>
-
+                                                @if ($data->name != 'Admin')
+                                                    <div class="btn-group">
+                                                        <a wire:click="edit({{ $data->id }})"
+                                                            class="dropdown-item text-warning"
+                                                            href="javascript:void(0)"><i class="fa fa-edit"
+                                                                aria-hidden="true"></i></a>
+                                                        <a wire:click="alertConfirm({{ $data->id }})"
+                                                            class="dropdown-item text-danger"
+                                                            href="javascript:void(0)"><i class="fa fa-trash"
+                                                                aria-hidden="true"></i></a>
+                                                    </div>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty
@@ -152,7 +159,7 @@
                                 <div class="custom-control custom-switch">
                                     <input {{ $access_dashboard ? 'checked' : '' }} type="checkbox"
                                         class="custom-control-input" id="access_dashboard"
-                                        wire:model="access_dashboard" checked>
+                                        wire:model="access_dashboard">
                                     <label class="custom-control-label" for="access_dashboard">Dashboard
                                         Management</label>
                                 </div>
@@ -619,7 +626,7 @@
                                         <div class="custom-control custom-switch">
                                             <input {{ $create_leaves ? 'checked' : '' }} type="checkbox"
                                                 class="custom-control-input" id="create_leaves"
-                                                wire:model="create_employees">
+                                                wire:model="create_leaves">
                                             <label class="custom-control-label" for="create_leaves">Can Create New
                                                 Leave</label>
                                         </div>
@@ -654,7 +661,7 @@
                                         <div class="custom-control custom-switch">
                                             <input {{ $create_payroll ? 'checked' : '' }} type="checkbox"
                                                 class="custom-control-input" id="create_payroll"
-                                                wire:model="create_emppayroll">
+                                                wire:model="create_payroll">
                                             <label class="custom-control-label" for="create_payroll">Can Create New
                                                 Payroll</label>
                                         </div>
@@ -887,7 +894,8 @@
                                             <input {{ $access_email_template_types ? 'checked' : '' }} type="checkbox"
                                                 class="custom-control-input" id="access_email_template_types"
                                                 wire:model="access_email_template_types">
-                                            <label class="custom-control-label" for="access_email_template_types">Access to
+                                            <label class="custom-control-label"
+                                                for="access_email_template_types">Access to
                                                 Email Template Types</label>
                                         </div>
                                         <div class="custom-control custom-switch">
@@ -903,7 +911,8 @@
                                             <input {{ $edit_email_template_types ? 'checked' : '' }} type="checkbox"
                                                 class="custom-control-input" id="edit_email_template_types"
                                                 wire:model="edit_email_template_types">
-                                            <label class="custom-control-label" for="edit_email_template_types">Can Edit
+                                            <label class="custom-control-label" for="edit_email_template_types">Can
+                                                Edit
                                                 Email Template Type</label>
                                         </div>
                                         <div class="custom-control custom-switch">
