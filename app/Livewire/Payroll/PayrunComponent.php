@@ -49,7 +49,7 @@ class PayrunComponent extends Component
 
     public function getRecordsProperty()
     {
-        return Payrun::search(trim($this->search))->paginate($this->perPage);
+        return Payrun::search(trim($this->search))->orderBy('id', 'desc')->paginate($this->perPage);
     }
 
     public function mount()
