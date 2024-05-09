@@ -125,6 +125,13 @@ class PermissionSeeder extends Seeder
             'edit_leaves',
             'delete_leaves',
             'export_leaves',
+            //LeaveTypes
+            'access_leave_types',
+            'create_leave_types',
+            'show_leave_types',
+            'edit_leave_types',
+            'delete_leave_types',
+            'export_leave_types',
             //Payroll
             'access_payroll',
             'create_payroll',
@@ -212,7 +219,7 @@ class PermissionSeeder extends Seeder
         }
 
         $role = Role::create([
-            'name' => 'Admin'
+            'name' => 'SuperAdmin'
         ]);
 
         $role->givePermissionTo($permissions);

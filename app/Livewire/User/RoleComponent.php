@@ -37,7 +37,7 @@ class RoleComponent extends Component
     //Dashboard
     public $access_dashboard = false;
     //Apps ///////////////////////////>>>>>>>>>>>>>>>
-    public $access_apps_management = true;
+    public $access_apps_management = false;
     //Businesses
     public $access_businesses = false;
     public $create_businesses = false;
@@ -233,7 +233,7 @@ class RoleComponent extends Component
 
     public function getRecordsProperty()
     {
-        return Role::paginate($this->perPage);
+        return Role::whereNot('name','SuperAdmin')->paginate($this->perPage);
     }
 
     public function updatedSelectAll($value)

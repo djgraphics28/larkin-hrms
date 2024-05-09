@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Business;
+use App\Models\BusinessUser;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -79,5 +80,15 @@ class User extends Authenticatable
     public function active_business(): HasOne
     {
         return $this->hasOne(BusinessUser::class, 'user_id', 'id')->where('is_active', true)->select('business_id');
+    }
+
+    /**
+     * Get all of the business_user for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function business_user(): HasMany
+    {
+        return $this->hasMany(BusinessUser::class, 'user_id', 'id');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Livewire\User;
 use App\Models\User;
 use Livewire\Component;
 use App\Models\Business;
+use App\Models\BusinessUser;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
@@ -53,12 +54,12 @@ class UserComponent extends Component
     public function mount()
     {
         $this->businesses = Business::where('is_active', 1)->get();
-        $this->roles = Role::all();
+        $this->roles = Role::whereNot('name','SuperAdmin')->get();
     }
 
     public function getRecordsProperty()
     {
-        return User::with(['businesses', 'roles'])->search(trim($this->search))
+        return User::whereNot('is_super_admin', 1)->with(['businesses', 'roles'])->search(trim($this->search))
             ->paginate($this->perPage);
     }
 
@@ -89,25 +90,33 @@ class UserComponent extends Component
             'role' => 'required',
         ]);
 
-        $create = User::create([
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => Hash::make($this->password),
-        ]);
+        if(empty($this->selectedBusinessRows)) {
+            $this->alert('warning', 'Please assign business to this user!');
+        }else{
 
-        $create->assignRole($this->role);
+            $user = User::create([
+                'name' => $this->name,
+                'email' => $this->email,
+                'password' => Hash::make($this->password),
+            ]);
 
-        $create->businesses()->sync($this->selectedBusinessRows);
+            $user->assignRole($this->role);
+            $user->businesses()->sync($this->selectedBusinessRows);
 
-        if ($create) {
-            $this->resetInputFields();
-            if ($saveAndCreateNew) {
-                $this->alert('success', 'New User has been save successfully!');
-            } else {
-                $this->dispatch('hide-add-modal');
-                $this->alert('success', 'New User has been save successfully!');
+            $businessUser = BusinessUser::where('user_id',$user->id)->first();
+            $businessUser->update(['is_active' => 1]);
+
+            if ($user) {
+                $this->resetInputFields();
+                if ($saveAndCreateNew) {
+                    $this->alert('success', 'New User has been save successfully!');
+                } else {
+                    $this->dispatch('hide-add-modal');
+                    $this->alert('success', 'New User has been save successfully!');
+                }
             }
         }
+
     }
 
     public function resetInputFields()
