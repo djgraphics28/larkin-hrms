@@ -113,6 +113,9 @@
                                 <li class="nav-item"><a class="nav-link" href="#attendance_logs"
                                         data-toggle="tab">Attendance Logs</a>
                                 </li>
+                                <li class="nav-item"><a class="nav-link" href="#summary_earnings"
+                                        data-toggle="tab">Summary of Earnings</a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="#loan_history" data-toggle="tab">Loan History</a>
                                 </li>
@@ -155,6 +158,11 @@
                                 <!-- /.tab-pane -->
 
                                 <div class="tab-pane" id="attendance_logs">
+                                </div>
+                                <!-- /.tab-pane -->
+
+                                <div class="tab-pane" id="summary_earnings">
+                                    @livewire('employee.partials.summary-earnings-component', ['id' => $id])
                                 </div>
                                 <!-- /.tab-pane -->
 

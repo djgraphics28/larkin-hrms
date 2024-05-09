@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="col-md-1">
                                     <div class="form-group">
-                                        <button wire:click="show" class="btn btn-primary">View</button>
+                                        <button wire:click="view" class="btn btn-primary">View</button>
                                     </div>
                                 </div>
                             </div>

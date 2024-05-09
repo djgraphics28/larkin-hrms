@@ -172,9 +172,9 @@ class Helpers
             }
 
 
-            if ($employee->workshift->number_of_hours <= $total_hours) {
-                $ot_hours = ($total_hours - $employee->workshift->number_of_hours);
-                $regular_hours = $employee->workshift->number_of_hours;
+            if ($employee->workshift->number_of_hours_fn <= $total_hours) {
+                $ot_hours = ($total_hours - $employee->workshift->number_of_hours_fn);
+                $regular_hours = $employee->workshift->number_of_hours_fn;
             } else {
                 $regular_hours = $total_hours;
             }

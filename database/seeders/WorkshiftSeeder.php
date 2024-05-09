@@ -18,6 +18,7 @@ class WorkshiftSeeder extends Seeder
             'title' => 'Regular Dayshift',
             'description' => 'Regular Dayshift',
             'number_of_hours' => 9,
+            'number_of_hours_fn' => 84,
             'start' => Carbon::createFromTime(8, 0)->format('H:i'), // Formatting start time using Carbon
             'end' => Carbon::createFromTime(17, 0)->format('H:i'), // Formatting end time using Carbon
             'created_at' => now(),
