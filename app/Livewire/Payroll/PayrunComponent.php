@@ -3,14 +3,16 @@
 namespace App\Livewire\Payroll;
 
 use App\Models\Payrun;
+use App\Models\Payslip;
 use Livewire\Component;
 use App\Helpers\Helpers;
 use App\Models\Business;
 use App\Models\Employee;
 use App\Models\Fortnight;
 use App\Models\Department;
-use App\Models\Payslip;
+use App\Models\BusinessUser;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 class PayrunComponent extends Component
@@ -49,14 +51,16 @@ class PayrunComponent extends Component
 
     public function getRecordsProperty()
     {
-        return Payrun::search(trim($this->search))->orderBy('id', 'desc')->paginate($this->perPage);
+
+        return Payrun::where('business_id', $this->business_id)
+            ->search(trim($this->search))->orderBy('id', 'desc')->paginate($this->perPage);
     }
 
     public function mount()
     {
         $this->fortnights = Fortnight::all();
 
-        $this->businesses = Business::all();
+        $this->business_id = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
 
         $this->departments = Department::all();
     }
@@ -64,7 +68,6 @@ class PayrunComponent extends Component
     public function resetInputFields()
     {
         $this->fortnight_id = '';
-        $this->business_id = '';
         $this->department_ids = [];
         $this->employee_ids = [];
     }
