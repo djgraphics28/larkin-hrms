@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Businesses</li>
                     </ol>
                 </div><!-- /.col -->
@@ -61,6 +61,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
+                                        <th class="text-center">Code</th>
                                         <th class="text-start">Business Name</th>
                                         <th width="30%" class="text-start">Departments</th>
                                         <th class="text-center">Contact Number</th>
@@ -71,11 +72,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @include('shared.table-loader')
+                                    <tr>
+                                        <td colspan="9" class="text-center align-items-center">
+                                            <div wire:loading wire:target="search"><livewire:table-loader /></div>
+                                        </td>
+                                    </tr>
                                     @forelse ($records as $data)
-                                        <tr>
+                                        <tr wire:key="search-{{ $data->id }}">
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
+                                            <td class="text-center">{{ $data->code }}</td>
                                             <td class="text-start">{{ $data->name }}</td>
                                             <td class="text-start">
                                                 @forelse ($data->departments as $dept)
@@ -90,9 +96,6 @@
                                             <td class="text-center">{{ $data->employees_count }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a wire:click="view({{ $data->id }})"
-                                                        class="dropdown-item text-primary" href="javascript:void(0)"><i
-                                                            class="fa fa-eye" aria-hidden="true"></i></a>
                                                     <a wire:click="edit({{ $data->id }})"
                                                         class="dropdown-item text-warning" href="javascript:void(0)"><i
                                                             class="fa fa-edit" aria-hidden="true"></i></a>
@@ -105,8 +108,9 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td rowspan="5" colspan="7" class="text-center"><i class="fa fa-ban"
-                                                    aria-hidden="true"></i> No Result Found</td>
+                                            <td colspan="9">
+                                                <livewire:no-data-found />
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -125,7 +129,7 @@
 
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
         aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">{{ $modalTitle }}</h5>
@@ -133,98 +137,109 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="submit()">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="">Business Name</label>
-                            <input wire:model="name" type="text"
-                                class="form-control form-control-lg @error('name') is-invalid @enderror">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Code</label>
+                        <input wire:model="code" type="text"
+                            class="form-control form-control-lg @error('code') is-invalid @enderror">
 
-                            @error('name')
+                        @error('code')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="">Business Name</label>
+                        <input wire:model="name" type="text"
+                            class="form-control form-control-lg @error('name') is-invalid @enderror">
+
+                        @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            <label for="">Contact Number</label>
+                            <input wire:model="contact_number" type="text"
+                                class="form-control form-control-lg @error('contact_number') is-invalid @enderror">
+
+                            @error('contact_number')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
-                        <div class="row">
-                            <div class="form-group col-6">
-                                <label for="">Contact Number</label>
-                                <input wire:model="contact_number" type="text"
-                                    class="form-control form-control-lg @error('contact_number') is-invalid @enderror">
+                        <div class="form-group col-6">
+                            <label for="">Address</label>
+                            <input wire:model="address" type="text"
+                                class="form-control form-control-lg @error('address') is-invalid @enderror">
 
-                                @error('contact_number')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            <div class="form-group col-6">
-                                <label for="">Address</label>
-                                <input wire:model="address" type="text"
-                                    class="form-control form-control-lg @error('address') is-invalid @enderror">
-
-                                @error('address')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group" wire:ignore>
-                            <label>Select Departments</label>
-                            <table class="table table-sm table-condensed">
-                                <tbody>
-                                    <tr>
-                                        <th width="10px" class="text-start"><input type="checkbox"
-                                                wire:model.live="selectAllDepartment"></th>
-                                        <th>Select All</th>
-                                    </tr>
-                                    @foreach ($departments as $data)
-                                        <tr>
-                                            <td class="text-start"><input id="{{ $data->name }}" type="checkbox"
-                                                    wire:model.prevent="selectedDepartmentRows"
-                                                    value="{{ $data->id }}"></td>
-                                            <td><label for="{{ $data->name }}">{{ $data->name }}</label></td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            @if ($updateMode == true)
-                                <button wire:click.prevent="update()" class="btn btn-success">Update</button>
-                            @else
-                                <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
-                                <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create
-                                    New</button>
-                            @endif
+                            @error('address')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
                     </div>
+
+                    <div class="form-group" wire:ignore>
+                        <label>Select Departments</label>
+                        <table class="table table-sm table-condensed">
+                            <tbody>
+                                <tr>
+                                    <th width="10px" class="text-start"><input type="checkbox"
+                                            wire:model.live="selectAllDepartment"></th>
+                                    <th>Select All</th>
+                                </tr>
+                                @foreach ($departments as $data)
+                                    <tr>
+                                        <td class="text-start"><input id="{{ $data->name }}" type="checkbox"
+                                                wire:model.prevent="selectedDepartmentRows"
+                                                value="{{ $data->id }}"></td>
+                                        <td><label for="{{ $data->name }}">{{ $data->name }}</label></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    @if ($updateMode == true)
+                        <button wire:click.prevent="update()" class="btn btn-success">Update</button>
+                    @else
+                        <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
+                        <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create
+                            New</button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    @push('scripts')
-        <script>
-            window.addEventListener('show-add-modal', () => {
-                $('#addModal').modal('show');
-            });
+@push('scripts')
+    <script>
+        window.addEventListener('show-add-modal', () => {
+            $('#addModal').modal('show');
+        });
 
-            window.addEventListener('hide-add-modal', () => {
-                $('#addModal').modal('hide');
-            });
-        </script>
+        window.addEventListener('hide-add-modal', () => {
+            $('#addModal').modal('hide');
+        });
+    </script>
 
-        <script>
-            $(function() {
-                $('.select2').select2()
+    <script>
+        $(function() {
+            $('.select2').select2()
 
-                //Initialize Select2 Elements
-                $('.select2bs4').select2({
-                    theme: 'bootstrap4'
-                })
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
             })
-        </script>
-    @endpush
+        })
+    </script>
+@endpush

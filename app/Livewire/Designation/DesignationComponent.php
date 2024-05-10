@@ -21,7 +21,7 @@ class DesignationComponent extends Component
     public $perPage = 10;
     #[Url]
     public $search = '';
-    public $modalTitle = 'Add New Business|Branch';
+    public $modalTitle = 'Add New Designation';
     public $updateMode = false;
 
     public $name;
@@ -43,6 +43,7 @@ class DesignationComponent extends Component
     public function getRecordsProperty()
     {
         return Designation::withCount('employees')->search(trim($this->search))
+            ->orderBy('name', 'asc')
             ->paginate($this->perPage);
     }
 
@@ -88,8 +89,6 @@ class DesignationComponent extends Component
     public function resetInputFields()
     {
         $this->name = '';
-        $this->contact_number = '';
-        $this->address = '';
     }
 
     public function edit($id)

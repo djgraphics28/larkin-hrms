@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Departments</li>
                     </ol>
                 </div><!-- /.col -->
@@ -27,8 +27,8 @@
                             <div class="btn-group float-right" role="group" aria-label="Groups">
                                 <button type="button" class="btn btn-warning btn-sm mr-2"><i class="fa fa-upload"
                                         aria-hidden="true"></i> Import</button>
-                                <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i class="fa fa-file-excel"
-                                        aria-hidden="true"></i> Export</button>
+                                <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i
+                                        class="fa fa-file-excel" aria-hidden="true"></i> Export</button>
                                 <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
                                         aria-hidden="true"></i> PDF</button>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
@@ -68,9 +68,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                   @include('shared.table-loader')
+                                    <tr>
+                                        <td colspan="5" class="text-center align-items-center">
+                                            <div wire:loading wire:target="search" class="overlay dark">
+                                                <livewire:table-loader /></div>
+                                        </td>
+                                    </tr>
                                     @forelse ($records as $data)
-                                        <tr>
+                                        <tr wire:key="search-{{ $data->id }}">
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
                                             <td class="text-start">{{ $data->name }}</td>
@@ -78,9 +83,6 @@
                                             <td class="text-center">{{ $data->employees_count }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a wire:click="view({{ $data->id }})"
-                                                        class="dropdown-item text-primary" href="javascript:void(0)"><i
-                                                            class="fa fa-eye" aria-hidden="true"></i></a>
                                                     <a wire:click="edit({{ $data->id }})"
                                                         class="dropdown-item text-warning" href="javascript:void(0)"><i
                                                             class="fa fa-edit" aria-hidden="true"></i></a>
@@ -93,8 +95,9 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td rowspan="5" colspan="7" class="text-center"><i class="fa fa-ban"
-                                                    aria-hidden="true"></i> No Result Found</td>
+                                            <td colspan="5">
+                                                <livewire:no-data-found />
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -121,29 +124,28 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="submit()">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="">Department Name</label>
-                            <input wire:model="name" type="text"
-                                class="form-control form-control-lg @error('name') is-invalid @enderror">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Department Name</label>
+                        <input wire:model="name" type="text"
+                            class="form-control form-control-lg @error('name') is-invalid @enderror">
 
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+                        @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        @if ($updateMode == true)
-                            <button wire:click.prevent="update()" class="btn btn-success">Update</button>
-                        @else
-                            <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
-                            <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
-                        @endif
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    @if ($updateMode == true)
+                        <button wire:click.prevent="update()" class="btn btn-success">Update</button>
+                    @else
+                        <button wire:click.prevent="submit(false)" class="btn btn-primary">Save</button>
+                        <button wire:click.prevent="submit(true)" class="btn btn-info">Save & Create New</button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

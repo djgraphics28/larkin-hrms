@@ -25,6 +25,7 @@ class BusinessComponent extends Component
     public $modalTitle = 'Add New Business|Branch';
     public $updateMode = false;
 
+    public $code;
     public $name;
     public $contact_number;
     public $address;
@@ -88,16 +89,18 @@ class BusinessComponent extends Component
     public function submit($saveAndCreateNew)
     {
         $this->validate([
-            'name' => 'required'
+            'code' => 'required',
+            'name' => 'required',
         ]);
 
         $create = Business::create([
+            'code' => $this->code,
             'name' => $this->name,
             'contact_number' => $this->contact_number,
             'address' => $this->address,
         ]);
 
-        $data->departments()->sync($this->selectedDepartmentRows);
+        $create->departments()->sync($this->selectedDepartmentRows);
 
         if($create){
             $this->resetInputFields();
@@ -123,6 +126,7 @@ class BusinessComponent extends Component
         $this->edit_id = $id;
         $this->dispatch('show-add-modal');
         $data = Business::find($id);
+        $this->code = $data->code;
         $this->name = $data->name;
         $this->contact_number = $data->contact_number;
         $this->address = $data->address;
@@ -134,11 +138,13 @@ class BusinessComponent extends Component
     public function update()
     {
         $this->validate([
-            'name' => 'required'
+            'code' => 'required',
+            'name' => 'required',
         ]);
 
         $data = Business::find($this->edit_id);
         $data->update([
+            'code' => $this->code,
             'name' => $this->name,
             'contact_number' => $this->contact_number,
             'address' => $this->address

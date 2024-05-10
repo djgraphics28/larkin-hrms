@@ -13,7 +13,7 @@
         <li class="nav-item d-none d-sm-inline-block">
             <a href="#" class="nav-link">Contact</a>
         </li> --}}
-        <div class="dropdown">
+        {{-- <div class="dropdown">
             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 Quick Add
@@ -27,9 +27,9 @@
                     Status</button>
                 <button class="dropdown-item" type="button"><i class="far fa fa-plus nav-icon"></i> Employee</button>
             </div>
-        </div>
+        </div> --}}
         <div class="ml-3">
-            @livewire('branch-selection')
+            @livewire('business-selection')
         </div>
 
     </ul>
@@ -182,9 +182,20 @@
                     <i class="fas fa-user mr-2"></i> Profile
                 </a>
 
-                <a wire:click="logoutUser" class="dropdown-item" style="cursor: pointer;">
+                {{-- <a wire:click="logoutUser" class="dropdown-item" style="cursor: pointer;">
                     <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                </a>
+                </a> --}}
+
+                 <!-- Authentication -->
+                 <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <x-dropdown-link class="dropdown-item" style="cursor: pointer;" :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        <i class="fas fa-sign-out-alt mr-2"></i> {{ __('Log Out') }}
+                    </x-dropdown-link>
+                </form>
             </div>
         </li>
 

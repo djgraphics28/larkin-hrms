@@ -14,19 +14,44 @@ class BusinessSeeder extends Seeder
     public function run(): void
     {
         $businesses = [
-            'Larkin Enterprise Ltd - Port Moresby',
-            'Larkin Enterprise Ltd - Lae',
-            'Ad Focus',
-            'Yellow Jacket Security Ltd - Port Moresby',
-            'Yellow Jacket Security Ltd - Lae',
-            'Wave Restaurant',
-            'Caroline\'s Diner'
+            [
+                'name' => 'Larkin POM Branch',
+                'code' => 'LKP'
+            ],
+            [
+                'name' => 'Larkin Lae Branch',
+                'code' => 'LKL'
+            ],
+            [
+                'name' => 'Ad Focus',
+                'code' => 'AFP'
+            ],
+            [
+                'name' => 'Yellow Jacket POM',
+                'code' => 'YJP'
+            ],
+            [
+                'name' => 'Yellow Jacket Lae',
+                'code' => 'JYL'
+            ],
+            [
+                'name' => 'Wave Restaurant',
+                'code' => 'WRP'
+            ],
+            [
+                'name' => 'Caroline\'s Diner',
+                'code' => 'CDP'
+            ],
         ];
 
         foreach ($businesses as $business) {
             Business::create([
-                'name' => $business
+                'name' => $business['name'],
+                'code' => $business['code'],
             ]);
         }
+
+        $business = Business::find(1);
+        $business->departments()->attach([1,2,3,4,5,6,7,8]);
     }
 }

@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Employee Statuses</li>
                     </ol>
                 </div><!-- /.col -->
@@ -68,9 +68,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                   @include('shared.table-loader')
+                                    <tr>
+                                        <td colspan="5" class="text-center align-items-center">
+                                            <div wire:loading wire:target="search"><livewire:table-loader /></div>
+                                        </td>
+                                    </tr>
                                     @forelse ($records as $data)
-                                        <tr>
+                                        <tr wire:key="search-{{ $data->id }}">
                                             <td class="text-start"><input type="checkbox"
                                                     wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
                                             <td class="text-start">{{ $data->name }}</td>
@@ -78,9 +82,6 @@
                                             <td class="text-center">{{ $data->employees_count }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group">
-                                                    <a wire:click="view({{ $data->id }})"
-                                                        class="dropdown-item text-primary" href="javascript:void(0)"><i
-                                                            class="fa fa-eye" aria-hidden="true"></i></a>
                                                     <a wire:click="edit({{ $data->id }})"
                                                         class="dropdown-item text-warning" href="javascript:void(0)"><i
                                                             class="fa fa-edit" aria-hidden="true"></i></a>
@@ -93,8 +94,9 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td rowspan="5" colspan="7" class="text-center"><i class="fa fa-ban"
-                                                    aria-hidden="true"></i> No Result Found</td>
+                                            <td colspan="5">
+                                                <livewire:no-data-found />
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>

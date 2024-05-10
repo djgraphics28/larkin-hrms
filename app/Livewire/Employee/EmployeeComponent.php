@@ -4,20 +4,27 @@ namespace App\Livewire\Employee;
 
 use Livewire\Component;
 use App\Models\Employee;
+use App\Models\Department;
 use App\Models\Designation;
+use App\Models\BusinessUser;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use App\Models\EmployeeStatus;
 use Livewire\Attributes\Title;
 use App\Exports\EmployeeExport;
+use App\Imports\EmployeeImport;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use Livewire\WithFileUploads;
 
 class EmployeeComponent extends Component
 {
     use WithPagination, LivewireAlert;
+    use WithFileUploads;
 
     public $label;
+    public $businessId;
 
     protected $listeners = ['remove'];
     public $approveConfirmed;
@@ -27,6 +34,10 @@ class EmployeeComponent extends Component
     #[Url]
     public $search = '';
     #[Url]
+    public $sortByLabel = '';
+    #[Url]
+    public $sortByDepartment = '';
+    #[Url]
     public $sortByDesignation = '';
     #[Url]
     public $sortByEmployeeStatus = '';
@@ -34,9 +45,12 @@ class EmployeeComponent extends Component
     public $modalTitle = 'Add New Business|Branch';
     public $updateMode = false;
 
+    public $file;
+
     public $name;
     public $edit_id;
 
+    public $departments = [];
     public $designations = [];
     public $employeeStatuses = [];
 
@@ -56,17 +70,24 @@ class EmployeeComponent extends Component
 
     public function mount()
     {
+        $this->departments = Department::where('is_active',1)->get();
         $this->designations = Designation::where('is_active',1)->get();
         $this->employeeStatuses = EmployeeStatus::where('is_active',1)->get();
+
+        $this->businessId = BusinessUser::where('user_id',Auth::user()->id)->where('is_active', true)->first()->business_id;
+
     }
 
     public function getRecordsProperty()
     {
-        $label = $this->label == 'all' ? '' : $this->label;
+        $label = $this->label == 'all' ? $this->sortByLabel : $this->label;
 
-        return Employee::search(trim($this->search))
+        return Employee::with(['employee_notes'])->search(trim($this->search))
             ->when($label, function($query) use ($label) {
                 $query->where('label', $label);
+            })
+            ->when($this->sortByDepartment, function($query) use ($label) {
+                $query->where('department_id', $this->sortByDepartment);
             })
             ->when($this->sortByDesignation, function($query) {
                 $query->where('designation_id', $this->sortByDesignation);
@@ -74,6 +95,7 @@ class EmployeeComponent extends Component
             ->when($this->sortByEmployeeStatus, function($query) {
                 $query->where('employee_status_id', $this->sortByEmployeeStatus);
             })
+            ->where('business_id', $this->businessId)
             ->paginate($this->perPage);
     }
 
@@ -83,73 +105,6 @@ class EmployeeComponent extends Component
             $this->selectedRows = $this->records->pluck('id');
         }else{
             $this->selectedRows = [];
-        }
-    }
-
-    public function addNew()
-    {
-        $this->resetInputFields();
-        $this->dispatch('show-add-modal');
-        $this->modalTitle = 'Add New Designation';
-        $this->updateMode = false;
-
-    }
-
-    public function submit($saveAndCreateNew)
-    {
-        $this->validate([
-            'name' => 'required'
-        ]);
-
-        $create = Designation::create([
-            'name' => $this->name
-        ]);
-
-        if($create){
-            $this->resetInputFields();
-            if($saveAndCreateNew) {
-                $this->alert('success', 'New Designation has been save successfully!');
-            } else {
-                $this->dispatch('hide-add-modal');
-                $this->alert('success', 'New Designation has been save successfully!');
-            }
-        }
-    }
-
-    public function resetInputFields()
-    {
-        $this->name = '';
-        $this->contact_number = '';
-        $this->address = '';
-    }
-
-    public function edit($id)
-    {
-        $this->edit_id = $id;
-        $this->dispatch('show-add-modal');
-        $data = Designation::find($id);
-        $this->name = $data->name;
-        $this->modalTitle = 'Edit '.$this->name;
-        $this->updateMode = true;
-    }
-
-    public function update()
-    {
-        $this->validate([
-            'name' => 'required'
-        ]);
-
-        $data = Designation::find($this->edit_id);
-        $data->update([
-            'name' => $this->name
-        ]);
-
-        if($data) {
-            $this->dispatch('hide-add-modal');
-
-            $this->resetInputFields();
-
-            $this->alert('success', $data->name.' has been updated!');
         }
     }
 
@@ -176,5 +131,33 @@ class EmployeeComponent extends Component
     public function export()
     {
         return Excel::download(new EmployeeExport, 'employee.xlsx');
+    }
+
+    public function openImportModal()
+    {
+        $this->dispatch('show-import-modal');
+    }
+
+    public function import()
+    {
+        $this->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        try {
+            // Store the uploaded file
+            $path = $this->file->store('temp');
+
+            // Import the data using Laravel Excel
+            Excel::import(new EmployeeImport(), $path);
+
+            session()->flash('message', 'Excel file imported successfully.');
+        } catch (\Exception $e) {
+            session()->flash('error', 'Failed to import Excel file: ' . $e->getMessage());
+        }
+
+        session()->flash('message', 'Excel file imported successfully.');
+
+        $this->reset('file');
     }
 }
