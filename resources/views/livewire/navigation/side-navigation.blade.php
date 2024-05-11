@@ -71,7 +71,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('access_fortnights')
+                            @can('access_fortnight')
                                 <li class="nav-item">
                                     <a wire:navigate href="{{ route('fortnight-generator') }}"
                                         class="nav-link {{ request()->is('apps/fortnight-generator') ? 'active' : '' }}">
