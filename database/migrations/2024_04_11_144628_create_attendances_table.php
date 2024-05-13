@@ -15,8 +15,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('fortnight_id');
             $table->string('employee_number');
-            $table->dateTime('time_in');
-            $table->dateTime('time_out')->nullable();
+            $table->date('date');
+            $table->string('time_in');
+            $table->string('time_out')->nullable();
+            $table->string('time_in_2')->nullable();
+            $table->string('time_out_2')->nullable();
             $table->boolean('is_break')->default(false);
             $table->float('late_in_minutes')->default(0);
             $table->text('notes')->nullable();

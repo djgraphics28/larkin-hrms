@@ -229,6 +229,15 @@
                                 @endcan
                                 @can('import_attendances')
                                     <li class="nav-item">
+                                        <a wire:navigate href="{{ route('attendance-create') }}"
+                                            class="nav-link {{ request()->is('attendance/create') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p> Create</p>
+                                        </a>
+                                    </li>
+                                @endcan
+                                @can('import_attendances')
+                                    <li class="nav-item">
                                         <a wire:navigate href="{{ route('attendance-import') }}"
                                             class="nav-link {{ request()->is('attendance/import') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
