@@ -19,11 +19,13 @@ class AttendanceCreateComponent extends Component
 
     public $businessId;
     public $fortnights = [];
+    #[Url]
     public $search = '';
+    #[Url]
     public $selectedFortnight = '';
     public $days = [];
+    #[Url]
     public $selectedDay = '';
-    public $records = [];
 
     // public $rules = [
     //     'records.*.time_in' => 'required',
@@ -40,7 +42,6 @@ class AttendanceCreateComponent extends Component
 
         $this->fortnights = Fortnight::all();
 
-        $this->getRecords();
         $this->getDays();
 
         // Fetch existing attendance data
@@ -56,20 +57,40 @@ class AttendanceCreateComponent extends Component
             }
         }
     }
-
+    #[Title('Create Attendance')]
     public function render()
     {
-        return view('livewire.attendance.attendance-create-component');
+        // dd($this->records);
+        return view('livewire.attendance.attendance-create-component', [
+            'records' => $this->records
+        ]);
+    }
+
+    public function getRecordsProperty()
+    {
+        return $this->getRecords();
     }
 
     public function getRecords()
     {
-        $this->records = Employee::with('workshift')
+        $selectedFortnight = $this->selectedFortnight;
+        $selectedDay = $this->selectedDay;
+
+        return Employee::with([
+            'workshift',
+            'attendances' => function ($query) use ($selectedFortnight, $selectedDay) {
+                $query->where('fortnight_id', $selectedFortnight)
+                    ->orWhere('date', $selectedDay);
+            }
+        ])
             ->search(trim($this->search))
-            ->orderBy('employees.employee_number', 'ASC')
+            ->where('business_id', $this->businessId)
+            ->where('is_discontinued', 0)
+            ->orderBy('employee_number', 'ASC')
             ->limit(2) // Adjust limit as needed (optional with WithPagination)
             ->get();
     }
+
 
     public function getDays()
     {
@@ -102,8 +123,12 @@ class AttendanceCreateComponent extends Component
     public function updatedSelectedFortnight()
     {
         $this->selectedDay = ''; // Reset selected day when fortnight changes
-        $this->getRecords();
         $this->getDays();
+    }
+
+    public function updatedSelectedDay()
+    {
+        $this->getRecords();
     }
 
     public function store()
@@ -115,8 +140,6 @@ class AttendanceCreateComponent extends Component
             'records.*.time_out_2' => 'required|date_format:H:i',
         ]);
 
-        dd($validatedData);
-
         foreach ($this->attendances as $employeeId => $attendance) {
             Attendance::create([
                 'employee_number' => $employeeId,
@@ -126,5 +149,10 @@ class AttendanceCreateComponent extends Component
         }
 
         $this->alert('success', 'Attendance has been saved successfully!');
+    }
+
+    public function updatedRecords()
+    {
+        dd('reocrds');
     }
 }
