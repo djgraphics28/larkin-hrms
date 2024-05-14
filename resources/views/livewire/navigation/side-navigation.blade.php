@@ -227,7 +227,7 @@
                                         </a>
                                     </li>
                                 @endcan
-                                @can('import_attendances')
+                                @can('create_attendances')
                                     <li class="nav-item">
                                         <a wire:navigate href="{{ route('attendance-create') }}"
                                             class="nav-link {{ request()->is('attendance/create') ? 'active' : '' }}">

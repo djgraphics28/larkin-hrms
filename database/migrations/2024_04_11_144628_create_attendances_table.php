@@ -23,6 +23,7 @@ return new class extends Migration
             $table->boolean('is_break')->default(false);
             $table->float('late_in_minutes')->default(0);
             $table->text('notes')->nullable();
+            $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();
             $table
                 ->foreign('fortnight_id')
