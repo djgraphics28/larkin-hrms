@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Asset\AssetComponent;
 use App\Livewire\Loan\LoanTypeComponent;
 use App\Livewire\Tax\TaxTablesComponent;
+use App\Livewire\Payroll\PayrunComponent;
 use App\Livewire\Asset\AssetTypeComponent;
 use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\Nasfund\NasfundComponent;
@@ -30,6 +31,7 @@ use App\Livewire\Employee\ImportEmployeeComponent;
 use App\Livewire\Attendance\AttendanceLogComponent;
 use App\Livewire\AbaGenerator\AbaGeneratorComponent;
 use App\Livewire\CompanyDetails\BankDetailsComponent;
+use App\Livewire\Attendance\AttendanceCreateComponent;
 use App\Livewire\Attendance\AttendanceImportComponent;
 use App\Livewire\EmailTemplate\EmailTemplateComponent;
 use App\Livewire\EmailTemplate\EmailVariableComponent;
@@ -38,7 +40,6 @@ use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Livewire\EmailTemplate\EmailTemplateTypeComponent;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Livewire\Payroll\PayrunComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +89,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
     // Attendance routes
     Route::group(['prefix' => 'attendance'], function () {
         Route::get('/logs', AttendanceLogComponent::class)->name('attendance-logs');
+        Route::get('/create', AttendanceCreateComponent::class)->name('attendance-create');
         Route::get('/import', AttendanceImportComponent::class)->name('attendance-import');
         Route::get('/adjustment', AttendanceAdjustmentComponent::class)->name('attendance-adjustment');
     });

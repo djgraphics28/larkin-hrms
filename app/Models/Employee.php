@@ -140,7 +140,8 @@ class Employee extends Model implements HasMedia
         $query->where(function ($query) use ($searchTerm) {
 
             $query->where('first_name', 'like', $searchTerm)
-                ->orWhere('last_name', 'like', $searchTerm);
+                ->orWhere('last_name', 'like', $searchTerm)
+                ->orWhere('employees.employee_number', 'like', $searchTerm);
         });
     }
 
