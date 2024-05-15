@@ -203,18 +203,31 @@ class Helpers
 
     public static function computePay($payrun_id, $fn_id, $employee_ids)
     {
+        $fn_number = Helpers::fn_number();
         $get_hours = EmployeeHours::where('fortnight_id', $fn_id)
             ->whereIn('employee_id', $employee_ids)->get();
 
         foreach ($get_hours as $hours) {
+            $employee_info = Employee::where('id', $hours->employee_id)->first();
+            $total_work_hours_fn = $employee_info->workshift->number_of_hours_fn;
+
             $get_rate = SalaryHistory::where('employee_id', $hours->employee_id)
                 ->where('id', $hours->salary_id)->first();
 
-            $regular = $hours->regular_hr * $get_rate->salary_rate;
+            $fn_rate = $get_rate->salary_rate * $total_work_hours_fn;
+            $regular =  ($fn_rate * $hours->regular_hr) / $total_work_hours_fn;
             $overtime = ($hours->overtime_hr * $get_rate->salary_rate) * 1.5;
             $sunday_ot = $hours->sunday_ot_hr * $get_rate->salary_rate;
             $holiday_ot = $hours->holiday_ot_hr * $get_rate->salary_rate;
-            $npf = $regular * 0.06;
+            $plp_alp_fp = 0;
+            $other = 0;
+            $gross = $regular + $overtime + $sunday_ot + $holiday_ot + $plp_alp_fp + $other;
+            $fn_tax = ($gross < 769.27) ? 0 : (((($gross * $fn_number) * 0.3) - 6000) / $fn_number);
+
+            $npf = 0;
+            if ($employee_info->collect_nasfund === 1 && $employee_info->nasfund_number !== null) {
+                $npf = $regular * 0.06;
+            }
 
             Payslip::updateOrCreate(
                 [
@@ -229,10 +242,10 @@ class Helpers
                     'overtime' => $overtime,
                     'sunday_ot' => $sunday_ot,
                     'holiday_ot' => $holiday_ot,
-                    'plp_alp_fp' => 0,
-                    'other' => 0,
+                    'plp_alp_fp' => $plp_alp_fp,
+                    'other' => $other,
 
-                    'fn_tax' => 0,
+                    'fn_tax' => $fn_tax,
                     'npf' => $npf,
                     'ncsl' => 0,
                     'cash_adv' => 0
@@ -513,6 +526,14 @@ class Helpers
                 ->where('fortnight_id', $selected_fn)
                 ->first();
 
+            $er = 0;
+            $ee = 0;
+
+            if ($employee->collect_nasfund === 1 && $employee->nasfund_number !== null) {
+                $er = $get_pay->regular * 0.084;
+                $ee = $get_pay->regular * 0.06;
+            }
+
             if ($get_pay) {
                 Nasfund::updateOrCreate(
                     [
@@ -521,11 +542,18 @@ class Helpers
                     ],
                     [
                         'pay' => $get_pay->regular,
-                        'ER' => $get_pay->regular * 0.084,
-                        'EE' => $get_pay->regular * 0.06
+                        'ER' => $er,
+                        'EE' => $ee
                     ]
                 );
             }
         }
+    }
+
+    public static function fn_number()
+    {
+        $year = date('Y');
+        $fn_number = Fortnight::where('year', $year)->count();
+        return $fn_number;
     }
 }

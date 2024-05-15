@@ -6,6 +6,7 @@ use App\Models\WeekDay;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Workshift extends Model
 {
@@ -27,11 +28,14 @@ class Workshift extends Model
     {
         $searchTerm = "%$searchTerm%";
 
-        $query->where(function($query) use ($searchTerm){
+        $query->where(function ($query) use ($searchTerm) {
 
-            $query->where('title','like', $searchTerm);
+            $query->where('title', 'like', $searchTerm);
         });
-
     }
 
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class);
+    }
 }
