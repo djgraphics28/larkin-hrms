@@ -14,7 +14,9 @@
                             wire:model="selectedFortnight" wire:change="getDays">
                             <option value="">Select Fortnight</option>
                             @foreach ($fortnights as $item)
-                                <option value="{{ $item->id }}">{{ $item->code }} from {{ \Carbon\Carbon::parse($item->start)->format('M-d-Y') }} to {{ \Carbon\Carbon::parse($item->end)->format('M-d-Y') }}</option>
+                                <option value="{{ $item->id }}">{{ $item->code }} from
+                                    {{ \Carbon\Carbon::parse($item->start)->format('M-d-Y') }} to
+                                    {{ \Carbon\Carbon::parse($item->end)->format('M-d-Y') }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -40,7 +42,8 @@
                     <div class="input-group float-right">
                         <input type="text" class="form-control mr-2" placeholder="Search Employee Number / Name"
                             wire:model.live.debounce.500ms="search">
-                        <button {{ !$selectedFortnight ? 'disabled' : ''  }} wire:click="store" class="btn btn-primary">SAVE CHANGES</button>
+                        <button {{ !$selectedFortnight ? 'disabled' : '' }} wire:click="store"
+                            class="btn btn-primary">SAVE CHANGES</button>
                     </div>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -60,12 +63,12 @@
                                     @forelse ($days as $item)
                                         <label
                                             class="btn flex-fill {{ $item['day'] == 'Sun' ? 'bg-danger' : 'bg-info' }} {{ $item['date'] == $selectedDay ? 'active' : '' }}">
-                                            <input {{ $item['date'] == $selectedDay ? 'checked' : '' }}
-                                                type="radio" name="options" id="option_{{ $loop->index + 1 }}"
+                                            <input {{ $item['date'] == $selectedDay ? 'checked' : '' }} type="radio"
+                                                name="options" id="option_{{ $loop->index + 1 }}"
                                                 value="{{ $item['date'] }}" wire:model.live="selectedDay"
                                                 wire:change="getRecords" autocomplete="off">
                                             {{ $item['day'] }} <br>
-                                            <small>{{ \Carbon\Carbon::parse($item['date'])->format('M-d'); }}</small>
+                                            <small>{{ \Carbon\Carbon::parse($item['date'])->format('M-d') }}</small>
                                         </label>
                                     @empty
                                         <p>Please select Fortnight first!</p>
@@ -81,7 +84,10 @@
                                 <table class="table table-sm table-striped table-hover">
                                     <thead class="table-dark" style="position: sticky; top: 0; z-index: 1;">
                                         <tr>
-                                            <th colspan="3">FN: {{ \App\Models\Fortnight::find($selectedFortnight)->code ?? '' }} | Date: {{ \Carbon\Carbon::parse($selectedDay)->format('M-d-Y D') ?? '' }}</th>
+                                            <th colspan="4">FN:
+                                                {{ \App\Models\Fortnight::find($selectedFortnight)->code ?? '' }} |
+                                                Date:
+                                                {{ \Carbon\Carbon::parse($selectedDay)->format('M-d-Y D') ?? '' }}</th>
                                             <th class="text-center" colspan="2">1st Half</th>
                                             <th class="text-center" colspan="2">2nd Half</th>
                                             <th class="text-center" colspan="3"></th>
@@ -90,6 +96,7 @@
                                             <th class="text-center" width="7%">EmpNo</th>
                                             <th>Employee Name</th>
                                             <th class="text-center" width="10%">Workshift</th>
+                                            <th>With Break?</th>
                                             <th class="text-center" width="12%">Time In</th>
                                             <th class="text-center" width="12%">Time Out</th>
                                             <th class="text-center" width="12%">Time In</th>
@@ -116,68 +123,84 @@
                                                     {{ strtoupper($record->last_name) }}</td>
                                                 <td class="text-center">
                                                     <small>{{ $record->workshift->title }}</small><br>
-                                                    <small>{{ \Carbon\Carbon::parse($record->workshift->start)->format('h:i A') }} -
+                                                    <small>{{ \Carbon\Carbon::parse($record->workshift->start)->format('h:i A') }}
+                                                        -
                                                         {{ \Carbon\Carbon::parse($record->workshift->end)->format('h:i A') }}</small>
                                                 </td>
-                                                <td>
-                                                    @if($selectedFortnight)
-                                                    <div class="form-group">
-                                                        <input
-                                                            wire:model="attendances.{{ $record->employee_number }}.time_in"
-                                                            type="time"
-                                                            class="form-control {{ $attendances[$record->employee_number]['time_in'] == null ? 'in-valid' : 'is-valid' }} @error('attendances.' . $record->employee_number . '.time_in') is-invalid @enderror">
-                                                        @error('attendances.' . $record->employee_number . '.time_in')
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $message }}</strong>
-                                                            </span>
-                                                        @enderror
-                                                    </div>
+                                                <td class="text-center">
+                                                    @if ($selectedFortnight)
+                                                        <div class="custom-control custom-switch" style="z-index: 0;">
+                                                            <input @if ($attendances[$record->employee_number]['is_break'] == true) checked @endif
+                                                                type="checkbox" role="switch"
+                                                                class="custom-control-input"
+                                                                wire:model="attendances.{{ $record->employee_number }}.is_break"
+                                                                id="attendances.{{ $record->employee_number }}.is_break">
+                                                            <label class="custom-control-label" for="attendances.{{ $record->employee_number }}.is_break"></label>
+                                                        </div>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if($selectedFortnight)
-                                                    <div class="form-group">
-                                                        <input
-                                                            wire:model="attendances.{{ $record->employee_number }}.time_out"
-                                                            type="time"
-                                                            class="form-control {{ $attendances[$record->employee_number]['time_out'] == null ? 'in-valid' : 'is-valid' }} @error('attendances.' . $record->employee_number . '.time_out') is-invalid @enderror">
-                                                        @error('attendances.' . $record->employee_number . '.time_out')
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $message }}</strong>
-                                                            </span>
-                                                        @enderror
-                                                    </div>
+                                                    @if ($selectedFortnight)
+                                                        <div class="form-group">
+                                                            <input
+                                                                wire:model="attendances.{{ $record->employee_number }}.time_in"
+                                                                type="time"
+                                                                class="form-control {{ $attendances[$record->employee_number]['time_in'] == null ? 'in-valid' : 'is-valid' }} @error('attendances.' . $record->employee_number . '.time_in') is-invalid @enderror">
+                                                            @error('attendances.' . $record->employee_number .
+                                                                '.time_in')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                            @enderror
+                                                        </div>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if($selectedFortnight)
-                                                    <div class="form-group">
-                                                        <input
-                                                            wire:model="attendances.{{ $record->employee_number }}.time_in_2"
-                                                            type="time"
-                                                            class="form-control {{ $attendances[$record->employee_number]['time_in_2'] == null ? 'in-valid' : 'is-valid' }} @error('attendances.' . $record->employee_number . '.time_in_2') is-invalid @enderror">
-                                                        @error('attendances.' . $record->employee_number . '.time_in_2')
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $message }}</strong>
-                                                            </span>
-                                                        @enderror
-                                                    </div>
+                                                    @if ($selectedFortnight)
+                                                        <div class="form-group">
+                                                            <input
+                                                                wire:model="attendances.{{ $record->employee_number }}.time_out"
+                                                                type="time"
+                                                                class="form-control {{ $attendances[$record->employee_number]['time_out'] == null ? 'in-valid' : 'is-valid' }} @error('attendances.' . $record->employee_number . '.time_out') is-invalid @enderror">
+                                                            @error('attendances.' . $record->employee_number .
+                                                                '.time_out')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                            @enderror
+                                                        </div>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if($selectedFortnight)
-                                                    <div class="form-group">
-                                                        <input
-                                                            wire:model="attendances.{{ $record->employee_number }}.time_out_2"
-                                                            type="time"
-                                                            class="form-control {{ $attendances[$record->employee_number]['time_out_2'] == null ? 'in-valid' : 'is-valid' }} @error('attendances.' . $record->employee_number . '.time_out_2') is-invalid @enderror">
-                                                        @error('attendances.' . $record->employee_number .
-                                                            '.time_out_2')
-                                                            <span class="invalid-feedback" role="alert">
-                                                                <strong>{{ $message }}</strong>
-                                                            </span>
-                                                        @enderror
-                                                    </div>
+                                                    @if ($selectedFortnight)
+                                                        <div class="form-group">
+                                                            <input
+                                                                wire:model="attendances.{{ $record->employee_number }}.time_in_2"
+                                                                type="time"
+                                                                class="form-control {{ $attendances[$record->employee_number]['time_in_2'] == null ? 'in-valid' : 'is-valid' }} @error('attendances.' . $record->employee_number . '.time_in_2') is-invalid @enderror">
+                                                            @error('attendances.' . $record->employee_number .
+                                                                '.time_in_2')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                            @enderror
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($selectedFortnight)
+                                                        <div class="form-group">
+                                                            <input
+                                                                wire:model="attendances.{{ $record->employee_number }}.time_out_2"
+                                                                type="time"
+                                                                class="form-control {{ $attendances[$record->employee_number]['time_out_2'] == null ? 'in-valid' : 'is-valid' }} @error('attendances.' . $record->employee_number . '.time_out_2') is-invalid @enderror">
+                                                            @error('attendances.' . $record->employee_number .
+                                                                '.time_out_2')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                            @enderror
+                                                        </div>
                                                     @endif
                                                 </td>
                                                 <td></td>

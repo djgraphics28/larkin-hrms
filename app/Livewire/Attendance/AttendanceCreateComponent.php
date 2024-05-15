@@ -72,6 +72,7 @@ class AttendanceCreateComponent extends Component
                     'time_out' => $existingAttendance->time_out,
                     'time_in_2' => $existingAttendance->time_in_2,
                     'time_out_2' => $existingAttendance->time_out_2,
+                    'is_break' => $existingAttendance->is_break == 1 ? true : false,
                 ];
             } else {
                 $this->attendances[$record->employee_number] = [
@@ -79,6 +80,7 @@ class AttendanceCreateComponent extends Component
                     'time_out' => null,
                     'time_in_2' => null,
                     'time_out_2' => null,
+                    'is_break' => false,
                 ];
             }
         }
@@ -101,23 +103,23 @@ class AttendanceCreateComponent extends Component
             'workshift',
             'attendances' => function ($query) use ($selectedFortnight, $selectedDay) {
                 $query->where('fortnight_id', $selectedFortnight)
-                ->when($selectedDay, function ($query, $selectedDay) {
-                    $query->where('date', $selectedDay);
-                });
+                    ->when($selectedDay, function ($query, $selectedDay) {
+                        $query->where('date', $selectedDay);
+                    });
             }
         ])
-        ->search(trim($this->search))
-        ->where('business_id', $this->businessId)
-        ->where('is_discontinued', 0)
-        ->when($this->selectedDepartment, function($query) {
-            $query->where('department_id', $this->selectedDepartment);
-        })
-        ->when($this->selectedDesignation, function($query) {
-            $query->where('designation_id', $this->selectedDesignation);
-        })
-        ->orderBy('employee_number', 'ASC')
-        // ->limit(2) // Adjust limit as needed (optional with WithPagination)
-        ->get();
+            ->search(trim($this->search))
+            ->where('business_id', $this->businessId)
+            ->where('is_discontinued', 0)
+            ->when($this->selectedDepartment, function ($query) {
+                $query->where('department_id', $this->selectedDepartment);
+            })
+            ->when($this->selectedDesignation, function ($query) {
+                $query->where('designation_id', $this->selectedDesignation);
+            })
+            ->orderBy('employee_number', 'ASC')
+            // ->limit(2) // Adjust limit as needed (optional with WithPagination)
+            ->get();
     }
 
     public function getDays()
@@ -209,11 +211,11 @@ class AttendanceCreateComponent extends Component
         //     'attendances.*.time_out_2' => 'required_if:attendances.*.time_in,*',
         // ];
 
-        if($this->selectedFortnight == '') {
+        if ($this->selectedFortnight == '') {
             $this->alert('error', 'Please select fortnight first!');
             return;
         }
-        if($this->selectedDay == '') {
+        if ($this->selectedDay == '') {
             $this->alert('error', 'Please select Day!');
             return;
         }
@@ -232,6 +234,26 @@ class AttendanceCreateComponent extends Component
 
         foreach ($this->attendances as $employeeId => $attendance) {
             if (!empty($attendance['time_in'])) {
+
+                // Fetch the employee and their workshift start time
+
+                // Fetch the employee and their workshift start time
+                $employee = Employee::where('employee_number',$employeeId)->first();
+                $workshiftStart = $employee->workshift->start;
+
+                // Initialize the late in minutes variable
+                $lateInMinutes = 0;
+
+                // Create Carbon instances for the workshift start time and the time-in
+                $workshiftStartTime = Carbon::createFromTimeString($workshiftStart);
+                $timeIn = Carbon::createFromTimeString($attendance['time_in']);
+
+                // Check if the time in is late
+                if ($timeIn->greaterThan($workshiftStartTime)) {
+                    // Calculate the difference in minutes
+                    $lateInMinutes = $workshiftStartTime->diffInMinutes($timeIn);
+                }
+
                 Attendance::updateOrCreate(
                     [
                         'fortnight_id' => $this->selectedFortnight,
@@ -246,7 +268,9 @@ class AttendanceCreateComponent extends Component
                         'time_in' => $attendance['time_in'],
                         'time_out' => $attendance['time_out'],
                         'time_in_2' => $attendance['time_in_2'],
-                        'time_out_2' => $attendance['time_out_2']
+                        'time_out_2' => $attendance['time_out_2'],
+                        'is_break' => $attendance['is_break'],
+                        'late_in_minutes' => $lateInMinutes
                     ]
                 );
             }
