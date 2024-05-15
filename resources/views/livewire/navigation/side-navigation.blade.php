@@ -71,7 +71,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('access_fortnights')
+                            @can('access_fortnight')
                                 <li class="nav-item">
                                     <a wire:navigate href="{{ route('fortnight-generator') }}"
                                         class="nav-link {{ request()->is('apps/fortnight-generator') ? 'active' : '' }}">
@@ -224,6 +224,15 @@
                                             class="nav-link {{ request()->is('attendance/logs') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p> Logs | Timesheets</p>
+                                        </a>
+                                    </li>
+                                @endcan
+                                @can('create_attendances')
+                                    <li class="nav-item">
+                                        <a wire:navigate href="{{ route('attendance-create') }}"
+                                            class="nav-link {{ request()->is('attendance/create') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p> Create</p>
                                         </a>
                                     </li>
                                 @endcan
