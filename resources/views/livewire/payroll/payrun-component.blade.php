@@ -82,7 +82,15 @@
                                             <td class="text-center">
                                                 <div class="btn-group">
                                                     <a wire:click.prevent="generateAba({{ $data->id }})" class="dropdown-item text-primary" href="javascript:void(0)">
-                                                        <i class="fa fa-download" aria-hidden="true"></i> Download ABA
+                                                        <i class="fa fa-download" aria-hidden="true"></i>
+                                                    </a>
+
+                                                    <a href="#" class="dropdown-item text-warning" href="javascript:void(0)">
+                                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                                    </a>
+
+                                                    <a href="#" class="dropdown-item text-danger" href="javascript:void(0)">
+                                                        <i class="fa fa-trash" aria-hidden="true"></i>
                                                     </a>
 
                                                 </div>
@@ -91,8 +99,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td rowspan="5" colspan="7" class="text-center"><i class="fa fa-ban"
-                                                    aria-hidden="true"></i> No Result Found</td>
+                                            <td colspan="6"><livewire:no-data-found /></td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -132,17 +139,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="">Business Name</label>
-                            <select class="form-control" wire:model.live="business_id">
-                                <option value="">Select Business</option>
-                                @foreach ($businesses as $business)
-                                    <option value="{{ $business->id }}">
-                                        {{ $business->code }} -- {{ $business->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+
 
                         <div class="form-group">
                             <label for="">Department</label>

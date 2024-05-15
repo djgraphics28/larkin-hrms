@@ -55,9 +55,9 @@
                 </tr>
             @empty
                 <tr>
-                    <td rowspan="5" colspan="12" class="text-center"><i
-                                                        class="fa fa-ban" aria-hidden="true"></i> No Result Found</td>
+                    <td colspan="12"><livewire:no-data-found /></td>
                 </tr>
+
             @endforelse
         </tbody>
         @if($payslip)
