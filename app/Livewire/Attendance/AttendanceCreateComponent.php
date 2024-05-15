@@ -266,8 +266,8 @@ class AttendanceCreateComponent extends Component
                         'date' => $this->selectedDay,
                         'created_by' => Auth::user()->id,
                         'time_in' => $attendance['time_in'],
-                        'time_out' => $attendance['time_out'],
-                        'time_in_2' => $attendance['time_in_2'],
+                        'time_out' => $attendance['is_break'] ? $attendance['time_out'] : null,
+                        'time_in_2' => $attendance['is_break'] ? $attendance['time_in_2'] : null,
                         'time_out_2' => $attendance['time_out_2'],
                         'is_break' => $attendance['is_break'],
                         'late_in_minutes' => $lateInMinutes
@@ -275,7 +275,7 @@ class AttendanceCreateComponent extends Component
                 );
             }
         }
-
+        sleep(2);
         $this->alert('success', 'Attendance has been saved successfully!');
     }
 }

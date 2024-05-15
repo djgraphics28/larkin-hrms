@@ -42,8 +42,13 @@
                     <div class="input-group float-right">
                         <input type="text" class="form-control mr-2" placeholder="Search Employee Number / Name"
                             wire:model.live.debounce.500ms="search">
-                        <button {{ !$selectedFortnight ? 'disabled' : '' }} wire:click="store"
-                            class="btn btn-primary">SAVE CHANGES</button>
+                            <button wire:click="store" class="btn btn-primary" wire:loading.attr="disabled">
+                                <span wire:loading.remove wire:target="store">Save Changes</span>
+                                <span wire:loading wire:target="store">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Loading...</span>
+                                </span>
+                            </button>
                     </div>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -90,20 +95,16 @@
                                                 {{ \Carbon\Carbon::parse($selectedDay)->format('M-d-Y D') ?? '' }}</th>
                                             <th class="text-center" colspan="2">1st Half</th>
                                             <th class="text-center" colspan="2">2nd Half</th>
-                                            <th class="text-center" colspan="3"></th>
                                         </tr>
                                         <tr>
                                             <th class="text-center" width="7%">EmpNo</th>
                                             <th>Employee Name</th>
                                             <th class="text-center" width="10%">Workshift</th>
-                                            <th>With Break?</th>
+                                            <th class="text-center">With Break?</th>
                                             <th class="text-center" width="12%">Time In</th>
                                             <th class="text-center" width="12%">Time Out</th>
                                             <th class="text-center" width="12%">Time In</th>
                                             <th class="text-center" width="12%">Time Out</th>
-                                            <th class="text-center">Status</th>
-                                            <th class="text-center">Late</th>
-                                            <th class="text-center">Time Early</th>
                                         </tr>
                                     </thead>
                                     <tbody class="table-hover">
@@ -116,7 +117,7 @@
                                             </td>
                                         </tr>
                                         @forelse ($records as $index => $record)
-                                            <tr>
+                                            <tr class="{{ !empty($attendances[$record->employee_number]['time_in']) && empty($attendances[$record->employee_number]['time_out_2']) ? 'bg-danger' : '' }}">
                                                 <td class="text-center" width="7%">{{ $record->employee_number }}
                                                 </td>
                                                 <td>{{ strtoupper($record->first_name) }}
@@ -203,9 +204,6 @@
                                                         </div>
                                                     @endif
                                                 </td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
                                             </tr>
                                         @empty
                                             <tr>
