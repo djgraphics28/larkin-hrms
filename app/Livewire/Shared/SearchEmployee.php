@@ -35,11 +35,7 @@ class SearchEmployee extends Component
     }
 
     public function updatedQuery() {
-        $this->search_results = Employee::where('business_id', $this->businessId)
-            ->orWhere('first_name', 'like', '%' . $this->query . '%')
-            ->orWhere('last_name', 'like', '%' . $this->query . '%')
-            ->orWhere('employee_number', 'like', '%' . $this->query . '%')
-            ->orWhere('email', 'like', '%' . $this->query . '%')
+        $this->search_results = Employee::where('business_id', $this->businessId)->search(trim($this->query))
             ->take($this->how_many)->get();
     }
 
@@ -52,7 +48,7 @@ class SearchEmployee extends Component
         $this->query = '';
         $this->how_many = 5;
         $this->search_results = Collection::empty();
-        $this->selectEmployee(null);
+        // $this->selectEmployee(null);
     }
 
     public function selectEmployee($employee_id) {

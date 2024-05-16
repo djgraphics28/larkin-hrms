@@ -35,7 +35,8 @@
                             </div>
                             <div class="card-body">
                                 <div class="col-md-6 mb-4">
-                                    <div class="input-group">
+                                    @livewire('shared.search-employee')
+                                    {{-- <div class="input-group">
                                         <select wire:model.live="selectedEmployee" wire:change="searchEmployee"
                                             class="form-control form-control-lg">
                                             <option value="">Choose Employee ...</option>
@@ -47,11 +48,11 @@
                                                 <option value="">NO OPTIONS</option>
                                             @endforelse
                                         </select>
-                                    </div>
+                                    </div> --}}
                                 </div>
-                                @if ($selectedEmployee !== '')
+                                @if ($employeeId !== '')
                                     <div class="info-box ml-2">
-                                        <div wire:loading wire:target="searchEmployee">
+                                        <div wire:loading wire:target="searchEmployee,selectedEmployee">
                                             <div class="d-flex justify-content-center items-align-center">
                                                 <div class="overlay-wrapper mt-10 mb-10">
                                                     <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i>
@@ -82,7 +83,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Choose Date ...</label>
-                                            <input {{ $selectedEmployee == '' && empty($employee) ? 'disabled' : '' }}
+                                            <input {{ $employeeId == '' && empty($employee) ? 'disabled' : '' }}
                                                 wire:model="selectedDate" wire:change="searchAttendance" type="date"
                                                 class="form-control form-control-lg">
                                         </div>
