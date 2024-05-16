@@ -88,8 +88,7 @@
                     <button wire:click="save" class="btn btn-primary" wire:loading.attr="disabled">
                         <span wire:loading.remove wire:target="save">Save Changes</span>
                         <span wire:loading wire:target="save">
-                            <span class="spinner-border spinner-border-sm" role="status"
-                                aria-hidden="true"></span>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                             <span class="visually-hidden">Loading...</span>
                         </span>
                     </button>
@@ -99,7 +98,7 @@
             <div class="card">
                 <div class="card-body p-0">
                     <table class="table table-striped">
-                        <thead  class="table-dark">
+                        <thead class="table-dark">
                             <tr>
                                 <th><input type="checkbox" wire:model.live="selectAll"></th>
                                 <th class="text-start">Description</th>
@@ -116,31 +115,42 @@
                                 </td>
                             </tr>
                             @forelse ($records as $data)
-                            <tr wire:key="search-{{ $data->id }}">
-                                <td class="text-start"><input type="checkbox"
-                                        wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
-                                <td class="text-start">{{ $data->description }}</td>
-                                <td class="text-start">{{ $data->effective_date }}</td>
-                                <td></td>
-                                <td class="text-center">@livewire('active-status', ['model' => $data, 'field' => 'is_active'], key($data->id))</td>
+                                <tr wire:key="search-{{ $data->id }}">
+                                    <td class="text-start"><input type="checkbox" wire:model.prevent="selectedRows"
+                                            value="{{ $data->id }}"></td>
+                                    <td class="text-start">{{ $data->description }}</td>
+                                    <td class="text-start">{{ $data->effective_date }}</td>
+                                    <td class="text-start">
+                                        <table class="table table-sm">
+                                            @forelse ($data->tax_table_ranges as $item)
+                                                <tr>
+                                                    <td class="text-start">from <span class="badge badge-info">K {{ number_format($item->from, 0, '.', ',') }} </span> to <span class="badge badge-info">K {{ number_format($item->to, 0, '.', ',') }}</span></td>
+                                                    <td class="text-start" width="20%">{{ $item->percentage }} %
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                            @endforelse
+                                        </table>
 
-                                <td class="text-center">
-                                    <div class="btn-group">
-                                        <a wire:click="view({{ $data->id }})"
-                                            class="dropdown-item text-primary" href="javascript:void(0)"><i
-                                                class="fa fa-eye" aria-hidden="true"></i></a>
-                                        <a wire:click="edit({{ $data->id }})"
-                                            class="dropdown-item text-warning" href="javascript:void(0)"><i
-                                                class="fa fa-edit" aria-hidden="true"></i></a>
-                                        <a wire:click="alertConfirm({{ $data->id }})"
-                                            class="dropdown-item text-danger" href="javascript:void(0)"><i
-                                                class="fa fa-trash" aria-hidden="true"></i></a>
-                                    </div>
+                                    </td>
+                                    <td class="text-center">@livewire('active-status', ['model' => $data, 'field' => 'is_active'], key($data->id))</td>
 
-                                </td>
-                            </tr>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <a wire:click="edit({{ $data->id }})"
+                                                class="dropdown-item text-warning" href="javascript:void(0)"><i
+                                                    class="fa fa-edit" aria-hidden="true"></i></a>
+                                            <a wire:click="alertConfirm({{ $data->id }})"
+                                                class="dropdown-item text-danger" href="javascript:void(0)"><i
+                                                    class="fa fa-trash" aria-hidden="true"></i></a>
+                                        </div>
+
+                                    </td>
+                                </tr>
                             @empty
-
+                                <td colspan="6">
+                                    <livewire:no-data-found />
+                                </td>
                             @endforelse
 
                         </tbody>

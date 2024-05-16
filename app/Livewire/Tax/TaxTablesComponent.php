@@ -52,7 +52,7 @@ class TaxTablesComponent extends Component
 
     public function getRecordsProperty()
     {
-        return TaxTable::search(trim($this->search))->paginate($this->perPage);
+        return TaxTable::with('tax_table_ranges')->search(trim($this->search))->paginate($this->perPage);
     }
 
     public function updatedSelectAll($value)
@@ -102,26 +102,30 @@ class TaxTablesComponent extends Component
     public function resetInputFields()
     {
         $this->description = '';
-        $this->range_from = '';
-        $this->range_to = '';
-        $this->percentage = '';
+        $this->effective_date = '';
     }
 
     public function edit($id)
     {
         $this->editId = $id;
         $data = TaxTable::find($id);
-        $this->description = $data->description;
-        $this->effective_date = $data->effective_date;
+        if($data) {
+            $this->ranges = [];
+            $this->description = $data->description;
+            $this->effective_date = $data->effective_date;
 
-        // Initialize $this->ranges with a default structure
-        $this->ranges[] = ['from' => null, 'to' => null, 'percentage' => null];
+            // Initialize $this->ranges with a default structure
+            // $this->ranges[] = ['from' => null, 'to' => null, 'percentage' => null];
 
-        // Retrieve and assign tax table ranges if any exist
-        $taxTableRanges = TaxTableRange::where('tax_table_id', $id)->get()->toArray();
-        if (!empty($taxTableRanges)) {
-            $this->ranges = $taxTableRanges;
+            // Retrieve and assign tax table ranges if any exist
+            $taxTableRanges = TaxTableRange::where('tax_table_id', $id)->get();
+            if (!empty($taxTableRanges)) {
+                foreach($taxTableRanges as $range) {
+                    $this->ranges[] = ['from' => $range->from, 'to' => $range->to, 'percentage' => $range->percentage];
+                }
+            }
         }
+
     }
 
     public function alertConfirm($id)
@@ -171,26 +175,39 @@ class TaxTablesComponent extends Component
         if (is_null($this->editId)) {
             $taxTableData['created_by'] = Auth::user()->id;
             $taxTable = TaxTable::create($taxTableData);
+
+            // Create or update TaxTableRanges
+            foreach ($this->ranges as $range) {
+                TaxTableRange::create(
+                    [
+                        'tax_table_id' => $taxTable->id,
+                        'from' => $range['from'],
+                        'to' => $range['to'],
+                        'percentage' => $range['percentage'],
+                    ]
+                );
+            }
         } else {
             $taxTableData['updated_by'] = Auth::user()->id;
             $taxTable = TaxTable::updateOrCreate(['id' => $this->editId], $taxTableData);
-        }
-
-        // Create or update TaxTableRanges
-        foreach ($this->ranges as $range) {
-            TaxTableRange::updateOrCreate(
-                ['tax_table_id' => $taxTable->id],
-                [
-                    'from' => $range['from'],
-                    'to' => $range['to'],
-                    'percentage' => $range['percentage'],
-                ]
-            );
+            $taxTable->tax_table_ranges()->delete();
+            // Create or update TaxTableRanges
+            foreach ($this->ranges as $range) {
+                TaxTableRange::create(
+                    [
+                        'tax_table_id' => $taxTable->id,
+                        'from' => $range['from'],
+                        'to' => $range['to'],
+                        'percentage' => $range['percentage'],
+                    ]
+                );
+            }
         }
 
         $this->editId = null;
         $this->ranges = [];
         $this->addRange();
+        $this->resetInputFields();
 
         $this->alert('success', 'Tax Table has been saved successfully!');
     }

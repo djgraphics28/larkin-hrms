@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tax_table_ranges', function (Blueprint $table) {
-            $table->id();
             $table->decimal('from',16);
             $table->decimal('to',16);
             $table->float('percentage');
