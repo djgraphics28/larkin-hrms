@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Livewire\Component;
 use App\Models\Employee;
 use App\Models\BusinessUser;
+use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Auth;
 
 class EmployeeInfoComponent extends Component
@@ -20,6 +21,7 @@ class EmployeeInfoComponent extends Component
     public $age = 0;
     public $gender = 'Male';
 
+    #[Title('Employee Info')]
     public function render()
     {
         return view('livewire.employee.employee-info-component');

@@ -59,8 +59,8 @@ class WorkInfoComponent extends Component
             'department' => 'required',
             'workshift' => 'required',
             'joining_date' => 'required',
-            'end_date' => 'required',
-            'nasfund_number' => 'required',
+            // 'end_date' => 'required',
+            // 'nasfund_number' => 'required',
         ]);
 
         Employee::find($this->id)->update([

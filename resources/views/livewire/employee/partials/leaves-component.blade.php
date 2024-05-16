@@ -21,7 +21,13 @@
             <div class="card-footer">
                 <div class="form-group row">
                     <div class="offset-sm-2 col-sm-10">
-                        <button type="submit" class="btn btn-primary float-right">Save Changes</button>
+                        <button wire:click="submit" class="btn btn-primary float-right" wire:loading.attr="disabled">
+                            <span wire:loading.remove wire:target="submit">Save Changes</span>
+                            <span wire:loading wire:target="submit">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="visually-hidden">Loading...</span>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>

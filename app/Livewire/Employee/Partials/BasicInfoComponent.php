@@ -46,12 +46,12 @@ class BasicInfoComponent extends Component
         $this->validate([
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:3',
-            'phone' => 'required',
-            'email' => 'required|email',
-            'marital_status' => 'required',
+            // 'phone' => 'required',
+            // 'email' => 'required|email',
+            // 'marital_status' => 'required',
             'gender' => 'required',
             'birth_date' => 'required',
-            'address' => 'required',
+            // 'address' => 'required',
         ]);
 
         Employee::find($this->id)->update([
