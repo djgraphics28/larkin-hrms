@@ -6,8 +6,10 @@ use Livewire\Component;
 use App\Models\TaxTable;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
+use App\Models\TaxTableRange;
 use Livewire\Attributes\Title;
 use App\Exports\DepartmentExport;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
@@ -18,22 +20,22 @@ class TaxTablesComponent extends Component
     protected $listeners = ['remove'];
     public $approveConfirmed;
     // filters
+    #[Url]
     public $perPage = 10;
     #[Url]
     public $search = '';
-    public $modalTitle = 'Add New Tax';
-    public $updateMode = false;
 
     public $description;
-    public $range_to;
-    public $range_from;
     public $percentage;
-    public $edit_id;
+    public $editId = null;
 
     protected $paginationTheme = 'bootstrap';
 
     public $selectAll = false;
     public $selectedRows = [];
+
+    public $effective_date;
+    public $ranges = [];
 
     #[Title('Tax')]
     public function render()
@@ -41,6 +43,11 @@ class TaxTablesComponent extends Component
         return view('livewire.tax.tax-tables-component', [
             'records' => $this->records
         ]);
+    }
+
+    public function mount()
+    {
+        $this->addRange();
     }
 
     public function getRecordsProperty()
@@ -102,40 +109,18 @@ class TaxTablesComponent extends Component
 
     public function edit($id)
     {
-        $this->edit_id = $id;
-        $this->dispatch('show-add-modal');
+        $this->editId = $id;
         $data = TaxTable::find($id);
         $this->description = $data->description;
-        $this->range_from = $data->from;
-        $this->range_to = $data->to;
-        $this->percentage = $data->percentage;
-        $this->modalTitle = 'Edit ' . $this->description;
-        $this->updateMode = true;
-    }
+        $this->effective_date = $data->effective_date;
 
-    public function update()
-    {
-        $this->validate([
-            'description' => 'required',
-            'range_from' => 'required',
-            'range_to' => 'required',
-            'percentage' => 'required'
-        ]);
+        // Initialize $this->ranges with a default structure
+        $this->ranges[] = ['from' => null, 'to' => null, 'percentage' => null];
 
-        $data = TaxTable::find($this->edit_id);
-        $data->update([
-            'description' => $this->description,
-            'from' => $this->range_from,
-            'to' => $this->range_to,
-            'percentage' => $this->percentage
-        ]);
-
-        if ($data) {
-            $this->dispatch('hide-add-modal');
-
-            $this->resetInputFields();
-
-            $this->alert('success', $data->description . ' has been updated!');
+        // Retrieve and assign tax table ranges if any exist
+        $taxTableRanges = TaxTableRange::where('tax_table_id', $id)->get()->toArray();
+        if (!empty($taxTableRanges)) {
+            $this->ranges = $taxTableRanges;
         }
     }
 
@@ -159,8 +144,54 @@ class TaxTablesComponent extends Component
         }
     }
 
-    public function export()
+    public function addRange()
     {
-        return Excel::download(new DepartmentExport, 'department.xlsx');
+        $this->ranges[] = ['from' => null, 'to' => null, 'percentage' => null];
+    }
+
+    public function removeRange($index)
+    {
+        unset($this->ranges[$index]);
+        $this->ranges = array_values($this->ranges); // Reset array keys
+    }
+
+    public function save()
+    {
+        $this->validate([
+            'description' => 'required',
+            'effective_date' => 'required'
+        ]);
+
+        // Create or update TaxTable
+        $taxTableData = [
+            'description' => $this->description,
+            'effective_date' => $this->effective_date
+        ];
+
+        if (is_null($this->editId)) {
+            $taxTableData['created_by'] = Auth::user()->id;
+            $taxTable = TaxTable::create($taxTableData);
+        } else {
+            $taxTableData['updated_by'] = Auth::user()->id;
+            $taxTable = TaxTable::updateOrCreate(['id' => $this->editId], $taxTableData);
+        }
+
+        // Create or update TaxTableRanges
+        foreach ($this->ranges as $range) {
+            TaxTableRange::updateOrCreate(
+                ['tax_table_id' => $taxTable->id],
+                [
+                    'from' => $range['from'],
+                    'to' => $range['to'],
+                    'percentage' => $range['percentage'],
+                ]
+            );
+        }
+
+        $this->editId = null;
+        $this->ranges = [];
+        $this->addRange();
+
+        $this->alert('success', 'Tax Table has been saved successfully!');
     }
 }
