@@ -189,4 +189,14 @@ class Employee extends Model implements HasMedia
     {
         return $this->hasMany(Asset::class, 'employee_id', 'id');
     }
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name. ' ' .$this->last_name;
+    }
+
+    public function getFullNameWithEmpNoAttribute()
+    {
+        return $this->employee_number.' | '. $this->first_name. ' ' .$this->last_name;
+    }
 }
