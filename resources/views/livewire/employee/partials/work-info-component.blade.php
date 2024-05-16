@@ -92,7 +92,7 @@
             @enderror
         </div>
         <div class="form-group row">
-            <label for="end_date" class="col-sm-2 col-form-label">End Date</label>
+            <label for="end_date" class="col-sm-2 col-form-label">End Date <small>(optional)</small></label>
             <div class="col-sm-10">
                 <input wire:model="end_date" type="date" class="form-control @error('end_date') is-invalid @enderror"
                     id="end_date">
@@ -105,14 +105,14 @@
         </div>
         <div class="form-group row">
             <label for="deployment_date_home_country" class="col-sm-2 col-form-label">Deployment Date Home
-                Country</label>
+                Country <small>(optional)</small></label>
             <div class="col-sm-10">
                 <input wire:model="deployment_date_home_country" type="date" class="form-control"
                     id="deployment_date_home_country">
             </div>
         </div>
         <div class="form-group row">
-            <label for="nasfund_number" class="col-sm-2 col-form-label">Nasfund Number</label>
+            <label for="nasfund_number" class="col-sm-2 col-form-label">Nasfund Number <small>(optional)</small></label>
             <div class="col-sm-10">
                 <input wire:model="nasfund_number" type="text"
                     class="form-control @error('nasfund_number') is-invalid @enderror" id="nasfund_number">
@@ -126,7 +126,13 @@
 
         <div class="form-group row">
             <div class="offset-sm-2 col-sm-10">
-                <button type="submit" class="btn btn-primary float-right">Update</button>
+                <button wire:click="update" class="btn btn-primary float-right" wire:loading.attr="disabled">
+                    <span wire:loading.remove wire:target="update">Save Changes</span>
+                    <span wire:loading wire:target="update">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="visually-hidden">Loading...</span>
+                    </span>
+                </button>
             </div>
         </div>
     </form>

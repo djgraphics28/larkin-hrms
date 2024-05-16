@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('tax_tables', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->decimal('from', 10, 2);
-            $table->decimal('to', 10, 2);
-            $table->decimal('percentage', 10, 2);
-            $table->boolean('is_active')->default(true);
+            $table->date('effective_date');
+            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }

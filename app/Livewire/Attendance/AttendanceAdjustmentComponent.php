@@ -15,14 +15,14 @@ use Jantinnerezo\LivewireAlert\LivewireAlert;
 class AttendanceAdjustmentComponent extends Component
 {
     use LivewireAlert;
-
+    protected $listeners = ['selectedEmployee'];
     public $businessId;
     public $employees = [];
     public $employee;
     public $attendanceId;
     public $attendance = [];
     #[Url]
-    public $selectedEmployee = '';
+    public $employeeId = '';
 
     #[Url]
     public $selectedDate = '';
@@ -37,9 +37,9 @@ class AttendanceAdjustmentComponent extends Component
     public function mount()
     {
         $this->businessId = BusinessUser::where('user_id',Auth::user()->id)->where('is_active', true)->first()->business_id;
-        $this->employees = Employee::where('business_id', $this->businessId)->orderBy('first_name','ASC')->get();
+        // $this->employees = Employee::where('business_id', $this->businessId)->orderBy('first_name','ASC')->get();
 
-        if($this->selectedEmployee !== '') {
+        if($this->employeeId !== '') {
             $this->searchEmployee();
         }
 
@@ -55,7 +55,7 @@ class AttendanceAdjustmentComponent extends Component
 
     public function searchEmployee()
     {
-        $this->employee = Employee::where('employee_number', $this->selectedEmployee)->first();
+        $this->employee = Employee::where('employee_number', $this->employeeId)->first();
         $this->selectedDate = '';
         $this->searchAttendance();
     }
@@ -63,7 +63,7 @@ class AttendanceAdjustmentComponent extends Component
     public function searchAttendance()
     {
         // dd($this->selectedDate);
-        $data = Attendance::where('employee_number', $this->selectedEmployee)->where('date', $this->selectedDate)->first();
+        $data = Attendance::where('employee_number', $this->employeeId)->where('date', $this->selectedDate)->first();
 
         if(!empty($data)) {
             $this->attendance = $data;
@@ -94,5 +94,11 @@ class AttendanceAdjustmentComponent extends Component
 
         sleep(1);
         $this->alert('success', 'Attendance has been saved successfully!');
+    }
+
+    public function selectedEmployee($employee_id)
+    {
+        $this->employeeId = Employee::find($employee_id)->employee_number;
+        $this->searchEmployee();
     }
 }
