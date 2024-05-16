@@ -61,9 +61,10 @@
                                         <th class="text-start">Asset Code</th>
                                         <th class="text-start">Asset Name</th>
                                         <th class="text-start">Asset Type</th>
-                                        <th class="text-start">Quantity</th>
+                                        <th class="text-center">Quantity</th>
                                         <th class="text-start">Employee</th>
                                         <th class="text-start">Date Received</th>
+                                        <th class="text-start">Date Returned</th>
                                         <th class="text-center">Is Working?</th>
                                         <th class="text-center">Action</th>
                                     </tr>
@@ -81,11 +82,33 @@
                                             <td class="text-start">{{ $data->asset_code }}</td>
                                             <td class="text-start">{{ $data->name }}</td>
                                             <td class="text-start">{{ $data->asset_type->name }}</td>
-                                            <td class="text-start">{{ $data->quantity }}</td>
+                                            <td class="text-center">{{ $data->quantity }}</td>
                                             <td class="text-start">
-                                                {{ $data->employee->first_name ?? 'Not yet Assigned' }}</td>
+                                                {{ $data->employee->full_name_with_emp_no ?? 'Not yet Assigned' }}</td>
                                             <td class="text-start">{{ $data->date_received }}</td>
-                                            <td class="text-center">@livewire('active-status', ['model' => $data, 'field' => 'is_working'], key($data->id))</td>
+                                            <td class="text-start">{{ $data->date_returned }}</td>
+                                            <td class="text-center">
+                                                @php
+                                                    switch ($data->is_working) {
+                                                        case 'yes':
+                                                            $statusLabel = 'Working';
+                                                            $badgeClass = 'badge-success';
+                                                            break;
+                                                        case 'no':
+                                                            $statusLabel = 'Not Working';
+                                                            $badgeClass = 'badge-danger';
+                                                            break;
+                                                        case 'maintenance':
+                                                            $statusLabel = 'Maintenance';
+                                                            $badgeClass = 'badge-warning';
+                                                            break;
+                                                        default:
+                                                            $statusLabel = 'Unknown';
+                                                            $badgeClass = 'badge-secondary';
+                                                    }
+                                                @endphp
+                                                <span class="badge {{ $badgeClass }}">{{ $statusLabel }}</span>
+                                            </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
                                                     <a wire:click="edit({{ $data->id }})"
@@ -121,7 +144,7 @@
 
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
         aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">{{ $modalTitle }}</h5>
@@ -155,19 +178,19 @@
                     <div class="form-group">
                         <label for="">Is Working?</label><br>
                         <div class="form-check form-check-inline">
-                            <input wire:model="status" class="form-check-input" type="radio"
-                                name="inlineRadioOptions" id="inlineRadio1" value="Yes">
+                            <input {{ $is_working == "yes" ? 'checked' : '' }}  wire:model="is_working" class="form-check-input" type="radio"
+                                name="inlineRadioOptions" id="inlineRadio1" value="yes">
                             <label class="form-check-label" for="inlineRadio1">Yes</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input wire:model="status" class="form-check-input" type="radio"
-                                name="inlineRadioOptions" id="inlineRadio2" value="No">
+                            <input {{ $is_working == "no" ? 'checked' : '' }} wire:model="is_working" class="form-check-input" type="radio"
+                                name="inlineRadioOptions" id="inlineRadio2" value="no">
                             <label class="form-check-label" for="inlineRadio2">No</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input wire:model="status" class="form-check-input" type="radio"
-                                name="inlineRadioOptions" id="inlineRadio" value="Maintenance">
-                            <label class="form-check-label" for="inlineRadio">Maintenance</label>
+                            <input {{ $is_working == "maintenance" ? 'checked' : '' }} wire:model="is_working" class="form-check-input" type="radio"
+                                name="inlineRadioOptions" id="inlineRadio3" value="maintenance">
+                            <label class="form-check-label" for="inlineRadio3">Maintenance</label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -187,13 +210,15 @@
                     </div>
                     <div class="form-group">
                         <label for="">Assign Employee</label>
-                        <select wire:model="employee" class="form-control">
+                        @livewire('shared.search-employee')
+                        <input class="form-control text-center" disabled type="text" placeholder="Search Employee First" wire:model.live="employeeName">
+                        {{-- <select wire:model="employee" class="form-control">
                             <option value="">Choose Employee ...</option>
                             @foreach ($employees as $employee)
                                 <option value="{{ $employee->id }}">{{ $employee->employee_number }} -
                                     {{ $employee->first_name }} {{ $employee->last_name }}</option>
                             @endforeach
-                        </select>
+                        </select> --}}
                     </div>
                     <div class="form-group">
                         <label for="">Note</label>

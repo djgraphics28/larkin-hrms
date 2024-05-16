@@ -21,6 +21,8 @@ class EmployeeInfoComponent extends Component
     public $age = 0;
     public $gender = 'Male';
 
+    public $assetCount = 0;
+
     #[Title('Employee Info')]
     public function render()
     {
@@ -38,7 +40,7 @@ class EmployeeInfoComponent extends Component
 
         $this->businessId = $businessUser->business_id;
 
-        $employee = Employee::where('id', $this->id)
+        $employee = Employee::withCount('assets')->where('id', $this->id)
                             ->where('business_id', $this->businessId)
                             ->first();
 
@@ -50,6 +52,8 @@ class EmployeeInfoComponent extends Component
         $this->position = $employee->designation->name;
         $this->gender = $employee->gender;
         $this->age = Carbon::parse($employee->birth_date)->age;
+
+        $this->assetCount = $employee->assets_count;
     }
 
 }

@@ -120,7 +120,7 @@
                                     <a class="nav-link" href="#loan_history" data-toggle="tab">Loan History</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#assets" data-toggle="tab">Assets</a>
+                                    <a class="nav-link" href="#assets" data-toggle="tab">Assets ({{ $assetCount }})</a>
                                 </li>
                             </ul>
                         </div><!-- /.card-header -->

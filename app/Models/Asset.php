@@ -15,9 +15,9 @@ class Asset extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'is_working' => 'boolean',
-    ];
+    // protected $casts = [
+    //     'is_working' => 'boolean',
+    // ];
 
     /**
      * Get the asset_type that owns the Asset
