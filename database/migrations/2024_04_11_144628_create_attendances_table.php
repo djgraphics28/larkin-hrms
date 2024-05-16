@@ -25,6 +25,10 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();
+            //if leave is approved, will save leave id
+            $table->unsignedBigInteger('leave_id')->nullable();
+            $table->enum('on_leave',['whole_day','first_half','second_half'])->nullable();
+
             $table
                 ->foreign('fortnight_id')
                 ->references('id')

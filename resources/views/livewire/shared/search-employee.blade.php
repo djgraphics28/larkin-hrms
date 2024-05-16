@@ -6,11 +6,11 @@
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <div class="input-group-text">
-                                <i class="bi bi-search text-primary"></i>
+                                <i class="fa fa-search text-primary"></i>
                             </div>
                         </div>
                         <input wire:keydown.escape="resetQuery" wire:model.live="query" type="text"
-                            class="form-control" placeholder="Type Employee name or Employee number....">
+                            class="form-control form-control-lg" placeholder="Type Employee name or Employee number....">
                     </div>
 
                 </div>
