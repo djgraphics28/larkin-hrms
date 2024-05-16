@@ -1,5 +1,6 @@
 <div>
     <form class="form-horizontal" wire:submit.prevent="create">
+
         <div class="form-group row">
             <label for="salary_rate" class="col-sm-2 col-form-label">Salary Rate / Hour</label>
             <div class="col-sm-10">
@@ -14,22 +15,24 @@
         </div>
         <div class="form-group row">
             <div class="offset-sm-2 col-sm-10">
-                <button type="submit" class="btn btn-primary float-right">Update</button>
+                <button wire:click="create" class="btn btn-primary" wire:loading.attr="disabled">
+                    <span wire:loading.remove wire:target="create">Pay Raise</span>
+                    <span wire:loading wire:target="create">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="visually-hidden">Loading...</span>
+                    </span>
+                </button>
             </div>
         </div>
     </form>
     <div class="tab-pane" id="timeline">
         @forelse ($records as $item)
             <div class="timeline timeline-inverse">
-                {{-- <div class="time-label">
-                    <span class="bg-{{ $item->is_active ? 'success' : 'secondary' }}">
-                        {{ $item->created_at }}
-                    </span>
-                </div> --}}
                 <div>
                     <i class="fas fa-usd bg-{{ $item->is_active ? 'success' : 'secondary' }}">K</i>
                     <div class="timeline-item">
-                        <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
+                        <span class="time"><i class="far fa-clock"></i>
+                            {{ \Carbon\Carbon::parse($item->updated_at)->diffForHumans() }}</span>
                         <h3 class="timeline-header">{{ $item->salary_rate }}</h3>
                     </div>
                 </div>
