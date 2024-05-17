@@ -114,14 +114,14 @@ class TaxTablesComponent extends Component
             $this->description = $data->description;
             $this->effective_date = $data->effective_date;
 
-            // Initialize $this->ranges with a default structure
-            // $this->ranges[] = ['from' => null, 'to' => null, 'percentage' => null];
+        // Initialize $this->ranges with a default structure
+        // $this->ranges[] = ['description' => null, 'from' => null, 'to' => null, 'percentage' => null];
 
             // Retrieve and assign tax table ranges if any exist
             $taxTableRanges = TaxTableRange::where('tax_table_id', $id)->get();
             if (!empty($taxTableRanges)) {
                 foreach($taxTableRanges as $range) {
-                    $this->ranges[] = ['from' => $range->from, 'to' => $range->to, 'percentage' => $range->percentage];
+                    $this->ranges[] = ['description' => $range->description, 'from' => $range->from, 'to' => $range->to, 'percentage' => $range->percentage];
                 }
             }
         }
@@ -150,7 +150,7 @@ class TaxTablesComponent extends Component
 
     public function addRange()
     {
-        $this->ranges[] = ['from' => null, 'to' => null, 'percentage' => null];
+        $this->ranges[] = ['description' => null, 'from' => null, 'to' => null, 'percentage' => null];
     }
 
     public function removeRange($index)
@@ -181,6 +181,7 @@ class TaxTablesComponent extends Component
                 TaxTableRange::create(
                     [
                         'tax_table_id' => $taxTable->id,
+                        'description' => $range['description'],
                         'from' => $range['from'],
                         'to' => $range['to'],
                         'percentage' => $range['percentage'],
@@ -196,6 +197,7 @@ class TaxTablesComponent extends Component
                 TaxTableRange::create(
                     [
                         'tax_table_id' => $taxTable->id,
+                        'description' => $range['description'],
                         'from' => $range['from'],
                         'to' => $range['to'],
                         'percentage' => $range['percentage'],

@@ -46,6 +46,12 @@
                                 <div class="row range" wire:key="range-{{ $key }}">
                                     <div class="col-md-3">
                                         <div class="form-group">
+                                            <input placeholder="Description" wire:model="ranges.{{ $key }}.description"
+                                                type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                             <input placeholder="From" wire:model="ranges.{{ $key }}.from"
                                                 type="number" class="form-control">
                                         </div>
@@ -57,7 +63,7 @@
                                                 type="number" class="form-control">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <div class="form-group">
 
                                             <input placeholder="Percentage"
@@ -65,7 +71,7 @@
                                                 class="form-control">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-1">
                                         <div class="form-group">
                                             @if ($key == 0)
                                                 <button wire:click.live="addRange" class="btn btn-primary">Add</button>
@@ -120,10 +126,11 @@
                                             value="{{ $data->id }}"></td>
                                     <td class="text-start">{{ $data->description }}</td>
                                     <td class="text-start">{{ $data->effective_date }}</td>
-                                    <td class="text-start">
+                                    <td width="40%" class="text-start">
                                         <table class="table table-sm">
                                             @forelse ($data->tax_table_ranges as $item)
                                                 <tr>
+                                                    <td>{{ $item->description }}</td>
                                                     <td class="text-start">from <span class="badge badge-info">K {{ number_format($item->from, 0, '.', ',') }} </span> to <span class="badge badge-info">K {{ number_format($item->to, 0, '.', ',') }}</span></td>
                                                     <td class="text-start" width="20%">{{ $item->percentage }} %
                                                     </td>
