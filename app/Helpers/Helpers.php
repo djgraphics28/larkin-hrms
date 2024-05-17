@@ -151,20 +151,21 @@ class Helpers
 
             foreach ($getHours as $hours) {
 
-                $checkHoliday = Holiday::where('holiday_date', $hours->date)->first();
-                // $computed_hour = $hour_diff_total;
                 $computed_hour = Helpers::compute_daily_hr($hours->date, $hours->time_in, $hours->time_out, $hours->time_in_2, $hours->time_out_2, $hours->is_break);
+                $total_hours = $total_hours + $computed_hour;
+
+                $checkHoliday = Holiday::where('holiday_date', $hours->date)->first();
 
                 if ($checkHoliday) {
                     $holiday_hours = $holiday_hours + $computed_hour;
                     $holiday_work[$hours->date] = $computed_hour;
                     continue;
                 }
+
                 if ($hours->day_name == 'Sunday') {
                     $sunday_total_hours = $sunday_total_hours + ($computed_hour);
                     continue;
                 }
-                $total_hours = $total_hours + $computed_hour;
             }
 
             $getHoliday = Holiday::whereBetween('holiday_date', [$start, $end])->get();
