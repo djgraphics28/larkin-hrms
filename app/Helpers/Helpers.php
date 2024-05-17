@@ -99,6 +99,7 @@ class Helpers
 
     public static function computeHours($fn_id, $businessId, $module, $payrun_id, $employee_ids)
     {
+
         $getDates = Fortnight::where('id', $fn_id)->first();
 
         $start = $getDates->start;
@@ -120,8 +121,6 @@ class Helpers
             })
             ->get();
 
-
-
         foreach ($getEmployee as $employee) {
             //check existing record
             $check_salary = EmployeeHours::where('employee_id', $employee->id)
@@ -136,9 +135,9 @@ class Helpers
                 $rate_id = $current_salary?->id;
             }
 
-            $getHours = Attendance::selectRaw('(TIME_TO_SEC(TIMEDIFF(time_out, time_in))/3600) - 1 as hours, DAYNAME(time_in) as day_name, DATE(time_in) as attendance_date')
+            $getHours = Attendance::selectRaw('date, time_in, time_out, time_in_2, time_out_2, is_break, late_in_minutes, DAYNAME(date) as day_name')
                 ->where('employee_number', $employee->employee_number)
-                ->whereBetween('time_in', [$start, $endDateAttendance])
+                ->whereBetween('date', [$start, $endDateAttendance])
                 ->get();
 
             $total_hours = 0;
@@ -146,28 +145,41 @@ class Helpers
             $regular_hours = 0;
             $ot_hours = 0;
             $holiday_hours = 0;
+            $holiday_work = [];
+
+
+
+            foreach ($getHours as $hours) {
+
+                $checkHoliday = Holiday::where('holiday_date', $hours->date)->first();
+                // $computed_hour = $hour_diff_total;
+                $computed_hour = Helpers::compute_daily_hr($hours->date, $hours->time_in, $hours->time_out, $hours->time_in_2, $hours->time_out_2, $hours->is_break);
+
+                if ($checkHoliday) {
+                    $holiday_hours = $holiday_hours + $computed_hour;
+                    $holiday_work[$hours->date] = $computed_hour;
+                    continue;
+                }
+                if ($hours->day_name == 'Sunday') {
+                    $sunday_total_hours = $sunday_total_hours + ($computed_hour);
+                    continue;
+                }
+                $total_hours = $total_hours + $computed_hour;
+            }
 
             $getHoliday = Holiday::whereBetween('holiday_date', [$start, $end])->get();
 
             if ($getHoliday) {
                 foreach ($getHoliday as $holiday) {
-                    $total_hours = $total_hours + 7;
-                }
-            }
-
-            foreach ($getHours as $hours) {
-                $checkHoliday = Holiday::where('holiday_date', $hours->attendance_date)->first();
-                $computed_hour = $hours->hours;
-
-                if ($checkHoliday) {
-                    $holiday_hours = $holiday_hours + $computed_hour;
-                }
-                if ($hours->day_name == 'Sunday') {
-                    $sunday_total_hours = $sunday_total_hours + ($computed_hour);
-                }
-
-                if (!$checkHoliday) {
-                    $total_hours = $total_hours + $computed_hour;
+                    if (array_key_exists($holiday->holiday_date, $holiday_work)) {
+                        foreach ($holiday_work as $date => $hours_worked) {
+                            if ($date === $holiday->holiday_date) {
+                                $total_hours = $total_hours + $hours_worked;
+                            }
+                        }
+                    } else {
+                        $total_hours = $total_hours + 8;
+                    }
                 }
             }
 
@@ -555,5 +567,27 @@ class Helpers
         $year = date('Y');
         $fn_number = Fortnight::where('year', $year)->count();
         return $fn_number;
+    }
+
+    public static function compute_daily_hr($date, $time_in, $time_out, $time_in_2, $time_out_2, $is_break)
+    {
+        $date = $date;
+        $comp_time_out = new DateTime($date . ' ' . $time_out);
+        $comp_time_in = new DateTime($date . ' ' . $time_in);
+        $comp_time_out_2 = new DateTime($date . ' ' . $time_out_2);
+        $comp_time_in_2 = new DateTime($date . ' ' . $time_in_2);
+
+        $hour_diff_am = $comp_time_out->diff($comp_time_in);
+        $hour_diff_pm = $comp_time_out_2->diff($comp_time_in_2);
+
+        $hour_diff_total = $hour_diff_am->h + $hour_diff_pm->h;
+
+        if (($time_out === '' || $time_in_2 === '' || $time_out === null || $time_in_2 === null) && $is_break === 1) {
+            $hour_diff_total = $comp_time_out_2->diff($comp_time_in)->h - 1;
+        } elseif (($time_out === '' || $time_in_2 === '' || $time_out === null || $time_in_2 === null) && $is_break === 0) {
+            $hour_diff_total = $comp_time_out_2->diff($comp_time_in)->h;
+        }
+
+        return $hour_diff_total;
     }
 }
