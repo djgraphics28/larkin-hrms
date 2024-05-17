@@ -138,6 +138,9 @@
                                     </option>
                                 @endforeach
                             </select>
+                            @error('fortnight_id')
+                                <p class="text-sm text-danger mt-1">Fortnight Required</p>
+                            @enderror
                         </div>
 
 
@@ -151,6 +154,9 @@
                                     </option>
                                 @endforeach
                             </select>
+                            @error('department_ids')
+                                <p class="text-sm text-danger mt-1">Department/s Required</p>
+                            @enderror
                         </div>
 
                         <div class="form-group">
@@ -163,6 +169,9 @@
                                     </option>
                                 @endforeach
                             </select>
+                            @error('employee_ids')
+                                <p class="text-sm text-danger mt-1">Employee Required</p>
+                            @enderror
                         </div>
 
                     </div>
