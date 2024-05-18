@@ -20,25 +20,42 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
+            {{-- <form wire:submit.prevent="save"> --}}
             <div class="card">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="description">Tax Description</label>
-                                <input wire:model="description" type="text" class="form-control form-control-lg">
+                                <input wire:model="description" type="text"
+                                    class="form-control form-control-lg @error('description') in-valid @enderror">
+                                @error('description')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="effective_date">Effectivity Date</label>
                                 <input wire:model="effective_date" type="date" class="form-control form-control-lg">
+                                @error('effective_date')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
                         <input type="hidden" wire:model="editId">
                     </div>
 
                     <div class="card">
+                        <div class="card-header">
+                            <div class="col-md-6">
+                                <small>To create a tax table, first gather all the salary ranges and tax rates. Next, sort the salary ranges from lowest to highest. As you insert the ranges into the table, ensure they are in ascending order and that there are no gaps or overlaps. Organize the data into columns, with one for the salary range and one for the tax rate. Finally, review the table to ensure it is accurate and complete.</small>
+                            </div>
+                        </div>
                         <div class="card-body">
                             <label for="">Add Salary Ranges with Percentage</label>
                             @foreach ($ranges as $key => $range)
@@ -46,8 +63,9 @@
                                 <div class="row range" wire:key="range-{{ $key }}">
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <input placeholder="Description" wire:model="ranges.{{ $key }}.description"
-                                                type="text" class="form-control">
+                                            <input placeholder="Description"
+                                                wire:model="ranges.{{ $key }}.description" type="text"
+                                                class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -91,15 +109,12 @@
                 </div>
 
                 <div class="card-footer">
-                    <button wire:click="save" class="btn btn-primary" wire:loading.attr="disabled">
-                        <span wire:loading.remove wire:target="save">Save Changes</span>
-                        <span wire:loading wire:target="save">
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            <span class="visually-hidden">Loading...</span>
-                        </span>
+                    <button wire:click="save" class="btn btn-primary">
+                        Save Changes
                     </button>
                 </div>
             </div>
+        {{-- </form> --}}
 
             <div class="card">
                 <div class="card-body p-0">
@@ -126,12 +141,28 @@
                                             value="{{ $data->id }}"></td>
                                     <td class="text-start">{{ $data->description }}</td>
                                     <td class="text-start">{{ $data->effective_date }}</td>
-                                    <td width="40%" class="text-start">
+                                    <td width="60%" class="text-start">
                                         <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Description</th>
+                                                    <th>Ranges</th>
+                                                    <th>Percentage</th>
+                                                </tr>
+                                            </thead>
                                             @forelse ($data->tax_table_ranges as $item)
                                                 <tr>
                                                     <td>{{ $item->description }}</td>
-                                                    <td class="text-start">from <span class="badge badge-info">K {{ number_format($item->from, 0, '.', ',') }} </span> to <span class="badge badge-info">K {{ number_format($item->to, 0, '.', ',') }}</span></td>
+                                                    <td class="text-start">from <span class="badge badge-info">K
+                                                            {{ number_format($item->from, 2, '.', ',') }} </span>
+                                                        @if ($item->to == null)
+                                                            and Above
+                                                        @else
+                                                        to
+                                                        <span class="badge badge-info">K
+                                                            {{ number_format($item->to, 2, '.', ',') }}</span>
+                                                        @endif
+                                                        </td>
                                                     <td class="text-start" width="20%">{{ $item->percentage }} %
                                                     </td>
                                                 </tr>

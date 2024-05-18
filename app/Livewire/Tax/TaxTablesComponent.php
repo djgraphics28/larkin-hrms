@@ -37,7 +37,7 @@ class TaxTablesComponent extends Component
     public $effective_date;
     public $ranges = [];
 
-    #[Title('Tax')]
+    #[Title('Tax Table')]
     public function render()
     {
         return view('livewire.tax.tax-tables-component', [
@@ -70,33 +70,6 @@ class TaxTablesComponent extends Component
         $this->dispatch('show-add-modal');
         $this->modalTitle = 'Add New Tax';
         $this->updateMode = false;
-    }
-
-    public function submit($saveAndCreateNew)
-    {
-        $this->validate([
-            'description' => 'required',
-            'range_from' => 'required',
-            'range_to' => 'required',
-            'percentage' => 'required'
-        ]);
-
-        $create = TaxTable::create([
-            'description' => $this->description,
-            'from' => $this->range_from,
-            'to' => $this->range_to,
-            'percentage' => $this->percentage
-        ]);
-
-        if ($create) {
-            $this->resetInputFields();
-            if ($saveAndCreateNew) {
-                $this->alert('success', 'New Tax has been save successfully!');
-            } else {
-                $this->dispatch('hide-add-modal');
-                $this->alert('success', 'New Tax has been save successfully!');
-            }
-        }
     }
 
     public function resetInputFields()
@@ -161,6 +134,17 @@ class TaxTablesComponent extends Component
 
     public function save()
     {
+
+        if($this->description == '') {
+            $this->alert('warning', 'Tax Description is required!');
+            return;
+        }
+
+        if($this->effective_date == '') {
+            $this->alert('warning', 'Effective Date is required!');
+            return;
+        }
+
         $this->validate([
             'description' => 'required',
             'effective_date' => 'required'
