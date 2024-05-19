@@ -10,11 +10,13 @@
     "require": {
         "php": "^8.1",
         "abwebdevelopers/aba-generator": "^1.1",
+        "dasundev/livewire-dropzone": "^1.0",
         "guzzlehttp/guzzle": "^7.8",
         "jantinnerezo/livewire-alert": "^3.0",
         "laravel/framework": "^10.33",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "league/flysystem-aws-s3-v3": "^3.27",
         "livewire/livewire": "^3.2",
         "maatwebsite/excel": "^3.1",
         "pusher/pusher-php-server": "^7.2",

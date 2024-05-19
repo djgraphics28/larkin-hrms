@@ -199,4 +199,9 @@ class Employee extends Model implements HasMedia
     {
         return $this->employee_number.' | '. $this->first_name. ' ' .$this->last_name;
     }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('documents')->useDisk('s3');
+    }
 }

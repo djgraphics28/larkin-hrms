@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@dasundev/livewire-dropzone-styles@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.npmjs.org/@dasundev/livewire-dropzone-styles/-/livewire-dropzone-styles-1.0.7.tgz"
+  integrity sha512-Kd9lGe7qAAm2vc0DsiuzELBnqyNnlNlf9I8Zrdqm0HeD6cvJW1F16Mpl6EEJtR2ZgshTfX/mMvTjgJ5g48jMpg==
+
 "@esbuild/win32-x64@0.18.20":
   version "0.18.20"
   resolved "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.18.20.tgz"
@@ -60,6 +65,26 @@ esbuild@^0.18.10:
     "@esbuild/win32-arm64" "0.18.20"
     "@esbuild/win32-ia32" "0.18.20"
     "@esbuild/win32-x64" "0.18.20"
+
+filepond-plugin-file-validate-size@^2.2.8:
+  version "2.2.8"
+  resolved "https://registry.npmjs.org/filepond-plugin-file-validate-size/-/filepond-plugin-file-validate-size-2.2.8.tgz"
+  integrity sha512-yzb8scATmkWqPTP7oKQz6L8WwJm6Xmgc/fuq6DFGRaLz0I7372BUvBsxagBk/hypMIjvieNzhggm33Y60x3rcw==
+
+filepond-plugin-file-validate-type@^1.2.9:
+  version "1.2.9"
+  resolved "https://registry.npmjs.org/filepond-plugin-file-validate-type/-/filepond-plugin-file-validate-type-1.2.9.tgz"
+  integrity sha512-Tzv07aNdZvjUXDRA3XL16QMEvh6llDrXlcZ6W0eTHQ+taHaVg/JKJTFs/AViO+6ZcpPCcQStbhYEL2HoS+vldw==
+
+filepond-plugin-image-preview@^4.6.12:
+  version "4.6.12"
+  resolved "https://registry.npmjs.org/filepond-plugin-image-preview/-/filepond-plugin-image-preview-4.6.12.tgz"
+  integrity sha512-Y8ETX5QVV0mbPB0586UH8AUmG9tZg8PuN5bdEAIlZVJFTct5ebViJ7+Am94/VhTPjLqZjBf1zmDq5JU6XRsZKw==
+
+filepond@^4.31.1, "filepond@>=1.x <5.x", "filepond@>=3.1.2 <5.x", "filepond@>=4.x <5.x":
+  version "4.31.1"
+  resolved "https://registry.npmjs.org/filepond/-/filepond-4.31.1.tgz"
+  integrity sha512-yWYK91Ky72L2AG7BlI8Cb0UjvJz+DjuYdLN1JbkJg8qmoiZ9AU5b5MuOkHmExk/9jQ5R7tRT+H+b8wDiFEJlxQ==
 
 follow-redirects@^1.15.0:
   version "1.15.3"

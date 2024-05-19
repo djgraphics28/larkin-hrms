@@ -148,7 +148,7 @@
                                 <!-- /.tab-pane -->
 
                                 <div class="tab-pane" id="documents">
-
+                                    @livewire('employee.partials.upload-documents-component', ['id' => $id])
                                 </div>
                                 <!-- /.tab-pane -->
 
