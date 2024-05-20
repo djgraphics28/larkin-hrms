@@ -50,6 +50,7 @@ class EmployeeInfoComponent extends Component
 
         $this->fullName = $employee->first_name . " " . $employee->last_name;
         $this->position = $employee->designation->name;
+        $this->label = $employee->label;
         $this->gender = $employee->gender;
         $this->age = Carbon::parse($employee->birth_date)->age;
 

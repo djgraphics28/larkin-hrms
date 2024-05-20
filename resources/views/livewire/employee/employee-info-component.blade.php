@@ -25,7 +25,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
 
                     <!-- Profile Image -->
                     <div class="card card-primary card-outline">
@@ -89,7 +89,7 @@
                     <!-- /.card -->
                 </div>
                 <!-- /.col -->
-                <div class="col-md-9">
+                <div class="col-md-10">
                     <div class="card">
                         <div class="card-header p-2">
                             <ul class="nav nav-pills">
@@ -122,6 +122,11 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="#assets" data-toggle="tab">Assets ({{ $assetCount }})</a>
                                 </li>
+                                @if($label == 'Expatriate')
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#expat_forms" data-toggle="tab">Expatriate Records</a>
+                                </li>
+                                @endif
                             </ul>
                         </div><!-- /.card-header -->
                         <div class="card-body">
@@ -173,6 +178,11 @@
 
                                 <div class="tab-pane" id="assets">
                                     @livewire('employee.partials.asset-component', ['id' => $id])
+                                </div>
+                                <!-- /.tab-pane -->
+
+                                <div class="tab-pane" id="expat_forms">
+                                    @livewire('employee.partials.expat-forms-component', ['id' => $id])
                                 </div>
                                 <!-- /.tab-pane -->
                             </div>
