@@ -140,7 +140,7 @@
                 @endcan
                 {{-- HR MANAGEMENT --}}
                 @can('access_hr_management')
-                    <li class="nav-header">HR Management</li>
+                    <li class="nav-header">HR MANAGEMENT</li>
                     <li class="nav-item {{ request()->is('employee/*') ? 'menu-open' : '' }}">
                         <a href="javascript:void(0)" class="nav-link {{ request()->is('employee/*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-users"></i>
@@ -391,6 +391,49 @@
                         </li>
                     @endcan
                 @endcan
+                {{-- REPORTS --}}
+                @can('access_reports_management')
+                    <li class="nav-header">REPORTS</li>
+                    <li class="nav-item {{ request()->is('reports/*') ? 'menu-open' : '' }}">
+                        <a href="javascript:void(0)"
+                            class="nav-link {{ request()->is('reports/*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-file"></i>
+                            <p>
+                                Reports Management
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            @can('access_nasfund_report')
+                                <li class="nav-item">
+                                    <a href="{{ route('nasfund-reports') }}"
+                                        class="nav-link {{ request()->is('reports/nasfund') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Nasfund Reporting</p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('access_swt_report')
+                                <li class="nav-item">
+                                    <a href="{{ route('swt-reports') }}"
+                                        class="nav-link {{ request()->is('reports/swt') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>SWT Reports</p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('access_summary_of_earnings_report')
+                                <li class="nav-item">
+                                    <a href="{{ route('summary-of-earnings-reports') }}"
+                                        class="nav-link {{ request()->is('reports/summary-of-earnings') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Summary of Earnings Reports</p>
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcan
                 {{-- GENERAL SETTINGS --}}
                 @can('access_general_settings')
                     <li class="nav-header">GENERAL SETTINGS</li>
@@ -436,6 +479,7 @@
                         </li>
                     @endcan
                 @endcan
+
                 <li class="nav-item">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

@@ -222,6 +222,9 @@ class RoleComponent extends Component
     public $access_imports_management = false;
     //Reports
     public $access_reports_management = false;
+    public $access_nasfund_report = false;
+    public $access_swt_report = false;
+    public $access_summary_of_earnings_report = false;
 
     #[Title('Roles')]
     public function render()

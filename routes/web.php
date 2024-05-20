@@ -18,6 +18,7 @@ use App\Livewire\Payroll\PayslipComponent;
 use App\Livewire\Loan\LoanRequestComponent;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
+use App\Livewire\Reports\SwtReportComponent;
 use App\Http\Controllers\ApproveLeaveRequest;
 use App\Livewire\Holiday\SetHolidayComponent;
 use App\Livewire\Leave\LeaveRequestComponent;
@@ -29,6 +30,7 @@ use App\Livewire\Designation\DesignationComponent;
 use App\Livewire\Employee\CreateEmployeeComponent;
 use App\Livewire\Employee\ImportEmployeeComponent;
 use App\Livewire\Attendance\AttendanceLogComponent;
+use App\Livewire\Reports\NasfundReportingComponent;
 use App\Livewire\AbaGenerator\AbaGeneratorComponent;
 use App\Livewire\CompanyDetails\BankDetailsComponent;
 use App\Livewire\Attendance\AttendanceCreateComponent;
@@ -39,6 +41,7 @@ use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Livewire\EmailTemplate\EmailTemplateTypeComponent;
+use App\Livewire\Reports\SummaryOfEarningsReportComponent;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
@@ -127,6 +130,13 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
     Route::group(['prefix' => 'asset'], function () {
         Route::get('/', AssetComponent::class)->name('asset');
         Route::get('/type', AssetTypeComponent::class)->name('asset-type');
+    });
+
+    // Reports routes
+    Route::group(['prefix' => 'reports'], function () {
+        Route::get('/nasfund', NasfundReportingComponent::class)->name('nasfund-reports');
+        Route::get('/swt', SwtReportComponent::class)->name('swt-reports');
+        Route::get('/summary-of-earnings', SummaryOfEarningsReportComponent::class)->name('summary-of-earnings-reports');
     });
 });
 

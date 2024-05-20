@@ -964,6 +964,56 @@
                                     </div>
                                 </div>
                             </div>
+
+
+                        </div>
+                    </div>
+                    {{-- Reports Managmenet --}}
+                    <div class="card">
+                        <div class="card-header">
+
+                            <h3 class="card-title">
+                                <div class="custom-control custom-switch">
+                                    <input {{ $access_reports_management ? 'checked' : '' }} type="checkbox"
+                                        class="custom-control-input" id="access_reports_management"
+                                        wire:model="access_reports_management">
+                                    <label class="custom-control-label" for="access_reports_management">Reports
+                                        Management</label>
+                                </div>
+                            </h3>
+                            <div class="card-tools">
+                                <!-- Collapse Button -->
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                        class="fas fa-minus"></i></button>
+                            </div>
+                            <!-- /.card-tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="custom-control custom-switch">
+                                <input {{ $access_nasfund_report ? 'checked' : '' }} type="checkbox"
+                                    class="custom-control-input" id="access_nasfund_report"
+                                    wire:model="access_nasfund_report">
+                                <label class="custom-control-label" for="access_nasfund_report">
+                                    Access to Nasfund Reporting</label>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input {{ $access_swt_report ? 'checked' : '' }} type="checkbox"
+                                    class="custom-control-input" id="access_swt_report"
+                                    wire:model="access_swt_report">
+                                <label class="custom-control-label" for="access_swt_report">Access SWT
+                                    Reports</label>
+                            </div>
+                            <div class="custom-control custom-switch">
+                                <input {{ $access_summary_of_earnings_report ? 'checked' : '' }}
+                                    type="checkbox" class="custom-control-input"
+                                    id="access_summary_of_earnings_report"
+                                    wire:model="access_summary_of_earnings_report">
+                                <label class="custom-control-label"
+                                    for="access_summary_of_earnings_report">Can
+                                    Access Summary of Earnings Reports</label>
+                            </div>
+                            <!-- /.card-body -->
                         </div>
                     </div>
                 </div>

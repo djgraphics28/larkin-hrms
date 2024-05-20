@@ -210,6 +210,9 @@ class PermissionSeeder extends Seeder
             'access_imports_management',
             //Reports
             'access_reports_management',
+            'access_nasfund_report',
+            'access_swt_report',
+            'access_summary_of_earnings_report',
         ];
 
         foreach ($permissions as $permission) {
