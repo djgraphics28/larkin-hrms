@@ -22,15 +22,31 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
+                        <label for="fortnight">Select Year</label>
+                        <select wire:model="year" id="year" class="form-control"
+                            wire:change="getFortnight">
+                            <option value="">Choose Year ...</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
                         <label for="fortnight">Select Fortnight</label>
                         <select wire:model="fortnight" id="fortnight" class="form-control"
                             wire:change="generateNasfund">
                             <option value="">Choose Fortnight ...</option>
-                            @foreach ($fortnights as $item)
-                                <option value="{{ $item->id }}">{{ $item->code }} from
-                                    {{ \Carbon\Carbon::parse($item->start)->format('M-d-Y') }} to
-                                    {{ \Carbon\Carbon::parse($item->end)->format('M-d-Y') }}</option>
-                            @endforeach
+                            @forelse ($fortnights as $item)
+                            <option value="{{ $item->id }}">{{ $item->code }} from
+                                {{ \Carbon\Carbon::parse($item->start)->format('M-d-Y') }} to
+                                {{ \Carbon\Carbon::parse($item->end)->format('M-d-Y') }}</option>
+                            @empty
+                                <option value="">Select Year First!</option>
+                            @endforelse
                         </select>
                     </div>
                 </div>

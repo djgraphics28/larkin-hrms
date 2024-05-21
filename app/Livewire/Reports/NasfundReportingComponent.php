@@ -15,6 +15,8 @@ class NasfundReportingComponent extends Component
     public $fortnights = [];
     public $selectedFortnight = '';
     #[Url]
+    public $year = '';
+    #[Url]
     public $fortnight = '';
     public $records = [];
     #[Title('Nasfund Reporting')]
@@ -28,13 +30,20 @@ class NasfundReportingComponent extends Component
         $this->businessId = BusinessUser::where('user_id', auth()->user()->id)
             ->where('is_active', true)
             ->first()->business_id;
-
-        $this->fortnights = Fortnight::all();
         $this->generateNasfund();
     }
 
     public function generateNasfund()
     {
         $this->records = Employee::where('is_discontinued', 0)->where('business_id',$this->businessId)->get();
+    }
+
+    public function getFortnight()
+    {
+        if($this->year == '') {
+            $this->fortnights = [];
+        }else{
+            $this->fortnights = Fortnight::where('year', $this->year)->get();
+        }
     }
 }
