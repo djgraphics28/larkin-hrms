@@ -113,7 +113,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="phone">Phone Number</label><span class="text-danger">*</span>
+                                        <label for="phone">Phone Number</label>
                                         <input wire:model="phone" type="text"
                                             class="form-control @error('phone') is-invalid @enderror" id="phone"
                                             placeholder="+058109">
@@ -124,7 +124,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="email">Email Address</label><span class="text-danger">*</span>
+                                        <label for="email">Email Address</label>
                                         <input wire:model="email" type="email"
                                             class="form-control @error('email') is-invalid @enderror" id="email"
                                             placeholder="email@mail.com">
@@ -156,8 +156,9 @@
                             <div class="card-body">
                                 <div class="form-row">
                                     <div class="form-group col-md-3">
-                                        <label for="employee_number">Employee Number</label><span class="text-danger">*</span>
-                                        <input wire:model="employee_number" type="text"
+                                        <label for="employee_number">Employee Number</label><span
+                                            class="text-danger">*</span>
+                                        <input disabled wire:model="employee_number" type="text"
                                             class="form-control @error('employee_number') is-invalid @enderror"
                                             id="employee_number">
                                         @error('employee_number')
@@ -167,7 +168,8 @@
                                         @enderror
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="joining_date">Joining Date</label><span class="text-danger">*</span>
+                                        <label for="joining_date">Joining Date</label><span
+                                            class="text-danger">*</span>
                                         <input wire:model="joining_date" type="date"
                                             class="form-control @error('joining_date') is-invalid @enderror"
                                             id="joining_date">
@@ -178,7 +180,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="end_date">End Date</label><span class="text-danger">*</span>
+                                        <label for="end_date">End Date</label>
                                         <input wire:model="end_date" type="date"
                                             class="form-control @error('end_date') is-invalid @enderror"
                                             id="end_date">
@@ -214,7 +216,8 @@
                                     </div>
                                     @if ($label == 'all')
                                         <div class="form-group col-md-3">
-                                            <label for="label">Employee Label</label><span class="text-danger">*</span>
+                                            <label for="label">Employee Label</label><span
+                                                class="text-danger">*</span>
                                             <select wire:model="label" id="label"
                                                 class="form-control @error('label') is-invalid @enderror">
                                                 <option value="">Select Label</option>
@@ -230,7 +233,8 @@
                                     @endif
 
                                     <div class="form-group col-md-3">
-                                        <label for="designation">Position/Designation</label><span class="text-danger">*</span>
+                                        <label for="designation">Position/Designation</label><span
+                                            class="text-danger">*</span>
                                         <select wire:model="designation" id="designation"
                                             class="form-control @error('designation') is-invalid @enderror">
                                             <option value="">Select Position/Designation</option>
@@ -245,7 +249,8 @@
                                         @enderror
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="employee_status">Employee Status</label><span class="text-danger">*</span>
+                                        <label for="employee_status">Employee Status</label><span
+                                            class="text-danger">*</span>
                                         <select wire:model="employee_status" id="employee_status"
                                             class="form-control @error('employee_status') is-invalid @enderror">
                                             <option value="">Select Employee Status</option>
@@ -277,7 +282,8 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-3">
-                                        <label for="salary_rate">Salary Rate / Hour</label><span class="text-danger">*</span>
+                                        <label for="salary_rate">Salary Rate / Hour</label><span
+                                            class="text-danger">*</span>
                                         <input wire:model="salary_rate" type="text"
                                             class="form-control @error('salary_rate') is-invalid @enderror"
                                             id="salary_rate">
@@ -288,7 +294,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="nasfund_number">NASFUND Number</label><span class="text-danger">*</span>
+                                        <label for="nasfund_number">NASFUND Number</label>
                                         <input wire:model="nasfund_number" type="text"
                                             class="form-control @error('nasfund_number') is-invalid @enderror"
                                             id="nasfund_number">
@@ -314,7 +320,8 @@
                                 <div class="card-body">
                                     <div class="form-row">
                                         <div class="form-group col-md-3">
-                                            <label for="passport_number">Passport Number</label><span class="text-danger">*</span>
+                                            <label for="passport_number">Passport Number</label><span
+                                                class="text-danger">*</span>
                                             <input wire:model="passport_number" type="text"
                                                 class="form-control @error('passport_number') is-invalid @enderror"
                                                 id="passport_number">
@@ -325,7 +332,8 @@
                                             @enderror
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="passport_expiry">Passport Expiry Date</label><span class="text-danger">*</span>
+                                            <label for="passport_expiry">Passport Expiry Date</label><span
+                                                class="text-danger">*</span>
                                             <input wire:model="passport_expiry" type="date"
                                                 class="form-control @error('passport_expiry') is-invalid @enderror"
                                                 id="passport_expiry">
@@ -336,7 +344,8 @@
                                             @enderror
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="work_permit_number">Work Permit Number</label><span class="text-danger">*</span>
+                                            <label for="work_permit_number">Work Permit Number</label><span
+                                                class="text-danger">*</span>
                                             <input wire:model="work_permit_number" type="text"
                                                 class="form-control @error('work_permit_number') is-invalid @enderror"
                                                 id="work_permit_number">
@@ -347,7 +356,8 @@
                                             @enderror
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="work_permit_expiry">Work Permit Expiry Date</label><span class="text-danger">*</span>
+                                            <label for="work_permit_expiry">Work Permit Expiry Date</label><span
+                                                class="text-danger">*</span>
                                             <input wire:model="work_permit_expiry" type="date"
                                                 class="form-control @error('work_permit_expiry') is-invalid @enderror"
                                                 id="work_permit_expiry">
@@ -359,7 +369,8 @@
                                         </div>
 
                                         <div class="form-group col-md-3">
-                                            <label for="visa_number">Visa Number</label><span class="text-danger">*</span>
+                                            <label for="visa_number">Visa Number</label><span
+                                                class="text-danger">*</span>
                                             <input wire:model="visa_number" type="text"
                                                 class="form-control @error('visa_number') is-invalid @enderror"
                                                 id="visa_number">
@@ -370,7 +381,8 @@
                                             @enderror
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="visa_expiry">Visa Expiry Date</label><span class="text-danger">*</span>
+                                            <label for="visa_expiry">Visa Expiry Date</label><span
+                                                class="text-danger">*</span>
                                             <input wire:model="visa_expiry" type="date"
                                                 class="form-control @error('visa_expiry') is-invalid @enderror"
                                                 id="visa_expiry">

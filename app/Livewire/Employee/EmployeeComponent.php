@@ -63,18 +63,18 @@ class EmployeeComponent extends Component
 
     public function render()
     {
-        return view('livewire.employee.employee-component',[
+        return view('livewire.employee.employee-component', [
             'records' => $this->records
         ]);
     }
 
     public function mount()
     {
-        $this->departments = Department::where('is_active',1)->get();
-        $this->designations = Designation::where('is_active',1)->get();
-        $this->employeeStatuses = EmployeeStatus::where('is_active',1)->get();
+        $this->departments = Department::where('is_active', 1)->get();
+        $this->designations = Designation::where('is_active', 1)->get();
+        $this->employeeStatuses = EmployeeStatus::where('is_active', 1)->get();
 
-        $this->businessId = BusinessUser::where('user_id',Auth::user()->id)->where('is_active', true)->first()->business_id;
+        $this->businessId = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
 
     }
 
@@ -83,16 +83,16 @@ class EmployeeComponent extends Component
         $label = $this->label == 'all' ? $this->sortByLabel : $this->label;
 
         return Employee::with(['employee_notes'])->search(trim($this->search))
-            ->when($label, function($query) use ($label) {
+            ->when($label, function ($query) use ($label) {
                 $query->where('label', $label);
             })
-            ->when($this->sortByDepartment, function($query) use ($label) {
+            ->when($this->sortByDepartment, function ($query) use ($label) {
                 $query->where('department_id', $this->sortByDepartment);
             })
-            ->when($this->sortByDesignation, function($query) {
+            ->when($this->sortByDesignation, function ($query) {
                 $query->where('designation_id', $this->sortByDesignation);
             })
-            ->when($this->sortByEmployeeStatus, function($query) {
+            ->when($this->sortByEmployeeStatus, function ($query) {
                 $query->where('employee_status_id', $this->sortByEmployeeStatus);
             })
             ->where('business_id', $this->businessId)
@@ -101,9 +101,10 @@ class EmployeeComponent extends Component
 
     public function updatedSelectAll($value)
     {
-        if($value){
+        dd($value);
+        if ($value) {
             $this->selectedRows = $this->records->pluck('id');
-        }else{
+        } else {
             $this->selectedRows = [];
         }
     }
@@ -123,8 +124,8 @@ class EmployeeComponent extends Component
         $delete = Designation::find($this->approveConfirmed);
         $name = $delete->name;
         $delete->delete();
-        if($delete){
-            $this->alert('success', $name.' has been removed!');
+        if ($delete) {
+            $this->alert('success', $name . ' has been removed!');
         }
     }
 

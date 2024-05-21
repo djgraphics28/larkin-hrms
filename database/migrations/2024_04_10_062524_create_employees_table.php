@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -38,6 +37,7 @@ return new class extends Migration
             $table->date('work_permit_expiry')->nullable();
             $table->string('visa_number')->nullable();
             $table->date('visa_expiry')->nullable();
+            $table->enum('default_pay_method', ['cash', 'bank'])->default('cash');
             $table->unsignedBigInteger('designation_id');
             $table->unsignedBigInteger('employee_status_id');
             $table->unsignedBigInteger('business_id');

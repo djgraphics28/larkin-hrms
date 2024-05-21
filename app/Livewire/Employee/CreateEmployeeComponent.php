@@ -3,6 +3,7 @@
 namespace App\Livewire\Employee;
 
 use Livewire\Component;
+use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\Workshift;
 use App\Models\Department;
@@ -17,6 +18,7 @@ class CreateEmployeeComponent extends Component
 {
     use LivewireAlert;
 
+    public $businessId;
     public $label;
     public $employee_number;
     public $first_name;
@@ -59,28 +61,30 @@ class CreateEmployeeComponent extends Component
 
     public function mount()
     {
-        $this->departments = Department::where('is_active',1)->get();
+        $this->businessId = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
+        $this->departments = Department::where('is_active', 1)->get();
         $this->workshifts = Workshift::all();
-        $this->employeeStatuses = EmployeeStatus::where('is_active',1)->get();
-        $this->designations = Designation::where('is_active',1)->get();
+        $this->employeeStatuses = EmployeeStatus::where('is_active', 1)->get();
+        $this->designations = Designation::where('is_active', 1)->get();
+        $this->employee_number = Helpers::generateEmployeeNumber($this->businessId);
     }
 
     public function submit()
     {
         $this->validate([
-            'employee_number' => 'required',
+            // 'employee_number' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
-            'phone' => 'required',
-            'email' => 'required',
+            // 'phone' => 'required',
+            // 'email' => 'required',
             'marital_status' => 'required',
             'gender' => 'required',
             'birth_date' => 'required',
             'joining_date' => 'required',
             'designation' => 'required',
-            'end_date' => 'required',
+            // 'end_date' => 'required',
             'salary_rate' => 'required',
-            'nasfund_number' => 'required',
+            // 'nasfund_number' => 'required',
             'employee_status' => 'required',
             'department' => 'required',
             'workshift' => 'required',
@@ -120,7 +124,8 @@ class CreateEmployeeComponent extends Component
             'employee_status_id' => $this->employee_status,
             'department_id' => $this->department,
             'workshift_id' => $this->workshift,
-            'business_id' => BusinessUser::where('user_id',Auth::user()->id)->where('is_active', true)->first()->business_id,
+            'business_id' => $this->businessId,
+            'default_pay_method' => 'cash',
         ]);
 
         $create->salaries()->create([
@@ -129,7 +134,6 @@ class CreateEmployeeComponent extends Component
         ]);
 
         if ($create) {
-            // $this->alert('success', 'New Employee has been saved successfully!');
             return redirect()->route('employee.index', $this->label)->with('success', 'New Employee has been saved successfully!');
         } else {
             $this->alert('error', 'Something went wrong, please try again!');

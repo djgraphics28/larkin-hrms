@@ -3,6 +3,7 @@
 namespace App\Livewire\Employee\Partials;
 
 use Livewire\Component;
+use App\Models\Employee;
 use App\Models\BankDetail;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
@@ -49,7 +50,10 @@ class BankDetailsComponent extends Component
                 'bsb_code' => $record['bsb_code']
             ]);
         }
-
+        $emp = Employee::find($this->id);
+        $emp->update([
+            'default_pay_method' => 'bank'
+        ]);
         $this->alert('success', 'Bank details saved successfully');
     }
 
@@ -66,7 +70,7 @@ class BankDetailsComponent extends Component
     public function alertConfirm($index)
     {
         $this->deleteIndex = $index;
-        if(!isset($this->records[$index]['id'])) {
+        if (!isset($this->records[$index]['id'])) {
             $this->removeBank($index);
             return;
         }
