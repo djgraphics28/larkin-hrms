@@ -192,7 +192,6 @@ class CreateEmployeeComponent extends Component
         $this->joining_date = '';
         $this->end_date = '';
         $this->deployment_date_home_country = '';
-        $this->label = '';
         $this->nasfund_number = '';
         $this->passport_number = '';
         $this->passport_expiry = '';
@@ -211,5 +210,9 @@ class CreateEmployeeComponent extends Component
         $this->work_permit_number = '';
         $this->visa_number = '';
         $this->visa_expiry = '';
+        $this->account_name = '';
+        $this->account_number = '';
+        $this->bank_name = '';
+        $this->bsb_code = '';
     }
 }
