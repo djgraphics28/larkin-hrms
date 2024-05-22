@@ -24,7 +24,7 @@
 
     <section class="content">
         <div class="container-fluid">
-            <form wire:submit.prevent="submit">
+            {{-- <form wire:submit.prevent="submit"> --}}
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-outline card-primary">
@@ -35,7 +35,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-3">
                                         <label for="first_name">First Name</label><span class="text-danger">*</span>
-                                        <input wire:model="first_name" type="text"
+                                        <input wire:model="first_name" wire:change="updateAccountName" type="text"
                                             class="form-control @error('first_name') is-invalid @enderror"
                                             id="first_name" placeholder="First name">
                                         @error('first_name')
@@ -51,7 +51,7 @@
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="last_name">Last Name</label><span class="text-danger">*</span>
-                                        <input wire:model="last_name" type="text"
+                                        <input wire:model="last_name" wire:change="updateAccountName" type="text"
                                             class="form-control  @error('last_name') is-invalid @enderror"
                                             id="last_name" placeholder="Last name">
                                         @error('last_name')
@@ -400,19 +400,76 @@
                     <!-- /.row -->
                 @endif
 
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="custom-control custom-switch">
+                                    <input {{ $bankSelected ? 'checked' : '' }} type="checkbox"
+                                        class="custom-control-input" id="bankSelected"
+                                        wire:model.live="bankSelected">
+                                    <label class="custom-control-label" for="bankSelected">Bank Details</label>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-md-3">
+                                        <label for="account_name">Account Name</label>
+                                        <input {{ !$bankSelected ? 'disabled' : '' }} wire:model="account_name" type="text"
+                                            class="form-control"
+                                            id="account_name">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="account_number">Account Number</label>
+                                        <input {{ !$bankSelected ? 'disabled' : '' }} wire:model="account_number" type="text"
+                                            class="form-control"
+                                            id="account_number">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="bank_name">Bank Name</label>
+                                        <input {{ !$bankSelected ? 'disabled' : '' }} wire:model="bank_name" type="text"
+                                            class="form-control"
+                                            id="bank_name">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="bsb_code">BSB Code</label>
+                                        <input {{ !$bankSelected ? 'disabled' : '' }} wire:model="bsb_code" type="text"
+                                            class="form-control"
+                                            id="bsb_code">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <button type="submit" class="btn btn-primary float-right">SAVE NEW EMPLOYEE</button>
+                                <button wire:click="submit(1)" class="btn btn-primary mr-2" wire:loading.attr="disabled">
+                                    <span wire:loading.remove wire:target="submit(1)">SAVE</span>
+                                    <span wire:loading wire:target="submit(1)">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Loading...</span>
+                                    </span>
+                                </button>
+
+                                <button wire:click="submit(2)" class="btn btn-info mr-2" wire:loading.attr="disabled">
+                                    <span wire:loading.remove wire:target="submit(2)">SAVE & CREATE NEW</span>
+                                    <span wire:loading wire:target="submit(2)">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Loading...</span>
+                                    </span>
+                                </button>
                                 <a href="{{ route('employee.index', $label) }}"
                                     class="btn btn-default float-right mr-2">CANCEL</a>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
+            {{-- </form> --}}
         </div><!-- /.container-fluid -->
     </section>
 </div>

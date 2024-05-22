@@ -48,6 +48,12 @@ class CreateEmployeeComponent extends Component
     public $department;
     public $workshift;
 
+    public $bankSelected = false;
+    public $account_name;
+    public $account_number;
+    public $bank_name;
+    public $bsb_code;
+
     public $departments = [];
     public $workshifts = [];
     public $employeeStatuses = [];
@@ -67,9 +73,15 @@ class CreateEmployeeComponent extends Component
         $this->employeeStatuses = EmployeeStatus::where('is_active', 1)->get();
         $this->designations = Designation::where('is_active', 1)->get();
         $this->employee_number = Helpers::generateEmployeeNumber($this->businessId);
+
     }
 
-    public function submit()
+    public function updateAccountName()
+    {
+        $this->account_name = $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function submit($type)
     {
         $this->validate([
             // 'employee_number' => 'required',
@@ -133,11 +145,64 @@ class CreateEmployeeComponent extends Component
             'is_active' => true
         ]);
 
+        if($this->bankSelected) {
+            if($this->account_name !== '' && $this->account_number !== '' && $this->bank_name !== '' && $this->bsb_code !== '') {
+                $create->bank_details()->create([
+                    'account_name' => $this->account_name,
+                    'account_number' => $this->account_number,
+                    'bank_name' => $this->bank_name,
+                    'bsb_code' => $this->bsb_code,
+                    'is_active' => true,
+                ]);
+
+                //update paymethod to bank
+                Employee::find($create->id)->update(['default_pay_method' => 'bank']);
+
+            } else if($this->account_name !== '' && $this->account_number == '' && $this->bank_name == '' && $this->bsb_code == ''){
+                $this->alert('error', 'Please fill in all bank details fields!');
+                return;
+            }
+        }
+
         if ($create) {
-            return redirect()->route('employee.index', $this->label)->with('success', 'New Employee has been saved successfully!');
+            if($type == 1) {
+                return redirect()->route('employee.index', $this->label)->with('success', 'New Employee has been saved successfully!');
+            } else {
+                $this->resetFields();
+                $this->alert('success', 'New Employee has been saved successfully!');
+            }
+
         } else {
             $this->alert('error', 'Something went wrong, please try again!');
         }
 
+    }
+
+    public function resetFields()
+    {
+        $this->first_name = '';
+        $this->middle_name = '';
+        $this->last_name = '';
+        $this->ext_name = '';
+        $this->phone = '';
+        $this->email = '';
+        $this->address = '';
+        $this->marital_status = '';
+        $this->birth_date = '';
+        $this->joining_date = '';
+        $this->end_date = '';
+        $this->deployment_date_home_country = '';
+        $this->label = '';
+        $this->nasfund_number = '';
+        $this->passport_number = '';
+        $this->passport_expiry = '';
+        $this->work_permit_number = '';
+        $this->work_permit_expiry = '';
+        $this->visa_number = '';
+        $this->visa_expiry = '';
+        $this->designation_id = '';
+        $this->employee_status_id = '';
+        $this->department_id = '';
+        $this->workshift_id = '';
     }
 }
