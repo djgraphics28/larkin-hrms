@@ -33,9 +33,9 @@
             <div class="col-sm-10">
                 <select wire:model="employee_status" id="employee_status"
                     class="form-control @error('employee_status') is-invalid @enderror">
-                    <option value="">Select Workshift</option>
+                    <option value="">Select Employee Status</option>
                     @foreach ($employeeStatuses as $employee_status)
-                        <option value="{{ $employee_status->id }}">{{ $employee_status->name }}</option>
+                        <option value="{{ $employee_status->id }}">{{ $employee_status->name }} </option>
                     @endforeach
                 </select>
                 @error('employee_status')
@@ -69,7 +69,10 @@
                     class="form-control @error('workshift') is-invalid @enderror">
                     <option value="">Select Workshift</option>
                     @foreach ($workshifts as $workshift)
-                        <option value="{{ $workshift->id }}">{{ $workshift->title }}</option>
+                        <option value="{{ $workshift->id }}">{{ $workshift->title }} |
+                            {{ \Carbon\Carbon::parse($workshift->start)->format('h:i A') }}
+                            -
+                            {{ \Carbon\Carbon::parse($workshift->end)->format('h:i A') }}</option>
                     @endforeach
                 </select>
                 @error('workshift')
