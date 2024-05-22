@@ -1,9 +1,3 @@
-<style>
-    .align-middle {
-        vertical-align: middle !important;
-    }
-</style>
-
 <div>
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -93,7 +87,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-body">
 
                             <div class="btn-group float-right" role="group" aria-label="Groups">
                                 <button wire:click="openImportModal()" type="button"
@@ -108,13 +102,17 @@
                                     Add New</a>
                             </div>
                         </div>
-                        <div class="card-body p-0">
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
                             {{ $records->links() }}
-                            <table class="table table-condensed table-sm table-hover table-bordered">
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-condensed table-sm table-hover">
                                 <thead class="table-info">
                                     <tr>
                                         <th width="3%" class="text-start"><input width="3%" type="checkbox"
-                                                wire:model.live="selectAll" wire:change="updatedSelectAll"></th>
+                                                wire:model.live="selectAll"></th>
                                         <th width="7%"class="text-center">IMAGE</th>
                                         <th width="5%"class="text-center">EMP NO</th>
                                         <th class="text-start">EMPLOYEE DETAILS</th>
@@ -128,12 +126,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- <tr>
-                                        <td colspan="10" class="text-center align-items-center">
-                                            <div wire:loading wire:target="search"><livewire:table-loader /></div>
+                                    <tr>
+                                        <td colspan="11" class="text-center align-items-center">
+                                            <div wire:loading
+                                                wire:target="search,sortByEmployeeStatus,sortByDesignation,sortByLabel,sortByDepartment,perPage">
+                                                <livewire:table-loader />
+                                            </div>
                                         </td>
-                                    </tr> --}}
-
+                                    </tr>
                                     @forelse ($records as $data)
                                         <tr wire:key="search-{{ $data->id }}">
                                             <td width="3%"
@@ -145,7 +145,9 @@
                                             <td class="text-center align-middle p-0"><img class="w-50 h-50"
                                                     src="{{ $data->gender == 'Male' ? asset('assets/images/male.png') : asset('assets/images/female.png') }}"
                                                     alt="Profile Picture"></td>
-                                            <td class="text-center align-middle">{{ $data->employee_number }}</td>
+                                            <td class="text-center align-middle"><a wire:navigate
+                                                    href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
+                                                    href="javascript:void(0)">{{ $data->employee_number }}</a></td>
                                             <td class="text-start align-middle"><strong>{{ $data->first_name }}
                                                     {{ $data->last_name }}</strong>
                                                 <br><small>Email: {{ $data->email }}</small>
@@ -185,21 +187,34 @@
                                                 </ul>
                                             </td>
                                             <td width="10%" class="text-center align-middle">
+
+
                                                 <div class="btn-group">
-                                                    <a title="Discontinued this Employee"
-                                                        class="dropdown-item text-secondary"
-                                                        href="javascript:void(0)"><i class="fa fa-times"
-                                                            aria-hidden="true"></i></a>
-                                                    <a wire:navigate
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-default dropdown-toggle" type="button"
+                                                            id="dropdownMenuButton" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            Action
+                                                        </button>
+                                                        <div class="dropdown-menu"
+                                                            aria-labelledby="dropdownMenuButton">
+                                                            <a class="dropdown-item" href="#">Print Summary of
+                                                                Earnings</a>
+                                                            <a class="dropdown-item" href="#">Print Contract</a>
+                                                            <a class="dropdown-item" href="#">Print
+                                                                Attendance</a>
+                                                        </div>
+                                                    </div>
+                                                    <a title="Show Employee Info" wire:navigate
                                                         href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
                                                         class="dropdown-item text-warning"
                                                         href="javascript:void(0)"><i class="fa fa-edit"
                                                             aria-hidden="true"></i></a>
-                                                    <a wire:click="alertConfirm({{ $data->id }})"
+                                                    <a title="Delete this Employee"
+                                                        wire:click="alertConfirm({{ $data->id }})"
                                                         class="dropdown-item text-danger" href="javascript:void(0)"><i
                                                             class="fa fa-trash" aria-hidden="true"></i></a>
                                                 </div>
-
                                             </td>
                                         </tr>
                                     @empty
@@ -210,6 +225,22 @@
 
                                         </tr>
                                     @endforelse
+                                <tfoot class="table-info">
+                                    <tr>
+                                        <th width="3%" class="text-start"><input width="3%" type="checkbox"
+                                                wire:model.live="selectAll"></th>
+                                        <th width="7%"class="text-center">IMAGE</th>
+                                        <th width="5%"class="text-center">EMP NO</th>
+                                        <th class="text-start">EMPLOYEE DETAILS</th>
+                                        <th class="text-center">POSITION</th>
+                                        <th class="text-center">WORKSHIFT</th>
+                                        <th class="text-center">DEPARTMENT</th>
+                                        <th class="text-center">STATUS</th>
+                                        <th class="text-center">DEFAULT PAY</th>
+                                        <th class="text-start">NOTES/REMARKS</th>
+                                        <th class="text-center">ACTIONS</th>
+                                    </tr>
+                                </tfoot>
                                 </tbody>
                             </table>
                         </div>

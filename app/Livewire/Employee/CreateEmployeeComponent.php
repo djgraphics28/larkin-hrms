@@ -145,8 +145,8 @@ class CreateEmployeeComponent extends Component
             'is_active' => true
         ]);
 
-        if($this->bankSelected) {
-            if($this->account_name !== '' && $this->account_number !== '' && $this->bank_name !== '' && $this->bsb_code !== '') {
+        if ($this->bankSelected) {
+            if ($this->account_name !== '' && $this->account_number !== '' && $this->bank_name !== '' && $this->bsb_code !== '') {
                 $create->bank_details()->create([
                     'account_name' => $this->account_name,
                     'account_number' => $this->account_number,
@@ -158,14 +158,14 @@ class CreateEmployeeComponent extends Component
                 //update paymethod to bank
                 Employee::find($create->id)->update(['default_pay_method' => 'bank']);
 
-            } else if($this->account_name !== '' && $this->account_number == '' && $this->bank_name == '' && $this->bsb_code == ''){
+            } else if ($this->account_name !== '' && $this->account_number == '' && $this->bank_name == '' && $this->bsb_code == '') {
                 $this->alert('error', 'Please fill in all bank details fields!');
                 return;
             }
         }
 
         if ($create) {
-            if($type == 1) {
+            if ($type == 1) {
                 return redirect()->route('employee.index', $this->label)->with('success', 'New Employee has been saved successfully!');
             } else {
                 $this->resetFields();
@@ -204,5 +204,12 @@ class CreateEmployeeComponent extends Component
         $this->employee_status_id = '';
         $this->department_id = '';
         $this->workshift_id = '';
+        $this->salary_rate = '';
+        $this->passport_number = '';
+        $this->passport_expiry = '';
+        $this->work_permit_number = '';
+        $this->work_permit_number = '';
+        $this->visa_number = '';
+        $this->visa_expiry = '';
     }
 }
