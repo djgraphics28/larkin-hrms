@@ -16,6 +16,7 @@ use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\Nasfund\NasfundComponent;
 use App\Livewire\Payroll\PayslipComponent;
 use App\Livewire\Loan\LoanRequestComponent;
+use App\Http\Controllers\ApproveLoanRequest;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
 use App\Http\Controllers\ApproveLeaveRequest;
@@ -139,6 +140,10 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
 //Leave Approve Route
 Route::get('/leave-request/approve/{id}', [ApproveLeaveRequest::class, 'approve'])->name('approve-leave-request');
 Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->name('success-leave-request');
+
+//Loan Approve Route
+Route::get('/loan-request/approve/{id}', [ApproveLoanRequest::class, 'approve'])->name('approve-loan-request');
+Route::get('/loan-request/success', [ApproveLoanRequest::class, 'success'])->name('success-loan-request');
 
 // Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 

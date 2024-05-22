@@ -36,14 +36,14 @@ class AttendanceAdjustmentComponent extends Component
 
     public function mount()
     {
-        $this->businessId = BusinessUser::where('user_id',Auth::user()->id)->where('is_active', true)->first()->business_id;
+        $this->businessId = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
         // $this->employees = Employee::where('business_id', $this->businessId)->orderBy('first_name','ASC')->get();
 
-        if($this->employeeId !== '') {
+        if ($this->employeeId !== '') {
             $this->searchEmployee();
         }
 
-        if($this->selectedDate !== '') {
+        if ($this->selectedDate !== '') {
             $this->searchAttendance();
         }
     }
@@ -65,7 +65,7 @@ class AttendanceAdjustmentComponent extends Component
         // dd($this->selectedDate);
         $data = Attendance::where('employee_number', $this->employeeId)->where('date', $this->selectedDate)->first();
 
-        if(!empty($data)) {
+        if (!empty($data)) {
             $this->attendance = $data;
             $this->attendanceId = $data->id;
             $this->time_in = $data->time_in;

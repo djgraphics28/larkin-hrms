@@ -5,7 +5,9 @@ namespace App\Models;
 use App\Models\Business;
 use App\Models\Employee;
 use App\Models\LoanType;
+use App\Models\LoanPayment;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -44,4 +46,15 @@ class Loan extends Model
     {
         return $this->belongsTo(Business::class, 'business_id', 'id');
     }
+
+    /**
+     * Get all of the loan_payments for the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function loan_payments(): HasMany
+    {
+        return $this->hasMany(LoanPayment::class, 'loan_id', 'id');
+    }
+
 }

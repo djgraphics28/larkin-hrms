@@ -9,21 +9,16 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendLoanRequest extends Mailable
+class SendLoanRequestMarkdown extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $employee;
-    public $data;
-    public $loanId;
     /**
      * Create a new message instance.
      */
-    public function __construct($employee, $data)
+    public function __construct()
     {
-        $this->employee = $employee;
-        $this->data = $data;
-        $this->loanId = $data->id;
+        //
     }
 
     /**
@@ -32,7 +27,7 @@ class SendLoanRequest extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send Loan Request',
+            subject: 'Send Loan Request Markdown',
         );
     }
 
@@ -42,13 +37,7 @@ class SendLoanRequest extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.sendLoanRequestMail',
-            with: [
-                'data' => $this->data,
-                'employee' => $this->employee,
-                'link' => env('APP_URL') . "/loan-request/approve/" . $this->loanId,
-
-            ],
+            markdown: 'mail.send-loan-request-markdown',
         );
     }
 
