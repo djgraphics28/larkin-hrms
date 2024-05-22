@@ -37,7 +37,7 @@ class TaxTablesComponent extends Component
     public $effective_date;
     public $ranges = [];
 
-    #[Title('Tax')]
+    #[Title('Tax Table')]
     public function render()
     {
         return view('livewire.tax.tax-tables-component', [
@@ -72,33 +72,6 @@ class TaxTablesComponent extends Component
         $this->updateMode = false;
     }
 
-    public function submit($saveAndCreateNew)
-    {
-        $this->validate([
-            'description' => 'required',
-            'range_from' => 'required',
-            'range_to' => 'required',
-            'percentage' => 'required'
-        ]);
-
-        $create = TaxTable::create([
-            'description' => $this->description,
-            'from' => $this->range_from,
-            'to' => $this->range_to,
-            'percentage' => $this->percentage
-        ]);
-
-        if ($create) {
-            $this->resetInputFields();
-            if ($saveAndCreateNew) {
-                $this->alert('success', 'New Tax has been save successfully!');
-            } else {
-                $this->dispatch('hide-add-modal');
-                $this->alert('success', 'New Tax has been save successfully!');
-            }
-        }
-    }
-
     public function resetInputFields()
     {
         $this->description = '';
@@ -114,14 +87,14 @@ class TaxTablesComponent extends Component
             $this->description = $data->description;
             $this->effective_date = $data->effective_date;
 
-            // Initialize $this->ranges with a default structure
-            // $this->ranges[] = ['from' => null, 'to' => null, 'percentage' => null];
+        // Initialize $this->ranges with a default structure
+        // $this->ranges[] = ['description' => null, 'from' => null, 'to' => null, 'percentage' => null];
 
             // Retrieve and assign tax table ranges if any exist
             $taxTableRanges = TaxTableRange::where('tax_table_id', $id)->get();
             if (!empty($taxTableRanges)) {
                 foreach($taxTableRanges as $range) {
-                    $this->ranges[] = ['from' => $range->from, 'to' => $range->to, 'percentage' => $range->percentage];
+                    $this->ranges[] = ['description' => $range->description, 'from' => $range->from, 'to' => $range->to, 'percentage' => $range->percentage];
                 }
             }
         }
@@ -150,7 +123,7 @@ class TaxTablesComponent extends Component
 
     public function addRange()
     {
-        $this->ranges[] = ['from' => null, 'to' => null, 'percentage' => null];
+        $this->ranges[] = ['description' => null, 'from' => null, 'to' => null, 'percentage' => null];
     }
 
     public function removeRange($index)
@@ -161,6 +134,17 @@ class TaxTablesComponent extends Component
 
     public function save()
     {
+
+        if($this->description == '') {
+            $this->alert('warning', 'Tax Description is required!');
+            return;
+        }
+
+        if($this->effective_date == '') {
+            $this->alert('warning', 'Effective Date is required!');
+            return;
+        }
+
         $this->validate([
             'description' => 'required',
             'effective_date' => 'required'
@@ -181,6 +165,7 @@ class TaxTablesComponent extends Component
                 TaxTableRange::create(
                     [
                         'tax_table_id' => $taxTable->id,
+                        'description' => $range['description'],
                         'from' => $range['from'],
                         'to' => $range['to'],
                         'percentage' => $range['percentage'],
@@ -196,6 +181,7 @@ class TaxTablesComponent extends Component
                 TaxTableRange::create(
                     [
                         'tax_table_id' => $taxTable->id,
+                        'description' => $range['description'],
                         'from' => $range['from'],
                         'to' => $range['to'],
                         'percentage' => $range['percentage'],

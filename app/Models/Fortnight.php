@@ -37,4 +37,11 @@ class Fortnight extends Model
     {
         return $this->hasMany(Payrun::class);
     }
+
+    public function fn_number()
+    {
+        $year = date('Y');
+        $fn_number = Fortnight::where('year', $year)->count();
+        return $fn_number;
+    }
 }

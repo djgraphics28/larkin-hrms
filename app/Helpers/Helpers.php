@@ -99,6 +99,7 @@ class Helpers
 
     public static function computeHours($fn_id, $businessId, $module, $payrun_id, $employee_ids)
     {
+
         $getDates = Fortnight::where('id', $fn_id)->first();
 
         $start = $getDates->start;
@@ -120,8 +121,6 @@ class Helpers
             })
             ->get();
 
-
-
         foreach ($getEmployee as $employee) {
             //check existing record
             $check_salary = EmployeeHours::where('employee_id', $employee->id)
@@ -136,9 +135,9 @@ class Helpers
                 $rate_id = $current_salary?->id;
             }
 
-            $getHours = Attendance::selectRaw('(TIME_TO_SEC(TIMEDIFF(time_out, time_in))/3600) - 1 as hours, DAYNAME(time_in) as day_name, DATE(time_in) as attendance_date')
+            $getHours = Attendance::selectRaw('date, time_in, time_out, time_in_2, time_out_2, is_break, late_in_minutes, DAYNAME(date) as day_name')
                 ->where('employee_number', $employee->employee_number)
-                ->whereBetween('time_in', [$start, $endDateAttendance])
+                ->whereBetween('date', [$start, $endDateAttendance])
                 ->get();
 
             $total_hours = 0;
@@ -146,28 +145,43 @@ class Helpers
             $regular_hours = 0;
             $ot_hours = 0;
             $holiday_hours = 0;
+            $holiday_work = [];
+
+
+
+            foreach ($getHours as $hours) {
+
+                $computed_hour = Helpers::compute_daily_hr($hours->date, $hours->time_in, $hours->time_out, $hours->time_in_2, $hours->time_out_2, $hours->is_break);
+
+
+                $checkHoliday = Holiday::where('holiday_date', $hours->date)->first();
+
+                if ($checkHoliday) {
+                    $holiday_hours = $holiday_hours + $computed_hour;
+                    $holiday_work[$hours->date] = $computed_hour;
+                    continue;
+                }
+
+                if ($hours->day_name == 'Sunday') {
+                    $sunday_total_hours = $sunday_total_hours + ($computed_hour);
+                }
+
+                $total_hours = $total_hours + $computed_hour;
+            }
 
             $getHoliday = Holiday::whereBetween('holiday_date', [$start, $end])->get();
 
             if ($getHoliday) {
                 foreach ($getHoliday as $holiday) {
-                    $total_hours = $total_hours + 7;
-                }
-            }
-
-            foreach ($getHours as $hours) {
-                $checkHoliday = Holiday::where('holiday_date', $hours->attendance_date)->first();
-                $computed_hour = $hours->hours;
-
-                if ($checkHoliday) {
-                    $holiday_hours = $holiday_hours + $computed_hour;
-                }
-                if ($hours->day_name == 'Sunday') {
-                    $sunday_total_hours = $sunday_total_hours + ($computed_hour);
-                }
-
-                if (!$checkHoliday) {
-                    $total_hours = $total_hours + $computed_hour;
+                    if (array_key_exists($holiday->holiday_date, $holiday_work)) {
+                        foreach ($holiday_work as $date => $hours_worked) {
+                            if ($date === $holiday->holiday_date) {
+                                $total_hours = $total_hours + $hours_worked;
+                            }
+                        }
+                    } else {
+                        $total_hours = $total_hours + 8;
+                    }
                 }
             }
 
@@ -203,18 +217,31 @@ class Helpers
 
     public static function computePay($payrun_id, $fn_id, $employee_ids)
     {
+        $fn_number = Helpers::fn_number();
         $get_hours = EmployeeHours::where('fortnight_id', $fn_id)
             ->whereIn('employee_id', $employee_ids)->get();
 
         foreach ($get_hours as $hours) {
+            $employee_info = Employee::where('id', $hours->employee_id)->first();
+            $total_work_hours_fn = $employee_info->workshift->number_of_hours_fn;
+
             $get_rate = SalaryHistory::where('employee_id', $hours->employee_id)
                 ->where('id', $hours->salary_id)->first();
 
-            $regular = $hours->regular_hr * $get_rate->salary_rate;
+            $fn_rate = $get_rate->salary_rate * $total_work_hours_fn;
+            $regular =  ($fn_rate * $hours->regular_hr) / $total_work_hours_fn;
             $overtime = ($hours->overtime_hr * $get_rate->salary_rate) * 1.5;
             $sunday_ot = $hours->sunday_ot_hr * $get_rate->salary_rate;
             $holiday_ot = $hours->holiday_ot_hr * $get_rate->salary_rate;
-            $npf = $regular * 0.06;
+            $plp_alp_fp = 0;
+            $other = 0;
+            $gross = $regular + $overtime + $sunday_ot + $holiday_ot + $plp_alp_fp + $other;
+            $fn_tax = ($gross < 769.27) ? 0 : (((($gross * $fn_number) * 0.3) - 6000) / $fn_number);
+
+            $npf = 0;
+            if ($employee_info->collect_nasfund === 1 && $employee_info->nasfund_number !== null) {
+                $npf = $regular * 0.06;
+            }
 
             Payslip::updateOrCreate(
                 [
@@ -229,10 +256,10 @@ class Helpers
                     'overtime' => $overtime,
                     'sunday_ot' => $sunday_ot,
                     'holiday_ot' => $holiday_ot,
-                    'plp_alp_fp' => 0,
-                    'other' => 0,
+                    'plp_alp_fp' => $plp_alp_fp,
+                    'other' => $other,
 
-                    'fn_tax' => 0,
+                    'fn_tax' => $fn_tax,
                     'npf' => $npf,
                     'ncsl' => 0,
                     'cash_adv' => 0
@@ -513,6 +540,14 @@ class Helpers
                 ->where('fortnight_id', $selected_fn)
                 ->first();
 
+            $er = 0;
+            $ee = 0;
+
+            if ($employee->collect_nasfund === 1 && $employee->nasfund_number !== null) {
+                $er = $get_pay->regular * 0.084;
+                $ee = $get_pay->regular * 0.06;
+            }
+
             if ($get_pay) {
                 Nasfund::updateOrCreate(
                     [
@@ -521,11 +556,40 @@ class Helpers
                     ],
                     [
                         'pay' => $get_pay->regular,
-                        'ER' => $get_pay->regular * 0.084,
-                        'EE' => $get_pay->regular * 0.06
+                        'ER' => $er,
+                        'EE' => $ee
                     ]
                 );
             }
         }
+    }
+
+    public static function fn_number()
+    {
+        $year = date('Y');
+        $fn_number = Fortnight::where('year', $year)->count();
+        return $fn_number;
+    }
+
+    public static function compute_daily_hr($date, $time_in, $time_out, $time_in_2, $time_out_2, $is_break)
+    {
+        $date = $date;
+        $comp_time_out = new DateTime($date . ' ' . $time_out);
+        $comp_time_in = new DateTime($date . ' ' . $time_in);
+        $comp_time_out_2 = new DateTime($date . ' ' . $time_out_2);
+        $comp_time_in_2 = new DateTime($date . ' ' . $time_in_2);
+
+        $hour_diff_am = $comp_time_out->diff($comp_time_in);
+        $hour_diff_pm = $comp_time_out_2->diff($comp_time_in_2);
+
+        $hour_diff_total = $hour_diff_am->h + $hour_diff_pm->h;
+
+        if (($time_out === '' || $time_in_2 === '' || $time_out === null || $time_in_2 === null) && $is_break === 1) {
+            $hour_diff_total = $comp_time_out_2->diff($comp_time_in)->h - 1;
+        } elseif (($time_out === '' || $time_in_2 === '' || $time_out === null || $time_in_2 === null) && $is_break === 0) {
+            $hour_diff_total = $comp_time_out_2->diff($comp_time_in)->h;
+        }
+
+        return $hour_diff_total;
     }
 }
