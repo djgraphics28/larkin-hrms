@@ -42,7 +42,31 @@
                                             wire:model.live.debounce.500="search">
                                     </div>
                                 </div>
-                                <div class="col-md-8 text-right">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <select class="form-control" wire:model.live="selectedLoanType">
+                                            <option value="">All Loan Type</option>
+                                            @foreach ($loanTypes as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <select class="form-control" wire:model.live="selectedStatus">
+                                            <option value="">All Status</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Approved">Approved</option>
+                                            <option value="Released">Released</option>
+                                            <option value="Rejected">Rejected</option>
+                                            <option value="On-Hold">On-Hold</option>
+                                            <option value="With-Balance">With-Balance</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-right">
                                     <div class="btn-group" role="group" aria-label="Groups">
                                         <a wire:navigate href="{{ route('loan-type') }}" type="button"
                                             class="btn btn-success btn-md mr-2">
@@ -81,7 +105,7 @@
                                 <tbody>
                                     <tr>
                                         <td colspan="10" class="text-center align-items-center">
-                                            <div wire:loading wire:target="search"><livewire:table-loader /></div>
+                                            <div wire:loading wire:target="search,selectedStatus, selectedLoanType, perPage"><livewire:table-loader /></div>
                                         </td>
                                     </tr>
                                     @forelse ($records as $data)
@@ -120,33 +144,40 @@
                                             <td class="text-start">{{ $data->reason }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group">
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-default dropdown-toggle" type="button"
+                                                            id="dropdownMenuButton" data-toggle="dropdown"
+                                                            aria-haspopup="true" aria-expanded="false">
+                                                            Action
+                                                        </button>
+                                                        <div class="dropdown-menu"
+                                                            aria-labelledby="dropdownMenuButton">
+                                                            <a wire:click="alertApproveConfirm({{ $data->id }})" class="dropdown-item" href="javascript:void(0)">Approve loan</a>
+                                                            <a wire:click="alertReleaseCashConfirm({{ $data->id }})" class="dropdown-item" href="javascript:void(0)">Release Cash</a>
+                                                            <a wire:click="alertRejectConfirm({{ $data->id }})" class="dropdown-item" href="javascript:void(0)">Reject Loan</a>
+                                                            <a wire:click="alertCancelConfirm({{ $data->id }})" class="dropdown-item" href="javascript:void(0)">Cancel Loan</a>
+                                                            <a wire:click="alertOnHoldConfirm({{ $data->id }})" class="dropdown-item" href="javascript:void(0)">Change To On-Hold</a>
+                                                        </div>
+                                                    </div>
+
                                                     @if ($data->status != 'Approved')
-                                                        <a wire:click="edit({{ $data->id }})"
+                                                        {{-- <a title="approve loan" wire:click="alertApproveConfirm({{ $data->id }})"
+                                                            class="dropdown-item text-success"
+                                                            href="javascript:void(0)"><i class="fa fa-paper-plane"
+                                                                aria-hidden="true"></i></a> --}}
+                                                        <a title="edit loan" wire:click="edit({{ $data->id }})"
                                                             class="dropdown-item text-warning"
                                                             href="javascript:void(0)"><i class="fa fa-edit"
                                                                 aria-hidden="true"></i></a>
-                                                        <a wire:click="alertConfirm({{ $data->id }})"
+                                                        <a title="delete loan" wire:click="alertConfirm({{ $data->id }})"
                                                             class="dropdown-item text-danger"
                                                             href="javascript:void(0)"><i class="fa fa-trash"
                                                                 aria-hidden="true"></i></a>
                                                     @else
-                                                        @if (Auth::user()->is_admin)
-                                                            <a wire:click="edit({{ $data->id }})"
-                                                                class="dropdown-item text-warning"
-                                                                href="javascript:void(0)"><i class="fa fa-edit"
-                                                                    aria-hidden="true"></i></a>
-                                                            <a wire:click="alertConfirm({{ $data->id }})"
-                                                                class="dropdown-item text-danger"
-                                                                href="javascript:void(0)"><i class="fa fa-trash"
-                                                                    aria-hidden="true"></i></a>
-                                                        @else
-                                                            <span><i class="fa fa-lock text-warning"
-                                                                    aria-hidden="true"></i></span>
-                                                        @endif
+                                                        <span><i class="fa fa-lock text-warning"
+                                                                aria-hidden="true"></i></span>
                                                     @endif
-
                                                 </div>
-
                                             </td>
                                         </tr>
                                     @empty

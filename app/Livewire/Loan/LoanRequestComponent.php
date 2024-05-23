@@ -18,12 +18,23 @@ class LoanRequestComponent extends Component
 {
     use WithPagination, LivewireAlert;
 
-    protected $listeners = ['remove', 'selectedEmployee'];
+    protected $listeners = ['remove', 'selectedEmployee', 'approve', 'reject', 'onHold', 'cancel', 'release'];
     public $approveConfirmed;
+    public $approveApproveConfirmed;
+    public $approveReleaseCashConfirmed;
+    public $approveRejectConfirmed;
+    public $approveCancelConfirmed;
+    public $approveOnHoldConfirmed;
+
     // filters
+    #[Url]
     public $perPage = 10;
     #[Url]
     public $search = '';
+    #[Url]
+    public $selectedLoanType = '';
+    #[Url]
+    public $selectedStatus = '';
     public $modalTitle = 'Request New Loan';
     public $updateMode = false;
 
@@ -74,6 +85,12 @@ class LoanRequestComponent extends Component
     public function getRecordsProperty()
     {
         return Loan::with(['employee', 'loan_type'])->where('business_id', $this->businessId)
+            ->when($this->selectedStatus, function ($query) {
+                $query->where('status', $this->selectedStatus);
+            })
+            ->when($this->selectedLoanType, function ($query) {
+                $query->where('loan_type_id', $this->selectedLoanType);
+            })
             ->latest()->paginate($this->perPage);
     }
 
@@ -244,5 +261,121 @@ class LoanRequestComponent extends Component
         $employee = Employee::find($id);
         $this->employeeId = $employee->id;
         $this->employee = $employee->employee_number . ' | ' . $employee->first_name . ' ' . $employee->last_name;
+    }
+
+    public function alertApproveConfirm($id)
+    {
+        $this->approveApproveConfirmed = $id;
+
+        $this->confirm('Are you sure you want to approve this loan?', [
+            'confirmButtonText' => 'Yes Approve it!',
+            'onConfirmed' => 'approve',
+        ]);
+    }
+
+    public function approve()
+    {
+        $data = Loan::find($this->approveApproveConfirmed);
+        $data->update([
+            'status' => 'Approved',
+            'date_approved' => now(),
+            'approved_by' => Auth::user()->id,
+        ]);
+
+        if ($data) {
+            $this->alert('success', 'Loan Request has been approved!');
+        }
+    }
+
+    public function alertRejectConfirm($id)
+    {
+        $this->approveRejectConfirmed = $id;
+
+        $this->confirm('Are you sure you want to reject this loan?', [
+            'confirmButtonText' => 'Yes Reject it!',
+            'onConfirmed' => 'reject',
+        ]);
+    }
+
+    public function reject()
+    {
+        $data = Loan::find($this->approveRejectConfirmed);
+        $data->update([
+            'status' => 'Rejected',
+            'updated_by' => Auth::user()->id,
+        ]);
+
+        if ($data) {
+            $this->alert('success', 'Loan Request has been rejected!');
+        }
+    }
+
+    public function alertCancelConfirm($id)
+    {
+        $this->approveCancelConfirmed = $id;
+
+        $this->confirm('Are you sure you want to cancel this loan?', [
+            'confirmButtonText' => 'Yes Cancel it!',
+            'onConfirmed' => 'cancel',
+        ]);
+    }
+
+    public function cancel()
+    {
+        $data = Loan::find($this->approveCancelConfirmed);
+        $data->update([
+            'status' => 'Cancelled',
+            'updated_by' => Auth::user()->id,
+        ]);
+
+        if ($data) {
+            $this->alert('success', 'Loan Request has been cancelled!');
+        }
+    }
+
+    public function alertOnHoldConfirm($id)
+    {
+        $this->approveOnHoldConfirmed = $id;
+
+        $this->confirm('Are you sure you want to change to on-hold this loan?', [
+            'confirmButtonText' => 'Yes Change to On-Hold!',
+            'onConfirmed' => 'onHold',
+        ]);
+    }
+
+    public function onHold()
+    {
+        $data = Loan::find($this->approveOnHoldConfirmed);
+        $data->update([
+            'status' => 'On-Hold',
+            'updated_by' => Auth::user()->id,
+        ]);
+
+        if ($data) {
+            $this->alert('success', 'Loan Request has been changed to On-Hold!');
+        }
+    }
+
+    public function alertReleaseCashConfirm($id)
+    {
+        $this->approveReleaseCashConfirmed = $id;
+
+        $this->confirm('Are you sure you want to release cash to this loan?', [
+            'confirmButtonText' => 'Yes Release Cash!',
+            'onConfirmed' => 'release',
+        ]);
+    }
+
+    public function release()
+    {
+        $data = Loan::find($this->approveReleaseCashConfirmed);
+        $data->update([
+            'status' => 'Released',
+            'updated_by' => Auth::user()->id,
+        ]);
+
+        if ($data) {
+            $this->alert('success', 'Loan Request Cash Released!');
+        }
     }
 }
