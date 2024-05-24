@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Payroll;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Fortnight extends Model
 {
@@ -33,9 +34,14 @@ class Fortnight extends Model
         });
     }
 
-    public function payruns(): HasMany
+    /**
+     * Get all of the payrolls for the Fortnight
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function payrolls(): HasMany
     {
-        return $this->hasMany(Payrun::class);
+        return $this->hasMany(Payroll::class, 'fortnight_id', 'id');
     }
 
     public function fn_number()

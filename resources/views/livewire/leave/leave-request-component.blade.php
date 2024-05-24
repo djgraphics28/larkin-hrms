@@ -80,33 +80,8 @@
                         </div>
                     </div>
                     <div class="card">
-                        {{-- <div class="card-header">
-                            <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
-                                        class="fa fa-paper-plane" aria-hidden="true"></i> Request Leave</button>
-                            </div>
-                        </div> --}}
                         <div class="card-header"></div>
                         <div class="card-body p-0">
-                            {{-- <div class="row">
-                                <div class="col-md-1">
-                                    <div class="form-group">
-                                        <select class="form-control form-control" wire:model="perPage">
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control"
-                                            placeholder="Search term here" wire:model.live.debounce.500="search">
-                                    </div>
-                                </div>
-                            </div> --}}
 
                             <table class="table table-condensed table-sm table-hover">
                                 <thead class="table-info">
@@ -250,7 +225,7 @@
 
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
         aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">{{ $modalTitle }}</h5>
@@ -258,140 +233,139 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="submit()">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            @livewire('shared.search-employee')
-                        </div>
-                        @if ($employeeData)
-                            <div class="card card-outline card-primary">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <table class="table table-borderless">
-                                            <tr>
-                                                <td width="5%"><img width="100px"
-                                                        src="{{ asset('assets/images/male.png') }}" alt="Photo">
-                                                </td>
-                                                <td width="20%">
-                                                    <label for="">{{ $employeeData->first_name }}
-                                                        {{ $employeeData->last_name }}</label><br>
-                                                    <label for="">{{ $employeeData->employee_number }}
-                                                    </label><br>
-                                                    <label for="">{{ $employeeData->email }} </label><br>
-                                                </td>
-                                                <td width="10%">
-                                                    <label for="">Leave Credits</label>
-                                                </td>
-                                                <td width="25%">
-                                                    <br>
-                                                    @forelse ($employeeData->leave_credits as $lc)
-                                                    @empty
-                                                        @foreach ($leaveTypes as $lt)
-                                                            <label for="">{{ $lt->name }} - 0</label><br>
-                                                        @endforeach
-                                                    @endforelse
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-
-                            </div>
-                        @endif
-
-                        <div class="card card-outline card-warning">
+                <div class="modal-body">
+                    <div class="form-group">
+                        @livewire('shared.search-employee')
+                    </div>
+                    @if ($employeeData)
+                        <div class="card card-outline card-primary">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Leave Type:</label>
-                                            <select wire:model="leave_type"
-                                                class="form-control @error('leave_type') in-valid @enderror">
-                                                <option value="">Choose Leave Type</option>
-                                                @foreach ($leaveTypes as $type)
-                                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('leave_type')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td width="5%"><img width="100px"
+                                                    src="{{ asset('assets/images/male.png') }}" alt="Photo">
+                                            </td>
+                                            <td width="20%">
+                                                <label for="">{{ $employeeData->first_name }}
+                                                    {{ $employeeData->last_name }}</label><br>
+                                                <label for="">{{ $employeeData->employee_number }}
+                                                </label><br>
+                                                <label for="">{{ $employeeData->email }} </label><br>
+                                            </td>
+                                            <td width="10%">
+                                                <label for="">Leave Credits</label>
+                                            </td>
+                                            <td width="25%">
+                                                <br>
+                                                @forelse ($employeeData->leave_credits as $lc)
+                                                @empty
+                                                    @foreach ($leaveTypes as $lt)
+                                                        <label for="">{{ $lt->name }} - 0</label><br>
+                                                    @endforeach
+                                                @endforelse
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Date From:</label>
-                                            <input wire:model="date_from" type="date"
-                                                class="form-control @error('date_from') in-valid @enderror">
-                                            @error('date_from')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Date To:</label>
-                                            <input wire:model="date_to" type="date"
-                                                class="form-control @error('date_to') in-valid @enderror">
-                                            @error('date_to')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="custom-control custom-switch">
-                                        <input @if ($halfday) 'checked @endif type="checkbox"
-                                            role="switch" class="custom-control-input" wire:model.live="halfday"
-                                            id="halfday">
-                                        <label class="custom-control-label" for="halfday">Is Half Day?</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="choosen_half">Choose Halfday</label>
-                                            <select wire:model="choosen_half" id="choosen_half" class="form-control">
-                                                <option value="">Select ...</option>
-                                                <option value="first_half">First Half</option>
-                                                <option value="second_half">Second Half</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="">Reason:</label>
-                                            <textarea wire:model="reason" class="form-control @error('reason') in-valid @enderror" name="" id=""
-                                                cols="30" rows="3"></textarea>
-                                            @error('reason')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
+                        </div>
+                    @endif
+
+                    <div class="card card-outline card-warning">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Leave Type:</label>
+                                        <select wire:model="leave_type"
+                                            class="form-control @error('leave_type') in-valid @enderror">
+                                            <option value="">Choose Leave Type</option>
+                                            @foreach ($leaveTypes as $type)
+                                                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('leave_type')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Date From:</label>
+                                        <input wire:model="date_from" type="date"
+                                            class="form-control @error('date_from') in-valid @enderror">
+                                        @error('date_from')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Date To:</label>
+                                        <input wire:model="date_to" type="date"
+                                            class="form-control @error('date_to') in-valid @enderror">
+                                        @error('date_to')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    <input @if ($halfday) 'checked @endif type="checkbox"
+                                        role="switch" class="custom-control-input" wire:model.live="halfday"
+                                        id="halfday">
+                                    <label class="custom-control-label" for="halfday">Is Half Day?</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="choosen_half">Choose Halfday</label>
+                                        <select wire:model="choosen_half" id="choosen_half" class="form-control">
+                                            <option value="">Select ...</option>
+                                            <option value="first_half">First Half</option>
+                                            <option value="second_half">Second Half</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="">Reason:</label>
+                                        <textarea wire:model="reason" class="form-control @error('reason') in-valid @enderror" name="" id=""
+                                            cols="30" rows="3"></textarea>
+                                        @error('reason')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        @if ($updateMode == true)
-                            <button wire:click.prevent="update()" class="btn btn-success">Update</button>
-                        @else
-                            <button wire:click.prevent="submit(false)" class="btn btn-primary">Submit</button>
-                        @endif
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    @if ($updateMode == true)
+                        <button wire:click.prevent="update()" class="btn btn-success">Update</button>
+                    @else
+                        <button wire:click.prevent="submit(false)" class="btn btn-primary">Submit</button>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

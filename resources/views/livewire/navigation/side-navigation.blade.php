@@ -298,6 +298,15 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+                                @can('access_payroll')
+                                    <li class="nav-item">
+                                        <a href="{{ route('payroll') }}"
+                                            class="nav-link {{ request()->is('payroll/lists') ? 'active' : '' }}">
+                                            <i class="far fa-print nav-icon"></i>
+                                            <p> Payroll</p>
+                                        </a>
+                                    </li>
+                                @endcan
                                 @can('access_payruns')
                                     <li class="nav-item">
                                         <a href="{{ route('payrun') }}"

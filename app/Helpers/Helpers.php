@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\Asset;
 use App\Models\Holiday;
 use App\Models\Nasfund;
+use App\Models\Payroll;
 use App\Models\Payslip;
 use App\Models\Business;
 use App\Models\Employee;
@@ -229,7 +230,7 @@ class Helpers
                 ->where('id', $hours->salary_id)->first();
 
             $fn_rate = $get_rate->salary_rate * $total_work_hours_fn;
-            $regular =  ($fn_rate * $hours->regular_hr) / $total_work_hours_fn;
+            $regular = ($fn_rate * $hours->regular_hr) / $total_work_hours_fn;
             $overtime = ($hours->overtime_hr * $get_rate->salary_rate) * 1.5;
             $sunday_ot = $hours->sunday_ot_hr * $get_rate->salary_rate;
             $holiday_ot = $hours->holiday_ot_hr * $get_rate->salary_rate;
@@ -593,14 +594,46 @@ class Helpers
         return $hour_diff_total;
     }
 
-    public static function getFortnightIdByDate($date) {
+    public static function getFortnightIdByDate($date)
+    {
         $year = date('Y');
         $fortnights = Fortnight::where('year', $year)->get();
 
         foreach ($fortnights as $fortnight) {
-            if($date >= $fortnight->start && $date <= $fortnight->end) {
+            if ($date >= $fortnight->start && $date <= $fortnight->end) {
                 return $fortnight->id;
             }
         }
     }
+
+    public static function activeFortnights()
+    {
+        $year = date('Y');
+        $fortnights = Fortnight::where('year', $year)->get();
+
+        return $fortnights;
+    }
+
+    public static function payrollCodeGenerator($businessId, $fortnight)
+    {
+        $code = Business::find($businessId)->code;
+        $lastPayroll = Payroll::where('business_id', $businessId)->latest()->first();
+
+        if ($lastPayroll) {
+            $existingNumber = explode('-', $lastPayroll->payroll_code)[3]; // Corrected index for payroll code
+            $payrollCode = (int) $existingNumber + 1;
+        } else {
+            $payrollCode = 1; // Start from 1 for new payroll
+        }
+
+        // Calculate the number of leading zeros required based on the desired format (e.g., 5 digits)
+        $desiredLength = 5;
+        $leadingZeros = str_repeat('0', $desiredLength - strlen($payrollCode));
+
+        // Concatenate the leading zeros with the payroll number
+        $paddedPayrollCode = $leadingZeros . $payrollCode;
+
+        return 'P-' . $code . '-' . $fortnight . '-' . $paddedPayrollCode;
+    }
+
 }

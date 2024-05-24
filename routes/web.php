@@ -2,6 +2,7 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Payroll\SaveFilterComponent;
 use App\Livewire\User\RoleComponent;
 use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
@@ -14,6 +15,7 @@ use App\Livewire\Payroll\PayrunComponent;
 use App\Livewire\Asset\AssetTypeComponent;
 use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\Nasfund\NasfundComponent;
+use App\Livewire\Payroll\PayrollComponent;
 use App\Livewire\Payroll\PayslipComponent;
 use App\Livewire\Loan\LoanRequestComponent;
 use App\Http\Controllers\ApproveLoanRequest;
@@ -97,9 +99,11 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
 
     // Payroll routes
     Route::group(['prefix' => 'payroll'], function () {
+        Route::get('/lists', PayrollComponent::class)->name('payroll');
         Route::get('/payslip', PayslipComponent::class)->name('payslip');
         Route::get('/aba-generate', AbaGeneratorComponent::class)->name('aba-generate');
         Route::get('/payrun', PayrunComponent::class)->name('payrun');
+        Route::get('/save-filters', SaveFilterComponent::class)->name('save-filters');
     });
 
     // Leave routes
