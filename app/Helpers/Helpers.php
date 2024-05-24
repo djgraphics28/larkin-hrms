@@ -592,4 +592,15 @@ class Helpers
 
         return $hour_diff_total;
     }
+
+    public static function getFortnightIdByDate($date) {
+        $year = date('Y');
+        $fortnights = Fortnight::where('year', $year)->get();
+
+        foreach ($fortnights as $fortnight) {
+            if($date >= $fortnight->start && $date <= $fortnight->end) {
+                return $fortnight->id;
+            }
+        }
+    }
 }

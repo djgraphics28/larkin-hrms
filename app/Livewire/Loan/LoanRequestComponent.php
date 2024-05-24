@@ -18,9 +18,10 @@ class LoanRequestComponent extends Component
 {
     use WithPagination, LivewireAlert;
 
-    protected $listeners = ['remove', 'selectedEmployee', 'approve', 'reject', 'onHold', 'cancel', 'release'];
+    protected $listeners = ['remove', 'selectedEmployee', 'approve', 'reject', 'onHold', 'cancel', 'release', 'revert'];
     public $approveConfirmed;
     public $approveApproveConfirmed;
+    public $approveRevertConfirmed;
     public $approveReleaseCashConfirmed;
     public $approveRejectConfirmed;
     public $approveCancelConfirmed;
@@ -376,6 +377,29 @@ class LoanRequestComponent extends Component
 
         if ($data) {
             $this->alert('success', 'Loan Request Cash Released!');
+        }
+    }
+
+    public function alertRevertConfirm($id)
+    {
+        $this->approveRevertConfirmed = $id;
+
+        $this->confirm('Are you sure you want to revert this loan?', [
+            'confirmButtonText' => 'Yes revert it!',
+            'onConfirmed' => 'revert',
+        ]);
+    }
+
+    public function revert()
+    {
+        $data = Loan::find($this->approveRevertConfirmed);
+        $data->update([
+            'status' => 'Pending',
+            'updated_by' => Auth::user()->id,
+        ]);
+
+        if ($data) {
+            $this->alert('success', 'Loan Request has been revert!');
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Shared;
 
+use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 use App\Models\Employee;
 use App\Models\BusinessUser;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SearchEmployee extends Component
 {
+    use LivewireAlert;
     public $businessId;
     public $query;
     public $search_results;
@@ -52,6 +54,11 @@ class SearchEmployee extends Component
     }
 
     public function selectEmployee($employee_id) {
+        $employee = Employee::find($employee_id);
+        if($employee->is_discontinued) {
+            $this->alert('error', 'You can\'t select this employee because this is already discontinued');
+            return;
+        }
         $this->dispatch('selectedEmployee',$employee_id);
     }
 }

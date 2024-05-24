@@ -99,7 +99,7 @@
                                         <th class="text-center">Approved By</th>
                                         <th class="text-center">Date Approved</th>
                                         <th class="text-start">Reason</th>
-                                        <th class="text-center">Action</th>
+                                        <th colspan="2" class="text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -116,6 +116,8 @@
                                             <td class="text-center">
                                                 @if ($data->status == 'Approved')
                                                     <span class="badge bg-success">Approved</span>
+                                                @elseif($data->status == 'Released')
+                                                    <span class="badge bg-primary">Released</span>
                                                 @elseif($data->status == 'Pending')
                                                     <span class="badge bg-warning text-dark">Pending</span>
                                                 @elseif($data->status == 'Rejected')
@@ -143,7 +145,7 @@
                                             </td>
                                             <td class="text-start">{{ $data->reason }}</td>
                                             <td class="text-center">
-                                                <div class="btn-group">
+                                                <div wire:ignore.self>
                                                     <div class="dropdown">
                                                         <button class="btn btn-default dropdown-toggle" type="button"
                                                             id="dropdownMenuButton" data-toggle="dropdown"
@@ -157,14 +159,14 @@
                                                             <a wire:click="alertRejectConfirm({{ $data->id }})" class="dropdown-item" href="javascript:void(0)">Reject Loan</a>
                                                             <a wire:click="alertCancelConfirm({{ $data->id }})" class="dropdown-item" href="javascript:void(0)">Cancel Loan</a>
                                                             <a wire:click="alertOnHoldConfirm({{ $data->id }})" class="dropdown-item" href="javascript:void(0)">Change To On-Hold</a>
+                                                            <a wire:click="alertRevertConfirm({{ $data->id }})" class="dropdown-item" href="javascript:void(0)">Revert</a>
                                                         </div>
                                                     </div>
-
-                                                    @if ($data->status != 'Approved')
-                                                        {{-- <a title="approve loan" wire:click="alertApproveConfirm({{ $data->id }})"
-                                                            class="dropdown-item text-success"
-                                                            href="javascript:void(0)"><i class="fa fa-paper-plane"
-                                                                aria-hidden="true"></i></a> --}}
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    @if ($data->status != 'Approved' && $data->status != 'Completed')
                                                         <a title="edit loan" wire:click="edit({{ $data->id }})"
                                                             class="dropdown-item text-warning"
                                                             href="javascript:void(0)"><i class="fa fa-edit"
@@ -174,7 +176,7 @@
                                                             href="javascript:void(0)"><i class="fa fa-trash"
                                                                 aria-hidden="true"></i></a>
                                                     @else
-                                                        <span><i class="fa fa-lock text-warning"
+                                                        <span><i class="fa fa-lock text-secondary"
                                                                 aria-hidden="true"></i></span>
                                                     @endif
                                                 </div>
@@ -200,7 +202,7 @@
                                         <th class="text-center">Approved By</th>
                                         <th class="text-center">Date Approved</th>
                                         <th class="text-start">Reason</th>
-                                        <th class="text-center">Action</th>
+                                        <th colspan="2" class="text-center">Action</th>
                                     </tr>
                                 </tfoot>
                             </table>

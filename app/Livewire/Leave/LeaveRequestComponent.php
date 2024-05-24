@@ -2,10 +2,13 @@
 
 namespace App\Livewire\Leave;
 
+use DateTime;
 use Carbon\Carbon;
 use Livewire\Component;
+use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\LeaveType;
+use App\Models\Attendance;
 use App\Models\BusinessUser;
 use App\Models\LeaveRequest;
 use Livewire\Attributes\Url;
@@ -22,13 +25,22 @@ class LeaveRequestComponent extends Component
 {
     use WithPagination, LivewireAlert;
 
-    protected $listeners = ['remove', 'selectedEmployee'];
+    protected $listeners = ['remove', 'selectedEmployee', 'approve', 'reject', 'onHold', 'cancel', 'revert'];
     public $approveConfirmed;
+    public $approveApproveConfirmed;
+    public $approveRevertConfirmed;
+    public $approveRejectConfirmed;
+    public $approveCancelConfirmed;
+    public $approveOnHoldConfirmed;
     // filters
     public $businessId;
     public $perPage = 10;
     #[Url]
     public $search = '';
+    #[Url]
+    public $selectedLeaveType = '';
+    #[Url]
+    public $selectedStatus = '';
     public $modalTitle = 'Create Leave Request';
     public $updateMode = false;
 
@@ -38,7 +50,7 @@ class LeaveRequestComponent extends Component
     public $date_to;
     public $reason;
     public $halfday = false;
-    public $halftime = null;
+    public $choosen_half = null;
     public $edit_id;
 
     protected $paginationTheme = 'bootstrap';
@@ -48,6 +60,7 @@ class LeaveRequestComponent extends Component
 
     public $employeeData = [];
     public $leaveTypes = [];
+    public $employees = [];
 
     #[Title('Leave Request')]
     public function render()
@@ -60,8 +73,8 @@ class LeaveRequestComponent extends Component
     public function mount()
     {
         $businessUser = BusinessUser::where('user_id', Auth::user()->id)
-                                     ->where('is_active', true)
-                                     ->first();
+            ->where('is_active', true)
+            ->first();
         if (!$businessUser) {
             return redirect()->back();
         }
@@ -75,7 +88,13 @@ class LeaveRequestComponent extends Component
     public function getRecordsProperty()
     {
         return LeaveRequest::with(['employee', 'leave_type'])->latest()->search(trim($this->search))
-            ->paginate($this->perPage);
+            ->when($this->selectedStatus, function ($query) {
+                $query->where('status', $this->selectedStatus);
+            })
+            ->when($this->selectedLeaveType, function ($query) {
+                $query->where('leave_type_id', $this->selectedLeaveType);
+            })
+            ->latest()->paginate($this->perPage);
     }
 
     public function updatedSelectAll($value)
@@ -98,7 +117,8 @@ class LeaveRequestComponent extends Component
     }
 
     public function submit($saveAndCreateNew)
-    {
+    {   //check if the employee as leave credits
+        // $leaveCredit = Employee
         $this->validate([
             'leave_type' => 'required',
             'date_from' => 'required',
@@ -106,7 +126,7 @@ class LeaveRequestComponent extends Component
             'reason' => 'required',
         ]);
 
-        if(empty($this->employeeData)){
+        if (empty($this->employeeData)) {
             $this->alert('error', 'Please select an employee.');
             return;
         }
@@ -119,7 +139,7 @@ class LeaveRequestComponent extends Component
             return;
         }
 
-        $diffInDays = $end->diffInDays($start);
+        $diffInDays = $end->diffInDays($start) + 1;
 
         $leaveType = LeaveType::find($this->leave_type);
 
@@ -130,9 +150,9 @@ class LeaveRequestComponent extends Component
             'date_to' => $this->date_to,
             'reason' => $this->reason,
             'is_half_day' => $this->halfday,
-            'choosen_half' => $this->halftime,
-            'with_pay_number_of_days' => $leaveType->is_payable ? $diffInDays + 1 : 0,
-            'without_pay_number_of_days' => !$leaveType->is_payable ? $diffInDays + 1 : 0,
+            'choosen_half' => $this->choosen_half,
+            'with_pay_number_of_days' => ($leaveType->is_payable ? ($this->halfday ? 0.5 * $diffInDays : $diffInDays) : 0),
+            'without_pay_number_of_days' => (!$leaveType->is_payable ? ($this->halfday ? 0.5 * $diffInDays : $diffInDays) : 0),
         ]);
 
         if ($create) {
@@ -156,6 +176,7 @@ class LeaveRequestComponent extends Component
         $this->date_from = '';
         $this->date_to = '';
         $this->reason = '';
+        $this->reason = '';
     }
 
     public function edit($id)
@@ -168,6 +189,7 @@ class LeaveRequestComponent extends Component
         $this->date_from = $data->date_from;
         $this->date_to = $data->date_to;
         $this->reason = $data->reason;
+        $this->halfday = $data->is_half_day == 1 ? true : false;
 
         $this->employeeData = Employee::with('leave_credits')->find($data->employee_id);
 
@@ -189,7 +211,7 @@ class LeaveRequestComponent extends Component
             'date_to' => $this->date_to,
             'reason' => $this->reason,
             'is_half_day' => $this->halfday,
-            'choosen_half' => $this->halftime,
+            'choosen_half' => $this->choosen_half,
             'with_pay_number_of_days' => 0,
             'without_pay_number_of_days' => 0
         ]);
@@ -229,6 +251,210 @@ class LeaveRequestComponent extends Component
         } else {
             $this->employee_id = $employee_id;
             $this->employeeData = Employee::with('leave_credits')->find($employee_id);
+        }
+    }
+
+    public function alertApproveConfirm($id)
+    {
+        $this->approveApproveConfirmed = $id;
+
+        $this->confirm('Are you sure you want to approve this leave?', [
+            'confirmButtonText' => 'Yes Approve it!',
+            'onConfirmed' => 'approve',
+        ]);
+    }
+
+    public function approve()
+    {
+        $data = LeaveRequest::find($this->approveApproveConfirmed);
+        $data->update([
+            'status' => 'Approved',
+            'date_approved' => now(),
+            'approved_by' => Auth::user()->id,
+        ]);
+        $employee = Employee::find($data->employee_id);
+        if (!$data->is_half_day) {
+            if ($data->with_pay_number_of_days > 1 || $data->without_pay_number_of_days > 1) {
+                // Determine the number of days of leave
+                $days = $data->with_pay_number_of_days != 0 ? $data->with_pay_number_of_days : $data->without_pay_number_of_days;
+
+                // Convert the starting date to a DateTime object
+                $dateFrom = new DateTime($data->date_from);
+
+                // Loop through each day if $days is more than one
+                for ($i = 0; $i < $days; $i++) {
+                    // Clone the starting date and add $i days
+                    $currentDate = (clone $dateFrom)->modify("+{$i} days");
+
+                    // Update or create the attendance record for the current day
+                    Attendance::updateOrCreate(
+                        [
+                            'employee_number' => $employee->employee_number,
+                            'date' => $currentDate->format('Y-m-d'),
+                            'leave_id' => $data->id,
+                        ],
+                        [
+                            'leave_id' => $data->id,
+                            'time_in' => $employee->workshift->start,
+                            'time_out_2' => $employee->workshift->end,
+                            'on_leave' => 'whole_day',
+                            'created_by' => Auth::user()->id,
+                            'fortnight_id' => Helpers::getFortnightIdByDate($currentDate->format('Y-m-d'))
+                        ]
+                    );
+                }
+            } else {
+                Attendance::updateOrCreate(
+                    [
+                        'employee_number' => $employee->employee_number,
+                        'date' => $data->date_from,
+                        'leave_id' => $data->id,
+                    ],
+                    [
+                        'leave_id' => $data->id,
+                        'time_in' => $employee->workshift->start,
+                        'time_out_2' => $employee->workshift->end,
+                        'on_leave' => 'whole_day',
+                        'created_by' => Auth::user()->id,
+                        'fortnight_id' => Helpers::getFortnightIdByDate($data->date_from)
+                    ]
+                );
+            }
+
+        } else {
+            if ($data->choosen_half == 'first_half') {
+
+                $time_in = new DateTime($employee->workshift->start);
+                $time_out = (clone $time_in)->modify('+4 hours');
+
+                $attendance = [
+                    'leave_id' => $data->id,
+                    'time_in' => $time_in->format('H:i:s'),
+                    'time_out' => $time_out->format('H:i:s'),
+                    'on_leave' => 'first_half',
+                    'created_by' => Auth::user()->id,
+                    'fortnight_id' => Helpers::getFortnightIdByDate($data->date_from)
+                ];
+            } else {
+                $time_out_2 = new DateTime($employee->workshift->end);
+                $time_in_2 = (clone $time_out_2)->modify('-4 hours');
+
+                $attendance = [
+                    'leave_id' => $data->id,
+                    'time_in_2' => $time_in_2->format('H:i:s'),
+                    'time_out_2' => $time_out_2->format('H:i:s'),
+                    'on_leave' => 'second_half',
+                    'created_by' => Auth::user()->id,
+                    'fortnight_id' => Helpers::getFortnightIdByDate($data->date_from)
+                ];
+            }
+
+            Attendance::updateOrCreate(
+                [
+                    'employee_number' => $employee->employee_number,
+                    'date' => $data->date_from,
+                    'leave_id' => $data->id,
+                ],
+                $attendance
+            );
+        }
+
+        if ($data) {
+            $this->alert('success', 'Leave Request has been approved!');
+        }
+    }
+
+    public function alertRejectConfirm($id)
+    {
+        $this->approveRejectConfirmed = $id;
+
+        $this->confirm('Are you sure you want to reject this leave?', [
+            'confirmButtonText' => 'Yes Reject it!',
+            'onConfirmed' => 'reject',
+        ]);
+    }
+
+    public function reject()
+    {
+        $data = LeaveRequest::find($this->approveRejectConfirmed);
+        $data->update([
+            'status' => 'Rejected',
+            'updated_by' => Auth::user()->id,
+        ]);
+
+        if ($data) {
+            $this->alert('success', 'Leave Request has been rejected!');
+        }
+    }
+
+    public function alertCancelConfirm($id)
+    {
+        $this->approveCancelConfirmed = $id;
+
+        $this->confirm('Are you sure you want to cancel this leave?', [
+            'confirmButtonText' => 'Yes Cancel it!',
+            'onConfirmed' => 'cancel',
+        ]);
+    }
+
+    public function cancel()
+    {
+        $data = LeaveRequest::find($this->approveCancelConfirmed);
+        $data->update([
+            'status' => 'Cancelled',
+            'updated_by' => Auth::user()->id,
+        ]);
+
+        if ($data) {
+            $this->alert('success', 'Leave Request has been cancelled!');
+        }
+    }
+
+    public function alertOnHoldConfirm($id)
+    {
+        $this->approveOnHoldConfirmed = $id;
+
+        $this->confirm('Are you sure you want to change to on-hold this leave?', [
+            'confirmButtonText' => 'Yes Change to On-Hold!',
+            'onConfirmed' => 'onHold',
+        ]);
+    }
+
+    public function onHold()
+    {
+        $data = LeaveRequest::find($this->approveOnHoldConfirmed);
+        $data->update([
+            'status' => 'On-Hold',
+            'updated_by' => Auth::user()->id,
+        ]);
+
+        if ($data) {
+            $this->alert('success', 'Leave Request has been changed to On-Hold!');
+        }
+    }
+
+    public function alertRevertConfirm($id)
+    {
+        $this->approveRevertConfirmed = $id;
+
+        $this->confirm('Are you sure you want to revert this leave?', [
+            'confirmButtonText' => 'Yes revert it!',
+            'onConfirmed' => 'revert',
+        ]);
+    }
+
+    public function revert()
+    {
+        $data = LeaveRequest::find($this->approveRevertConfirmed);
+        $data->update([
+            'status' => 'Pending',
+            'updated_by' => Auth::user()->id,
+        ]);
+
+        Attendance::where('leave_id', $this->approveRevertConfirmed)->forceDelete();
+
+        if ($data) {
+            $this->alert('success', 'Leave Request has been revert!');
         }
     }
 }
