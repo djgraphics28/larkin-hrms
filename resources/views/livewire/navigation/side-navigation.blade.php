@@ -302,17 +302,8 @@
                                     <li class="nav-item">
                                         <a href="{{ route('payroll') }}"
                                             class="nav-link {{ request()->is('payroll/lists') ? 'active' : '' }}">
-                                            <i class="far fa-print nav-icon"></i>
+                                            <i class="far fa-circle nav-icon"></i>
                                             <p> Payroll</p>
-                                        </a>
-                                    </li>
-                                @endcan
-                                @can('access_payruns')
-                                    <li class="nav-item">
-                                        <a href="{{ route('payrun') }}"
-                                            class="nav-link {{ request()->is('payroll/payrun') ? 'active' : '' }}">
-                                            <i class="far fa-print nav-icon"></i>
-                                            <p> Payrun</p>
                                         </a>
                                     </li>
                                 @endcan
@@ -320,17 +311,8 @@
                                     <li class="nav-item">
                                         <a href="{{ route('payslip') }}"
                                             class="nav-link {{ request()->is('payroll/payslip') ? 'active' : '' }}">
-                                            <i class="far fa-print nav-icon"></i>
+                                            <i class="far fa-circle nav-icon"></i>
                                             <p> Payslip</p>
-                                        </a>
-                                    </li>
-                                @endcan
-                                @can('access_aba_generator')
-                                    <li class="nav-item">
-                                        <a href="{{ route('aba-generate') }}"
-                                            class="nav-link {{ request()->is('payroll/aba-generate') ? 'active' : '' }}">
-                                            <i class="far fa-print nav-icon"></i>
-                                            <p> Generate ABA File</p>
                                         </a>
                                     </li>
                                 @endcan

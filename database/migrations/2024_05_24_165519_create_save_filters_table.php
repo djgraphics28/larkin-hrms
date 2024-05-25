@@ -13,6 +13,8 @@ return new class extends Migration {
         Schema::create('save_filters', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->json('selected_department')->nullable();
+            $table->json('selected_designation')->nullable();
             $table->json('employee_lists');
             $table->unsignedBigInteger('business_id');
             $table

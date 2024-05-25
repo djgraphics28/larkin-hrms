@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('account_name');
             $table->string('account_number')->unique();
             $table->string('bank_name');
-            $table->string('bsb_code')->unique();
+            $table->string('bsb_code');
             $table->boolean('is_active')->default(false);
             $table->unsignedBigInteger('employee_id');
             $table

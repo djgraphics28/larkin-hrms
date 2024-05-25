@@ -37,10 +37,11 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group row">
-                                        <select class="form-control" wire:model.live="selectedFN">
+                                        <select class="form-control select2bs4" wire:model.live="selectedFN"
+                                            id="selectedFN">
                                             <option value="">Select Fortnight range</option>
                                             @foreach ($fortnights as $fn)
-                                                <option value="{{ $fn->code }}">{{ $fn->code }} --
+                                                <option value="{{ $fn->id }}">{{ $fn->code }} --
                                                     {{ \Carbon\Carbon::parse($fn->start)->format('d-M') . ' - ' . \Carbon\Carbon::parse($fn->end)->format('d-M') }}
                                                 </option>
                                             @endforeach
@@ -117,20 +118,54 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="">Choose Fortnight</label>
-                            <select class="form-control" wire:model.live="fortnight">
-                                <option value="">Select Fortnight</option>
-                                @foreach ($fortnights as $fn)
-                                    <option value="{{ $fn->id }}">{{ $fn->code }} --
-                                        {{ \Carbon\Carbon::parse($fn->start)->format('d-M') . ' - ' . \Carbon\Carbon::parse($fn->end)->format('d-M') }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('fortnight')
-                                <p class="text-sm text-danger mt-1">Fortnight Required</p>
-                            @enderror
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Choose Fortnight</label>
+                                    <select class="form-control" wire:model.live="fortnight">
+                                        <option value="">Select Fortnight</option>
+                                        @foreach ($fortnights as $fn)
+                                            <option value="{{ $fn->id }}">{{ $fn->code }} --
+                                                {{ \Carbon\Carbon::parse($fn->start)->format('d-M') . ' - ' . \Carbon\Carbon::parse($fn->end)->format('d-M') }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('fortnight')
+                                        <p class="text-sm text-danger mt-1">Fortnight Required</p>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch">
+                                        <input @if ($chooseFiltered) checked @endif type="checkbox"
+                                            role="switch" class="custom-control-input"
+                                            wire:model.live="chooseFiltered" id="chooseFiltered">
+                                        <label class="custom-control-label" for="chooseFiltered">Select from the saved
+                                            filtered Employees?</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @if ($chooseFiltered)
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group row">
+                                        @forelse ($saveFilters as $item)
+                                            {{-- <option value="{{ $item->id }}"> {{ $item->title }} </option> --}}
+                                            <input type="radio" class="btn-check" name="options-outlined"
+                                            id="{{ $item->id }}" autocomplete="off">
+                                            <label class="btn btn-outline-danger" for="{{ $item->id }}">{{ $item->title }}</label>
+                                        @empty
+                                            <p>No Options</p>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -159,12 +194,15 @@
         </script>
         <script>
             $(function() {
-                $('.select2').select2()
+                $('#selectedFN').on('change', function(e) {
+                    var data = $(this).val();
+                    @this.set('selectedFN', data);
+                });
 
-                //Initialize Select2 Elements
-                $('.select2bs4').select2({
-                    theme: 'bootstrap4'
-                })
-            })
+                // $('#selectedFilteredEmployees').on('change', function(e) {
+                //     var data = $(this).val();
+                //     @this.set('selectedFilteredEmployees', data);
+                // });
+            });
         </script>
     @endpush
