@@ -109,10 +109,23 @@
 
         <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
             aria-hidden="true" wire:ignore.self data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog modal-dialog-scrollable modal-xxl" role="document">
+            <div class="modal-dialog modal-xxl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addModalLabel">Generate Payroll</h5>
+
+                        <div class="d-flex justify-content-between w-100">
+                            <h5 class="modal-title" id="addModalLabel">Generate Payroll</h5>
+                            <div>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                @if ($updateMode == true)
+                                    <button wire:click.prevent="update()" class="btn btn-success">Update</button>
+                                @else
+                                    <button wire:click.prevent="submit()" class="btn btn-primary">
+                                        <i class="fa fa-play"></i> Payrun
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -120,62 +133,179 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="">Choose Fortnight</label>
-                                    <select class="form-control" wire:model.live="fortnight">
-                                        <option value="">Select Fortnight</option>
-                                        @foreach ($fortnights as $fn)
-                                            <option value="{{ $fn->id }}">{{ $fn->code }} --
-                                                {{ \Carbon\Carbon::parse($fn->start)->format('d-M') . ' - ' . \Carbon\Carbon::parse($fn->end)->format('d-M') }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('fortnight')
-                                        <p class="text-sm text-danger mt-1">Fortnight Required</p>
-                                    @enderror
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <select class="form-control" wire:model.live="fortnight">
+                                                        <option value="">Select Fortnight</option>
+                                                        @foreach ($fortnights as $fn)
+                                                            <option value="{{ $fn->id }}">{{ $fn->code }} --
+                                                                {{ \Carbon\Carbon::parse($fn->start)->format('d-M') . ' - ' . \Carbon\Carbon::parse($fn->end)->format('d-M') }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('fortnight')
+                                                        <p class="text-sm text-danger mt-1">Fortnight Required</p>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <div class="custom-control custom-switch">
+                                                        <input @if ($chooseFiltered) checked @endif
+                                                            type="checkbox" role="switch"
+                                                            class="custom-control-input"
+                                                            wire:model.live="chooseFiltered" id="chooseFiltered">
+                                                        <label class="custom-control-label"
+                                                            for="chooseFiltered">Select from the saved
+                                                            filtered Employees?</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if ($chooseFiltered)
+                                            <div class="row mb-3">
+                                                <div class="col-md-12">
+                                                    <div class="btn-group" role="group"
+                                                        aria-label="Filtered Employees">
+                                                        <button wire:click="selectedByFilteredEmployees('all')"
+                                                            type="button" class="btn btn-primary mr-2">All Employees
+                                                        </button>
+                                                        @forelse ($saveFilters as $item)
+                                                            <button
+                                                                wire:click="selectedByFilteredEmployees({{ $item->id }})"
+                                                                type="button"
+                                                                class="btn btn-info mr-2">{{ $item->title }}&nbsp;({{ count(json_decode($item->employee_lists)) }})
+                                                            </button>
+                                                        @empty
+                                                            <p>No Options</p>
+                                                        @endforelse
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-group" wire:ignore>
+                                            <label for="selectedDepartment">Filter by Department</label>
+                                            <select multiple="multiple" wire:model.live="selectedDepartment"
+                                                id="selectedDepartment" class="form-control select2bs4">
+                                                @foreach ($departments as $department)
+                                                    <option value="{{ $department->id }}">{{ $department->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group" wire:ignore>
+                                            <label for="selectedDesignation">Filter by Position</label>
+                                            <select multiple="multiple" wire:model="selectedDesignation"
+                                                id="selectedDesignation" class="form-control select2bs4">
+                                                @foreach ($designations as $designation)
+                                                    <option value="{{ $designation->id }}">{{ $designation->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="form-group">
-                                    <div class="custom-control custom-switch">
-                                        <input @if ($chooseFiltered) checked @endif type="checkbox"
-                                            role="switch" class="custom-control-input"
-                                            wire:model.live="chooseFiltered" id="chooseFiltered">
-                                        <label class="custom-control-label" for="chooseFiltered">Select from the saved
-                                            filtered Employees?</label>
-                                    </div>
+                                <div class="d-flex justify-content-between w-100 mb-3">
+                                    <label for="">Select Manually </label><button
+                                        wire:click="resetEmployeeSelection" class="btn btn-default">Reset
+                                        table</button>
+                                </div>
+                                <div style="max-height: 400px; overflow-y: auto;">
+                                    <table class="table table-sm table-hover">
+                                        <thead class="table-info" style="position: sticky; top: 0; z-index: 1;">
+                                            <tr>
+                                                <th class="text-start">
+                                                    <div class="icheck-primary d-inline"><input
+                                                            id="selectAllEmployees" type="checkbox"
+                                                            wire:model.live="selectAllEmployees"><label
+                                                            for="selectAllEmployees"></div>
+                                                </th>
+                                                <th>EmpNo</th>
+                                                <th>Employee Name</th>
+                                                <th>Position</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="4" class="text-center align-items-center">
+                                                    <div wire:loading wire:target="search, selectedDepartment, selectedDesignation, selectedByFilteredEmployees, resetEmployeeSelection">
+                                                        <livewire:table-loader />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @forelse ($employees as $employee)
+                                                <tr wire:key="search-{{ $employee->id }}">
+                                                    <td class="text-start">
+                                                        <div class="icheck-primary d-inline"><input
+                                                                id="employee-{{ $employee->id }}" type="checkbox"
+                                                                wire:model.live="selectedEmployeeRows"
+                                                                value="{{ $employee->id }}"><label
+                                                                for="employee-{{ $employee->id }}"></div>
+                                                    </td>
+                                                    <td>{{ $employee->employee_number }}</td>
+                                                    <td>{{ $employee->first_name }} {{ $employee->last_name }}
+                                                    </td>
+                                                    <td>{{ $employee->designation->name }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="4">
+                                                        <livewire:no-data-found />
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                        <tfoot class="table-info" style="position: sticky; bottom: 0; z-index: 1;">
+                                            <tr>
+                                                <th class="text-start">
+                                                    <div class="icheck-primary d-inline"><input
+                                                            id="selectAllEmployees" type="checkbox"
+                                                            wire:model.live="selectAllEmployees"><label
+                                                            for="selectAllEmployees"></div>
+                                                </th>
+                                                <th>EmpNo</th>
+                                                <th>Employee Name</th>
+                                                <th>Position</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                        @if ($chooseFiltered)
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group row">
-                                        @forelse ($saveFilters as $item)
-                                            {{-- <option value="{{ $item->id }}"> {{ $item->title }} </option> --}}
-                                            <input type="radio" class="btn-check" name="options-outlined"
-                                            id="{{ $item->id }}" autocomplete="off">
-                                            <label class="btn btn-outline-danger" for="{{ $item->id }}">{{ $item->title }}</label>
-                                        @empty
-                                            <p>No Options</p>
-                                        @endforelse
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        @if ($updateMode == true)
-                            <button wire:click.prevent="update()" class="btn btn-success">Update</button>
-                        @else
-                            <button wire:click.prevent="submit()" class="btn btn-primary"><i class="fa fa-play"></i>
-                                Payrun</button>
-                            {{-- <button wire:click.prevent="submit(true)" class="btn btn-info">Generate & Create New</button> --}}
-                        @endif
+                        <div class="d-flex justify-content-between w-100">
+                            <p class="mb-0">
+                                {{ $selectedEmployeeRows ? count($selectedEmployeeRows) . ' employee(s) selected' : '' }}
+                            </p>
+                            <div>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                @if ($updateMode == true)
+                                    <button wire:click.prevent="update()" class="btn btn-success">Update</button>
+                                @else
+                                    <button wire:click.prevent="submit()" class="btn btn-primary">
+                                        <i class="fa fa-play"></i> Payrun
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -203,6 +333,19 @@
                 //     var data = $(this).val();
                 //     @this.set('selectedFilteredEmployees', data);
                 // });
+            });
+
+            $(function() {
+                $('#selectedDepartment').on('change', function(e) {
+                    var data = $(this).val();
+                    @this.set('selectedDepartment', data);
+                });
+
+                $('#selectedDesignation').on('change', function(e) {
+                    var data = $(this).val();
+                    @this.set('selectedDesignation', data);
+                });
+
             });
         </script>
     @endpush

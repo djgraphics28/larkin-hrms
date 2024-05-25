@@ -5,7 +5,10 @@ namespace App\Livewire\Payroll;
 use App\Models\Payroll;
 use Livewire\Component;
 use App\Helpers\Helpers;
+use App\Models\Employee;
+use App\Models\Department;
 use App\Models\SaveFilter;
+use App\Models\Designation;
 use App\Models\BusinessUser;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
@@ -34,6 +37,16 @@ class PayrollComponent extends Component
     public $selectAll = false;
     public $selectedRows = [];
 
+    public $departments = [];
+    public $selectedDepartment;
+    public $designations = [];
+    public $selectedDesignation;
+
+    public $employees = [];
+
+    public $selectAllEmployees = false;
+    public $selectedEmployeeRows = [];
+
     public $saveFilters = [];
     public $selectedFilteredEmployees = [];
 
@@ -48,8 +61,13 @@ class PayrollComponent extends Component
     public function mount()
     {
         $this->businessId = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
+        $this->departments = Department::where('is_active', true)->get();
+        $this->designations = Designation::where('is_active', true)->get();
         $this->fortnights = Helpers::activeFortnights();
         $this->saveFilters = SaveFilter::where('business_id', $this->businessId)->get();
+        $this->employees = Employee::where('is_discontinued', false)
+            ->where('business_id', $this->businessId)
+                ->get();
 
     }
 
@@ -77,5 +95,70 @@ class PayrollComponent extends Component
     public function resetInputFields()
     {
 
+    }
+
+    public function updatedSelectAllEmployees($value)
+    {
+        if($value){
+            $this->selectedEmployeeRows = $this->employees->pluck('id');
+        }else{
+            $this->selectedEmployeeRows = [];
+        }
+    }
+
+    public function updatedSelectedEmployeeRows()
+    {
+        if(count($this->employees) == count($this->selectedEmployeeRows)) {
+            $this->selectAllEmployees = true;
+        } else {
+            $this->selectAllEmployees = false;
+        }
+    }
+
+    public function updatedSelectedDepartment()
+    {
+        $this->filterEmployees();
+        $this->updatedSelectAllEmployees(false);
+        $this->selectAllEmployees = false;
+    }
+
+    public function updatedSelectedDesignation()
+    {
+        $this->filterEmployees();
+        $this->updatedSelectAllEmployees(false);
+        $this->selectAllEmployees = false;
+    }
+
+    public function filterEmployees()
+    {
+        $this->employees = Employee::where('is_discontinued', false)
+            ->where('business_id', $this->businessId)
+            ->when($this->selectedDepartment, function ($query) {
+                $query->whereIn('department_id', $this->selectedDepartment);
+            })
+            ->when($this->selectedDesignation, function ($query) {
+                $query->whereIn('designation_id', $this->selectedDesignation);
+            })
+            ->get();
+    }
+
+    public function selectedByFilteredEmployees($id)
+    {
+        if($id == 'all') {
+            $this->employees = Employee::where('is_discontinued', false)->where('business_id', $this->businessId)->get();
+        } else {
+            $data = SaveFilter::find($id);
+            $this->employees = Employee::where('is_discontinued', false)->where('business_id', $this->businessId)->whereIn('id', json_decode($data->employee_lists))->get();
+        }
+
+        $this->updatedSelectAllEmployees(true);
+        $this->selectAllEmployees = true;
+    }
+
+    public function resetEmployeeSelection()
+    {
+        $this->employees = Employee::where('is_discontinued', false)->where('business_id', $this->businessId)->get();
+        $this->updatedSelectAllEmployees(false);
+        $this->selectAllEmployees = false;
     }
 }

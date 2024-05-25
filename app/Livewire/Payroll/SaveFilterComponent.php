@@ -86,6 +86,7 @@ class SaveFilterComponent extends Component
         $this->departments = Department::where('is_active', true)->get();
         $this->designations = Designation::where('is_active', true)->get();
         $this->employees = Employee::where('is_discontinued', false)
+            ->where('business_id', $this->businessId)
             ->get();
     }
 
@@ -137,7 +138,7 @@ class SaveFilterComponent extends Component
         // Decode the JSON strings to arrays of integers
         $this->selectedDepartment = $data->selected_department ? array_map('intval', json_decode($data->selected_department, true)) : [];
         $this->selectedDesignation = $data->selected_designation ? array_map('intval', json_decode($data->selected_designation, true)) : [];
-        $this->employees = Employee::where('is_discontinued', false)->whereIn('id', json_decode($data->employee_lists))->get();
+        $this->employees = Employee::where('is_discontinued', false)->where('business_id', $this->businessId)->whereIn('id', json_decode($data->employee_lists))->get();
 
         $this->updatedSelectAllEmployees(true);
         $this->selectAllEmployees = true;
@@ -189,6 +190,7 @@ class SaveFilterComponent extends Component
     public function filterEmployees()
     {
         $this->employees = Employee::where('is_discontinued', false)
+            ->where('business_id', $this->businessId)
             ->when($this->selectedDepartment, function ($query) {
                 $query->whereIn('department_id', $this->selectedDepartment);
             })
