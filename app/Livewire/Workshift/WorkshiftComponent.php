@@ -93,6 +93,8 @@ class WorkshiftComponent extends Component
 
         $diffInHours = $end->diffInHours($start);
 
+        $numberOfHoursFn = $diffInHours*12;
+
         // if($this->number_of_hours != $diffInHours) {
         //     $this->alert('error', 'Please correct the start and end time!');
         //     return 0;
@@ -102,6 +104,7 @@ class WorkshiftComponent extends Component
             'title' => $this->title,
             'description' => $this->description,
             'number_of_hours' => $diffInHours,
+            'number_of_hours_fn' => $numberOfHoursFn,
             'start' => $this->start,
             'end' => $this->end,
         ]);
@@ -159,12 +162,14 @@ class WorkshiftComponent extends Component
         $end = Carbon::parse($this->end);
 
         $diffInHours = $end->diffInHours($start);
+        $numberOfHoursFn = $diffInHours*12;
 
         $data = Workshift::find($this->edit_id);
         $data->update([
             'title' => $this->title,
             'description' => $this->description,
             'number_of_hours' => $diffInHours,
+            'number_of_hours_fn' => $diffInHours,
             'start' => $this->start,
             'end' => $this->end,
         ]);

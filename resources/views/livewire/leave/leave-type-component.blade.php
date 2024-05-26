@@ -25,13 +25,10 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <button type="button" class="btn btn-warning btn-sm mr-2"><i class="fa fa-upload"
-                                        aria-hidden="true"></i> Import</button>
-                                <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i class="fa fa-file-excel"
-                                        aria-hidden="true"></i> Export</button>
-                                <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
-                                        aria-hidden="true"></i> PDF</button>
-                                <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
+                                <a wire:navigate href="{{ route('leave-request') }}" type="button"
+                                    class="btn btn-secondary btn-md mr-2"><i class="fa fa-arrow-left"
+                                        aria-hidden="true"></i> Return to Leave Request</a>
+                                <button wire:click="addNew()" type="button" class="btn btn-primary btn-md mr-2"><i
                                         class="fa fa-plus" aria-hidden="true"></i> Add New</button>
                             </div>
                         </div>

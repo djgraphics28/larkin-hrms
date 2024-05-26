@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <select class="form-control @error('selectedFortnight') is-invalid @enderror select2bs4"
+                        <select class="form-control @error('selectedFortnight') is-invalid @enderror"
                             wire:model="selectedFortnight" wire:change="getDays">
                             <option value="">Select Fortnight</option>
                             @foreach ($fortnights as $item)
@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-md-1"></div>
                 <div class="col-sm-2">
-                    <select wire:model.live="selectedDepartment" class="form-control select2bs4">
+                    <select wire:model.live="selectedDepartment" class="form-control">
                         <option value="">All Departments</option>
                         @foreach ($departments as $item)
                             <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -31,7 +31,7 @@
                     </select>
                 </div><!-- /.col -->
                 <div class="col-sm-2">
-                    <select wire:model.live="selectedDesignation" class="form-control select2bs4">
+                    <select wire:model.live="selectedDesignation" class="form-control">
                         <option value="">All Designations</option>
                         @foreach ($designations as $item)
                             <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -232,10 +232,6 @@
             $('.timepicker').datetimepicker({
                 format: 'LT'
             })
-
-            // $('.select2bs4').select2({
-            //     theme: 'bootstrap4'
-            // });
         })
     </script>
 @endpush

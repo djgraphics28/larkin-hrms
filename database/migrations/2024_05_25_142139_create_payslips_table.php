@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,7 +14,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('fortnight_id');
-            $table->unsignedBigInteger('payrun_id');
+            $table->unsignedBigInteger('payroll_id');
+            $table->unsignedBigInteger('business_id');
             $table->decimal('regular', 10, 2);
             $table->decimal('overtime', 10, 2);
             $table->decimal('sunday_ot', 10, 2);
@@ -39,9 +39,15 @@ return new class extends Migration
                 ->onUpdate('CASCADE')
                 ->onDelete('CASCADE');
             $table
-                ->foreign('payrun_id')
+                ->foreign('payroll_id')
                 ->references('id')
-                ->on('payruns')
+                ->on('payrolls')
+                ->onUpdate('CASCADE')
+                ->onDelete('CASCADE');
+            $table
+                ->foreign('business_id')
+                ->references('id')
+                ->on('businesses')
                 ->onUpdate('CASCADE')
                 ->onDelete('CASCADE');
             $table->timestamps();
