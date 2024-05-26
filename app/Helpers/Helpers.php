@@ -616,6 +616,7 @@ class Helpers
 
     public static function payrollCodeGenerator($businessId, $fortnight)
     {
+        $fornightCode = Fortnight::find($fortnight)->code;
         $code = Business::find($businessId)->code;
         $lastPayroll = Payroll::where('business_id', $businessId)->latest()->first();
 
@@ -633,7 +634,7 @@ class Helpers
         // Concatenate the leading zeros with the payroll number
         $paddedPayrollCode = $leadingZeros . $payrollCode;
 
-        return 'P-' . $code . '-' . $fortnight . '-' . $paddedPayrollCode;
+        return 'P-' . $code . '-' . $fornightCode . '-' . $paddedPayrollCode;
     }
 
 }

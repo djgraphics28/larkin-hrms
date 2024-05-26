@@ -178,7 +178,7 @@
                             <div class="form-group" wire:ignore>
                                 <label for="selectedDepartment">Choose Department</label>
                                 <select multiple="multiple" wire:model.live="selectedDepartment"
-                                        id="selectedDepartment" class="form-control select2bs4">
+                                    id="selectedDepartment" class="form-control select2bs4">
                                     @foreach ($departments as $department)
                                         <option value="{{ $department->id }}">{{ $department->name }}</option>
                                     @endforeach
@@ -190,7 +190,7 @@
                             <div class="form-group" wire:ignore>
                                 <label for="selectedDesignation">Choose Position</label>
                                 <select multiple="multiple" wire:model="selectedDesignation" id="selectedDesignation"
-                                        class="form-control select2bs4">
+                                    class="form-control select2bs4">
                                     @foreach ($designations as $designation)
                                         <option value="{{ $designation->id }}">{{ $designation->name }}</option>
                                     @endforeach
@@ -205,8 +205,11 @@
                             <table class="table table-sm table-hover">
                                 <thead class="table-info">
                                     <tr>
-                                        <th class="text-start"><div class="icheck-primary d-inline"><input id="selectAllEmployees" type="checkbox"
-                                                wire:model.live="selectAllEmployees"><label for="selectAllEmployees"></div></th>
+                                        <th class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAllEmployees"
+                                                    type="checkbox" wire:model.live="selectAllEmployees"><label
+                                                    for="selectAllEmployees"></div>
+                                        </th>
                                         <th>EmpNo</th>
                                         <th>Employee Name</th>
                                         <th>Position</th>
@@ -220,10 +223,13 @@
                                     </tr>
                                     @forelse ($employees as $employee)
                                         <tr wire:key="search-{{ $employee->id }}">
-                                            <td class="text-start"><div class="icheck-primary d-inline"><input id="employee-{{ $employee->id }}" type="checkbox"
-                                                    wire:model.live="selectedEmployeeRows"
-                                                    value="{{ $employee->id }}"><label
-                                                    for="employee-{{ $employee->id }}"></div></td>
+                                            <td class="text-start">
+                                                <div class="icheck-primary d-inline"><input
+                                                        id="employee-{{ $employee->id }}" type="checkbox"
+                                                        wire:model.live="selectedEmployeeRows"
+                                                        value="{{ $employee->id }}"><label
+                                                        for="employee-{{ $employee->id }}"></div>
+                                            </td>
                                             <td>{{ $employee->employee_number }}</td>
                                             <td>{{ $employee->first_name }} {{ $employee->last_name }}</td>
                                             <td>{{ $employee->designation->name }}</td>
@@ -238,8 +244,11 @@
                                 </tbody>
                                 <tfoot class="table-info">
                                     <tr>
-                                        <th class="text-start"><div class="icheck-primary d-inline"><input id="selectAllEmployees" type="checkbox"
-                                                wire:model.live="selectAllEmployees"><label for="selectAllEmployees"></div></th>
+                                        <th class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAllEmployees"
+                                                    type="checkbox" wire:model.live="selectAllEmployees"><label
+                                                    for="selectAllEmployees"></div>
+                                        </th>
                                         <th>EmpNo</th>
                                         <th>Employee Name</th>
                                         <th>Position</th>
@@ -250,7 +259,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <p class="float-left">{{ $selectedEmployeeRows ? count($selectedEmployeeRows) .' employee(s) selected' : ''}}</p>
+                    <p class="float-left">
+                        {{ $selectedEmployeeRows ? count($selectedEmployeeRows) . ' employee(s) selected' : '' }}</p>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     @if ($updateMode == true)
                         <button wire:click.prevent="update()" class="btn btn-success">Update</button>

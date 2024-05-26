@@ -36,7 +36,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="form-group row">
+                                    <div class="form-group row" wire:ignore>
                                         <select class="form-control select2bs4" wire:model.live="selectedFN"
                                             id="selectedFN">
                                             <option value="">Select Fortnight range</option>
@@ -59,8 +59,8 @@
                                             class="fa fa-plus"></i>
                                         Create Payroll</button>
                                     <a wire:navigate href="{{ route('save-filters') }}"
-                                        class="btn btn-success float-right mr-2"><i class="fa fa-plus"></i>
-                                        Create Filters</a>
+                                        class="btn btn-success float-right mr-2"><i class="fa fa-filter"></i>
+                                        Employee Filters</a>
 
                                 </div>
                             </div>
@@ -90,16 +90,87 @@
                             </div>
                         @endif
 
-                        <div class="card-body">
+                        <div class="card-body p-0">
                             <div>
                                 <div class="d-flex justify-content-center items-align-center">
-                                    <div class="overlay-wrapper mt-10 mb-10" wire:loading wire:target="generate">
+                                    <div class="overlay-wrapper mt-10 mb-10" wire:loading
+                                        wire:target="search, selectedFN">
                                         <div class="overlay"><i class="fas fa-3x fa-sync-alt fa-spin"></i>
                                             <div class="text-bold pt-2">Loading...</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <table class="table table-sm">
+                                <thead class="table-info">
+                                    <tr>
+                                        <th class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
+                                        <th>Status</th>
+                                        <th>PayrollCode</th>
+                                        <th>Fortnight</th>
+                                        <th>Date Created</th>
+                                        <th>Created By</th>
+                                        <th>Date Approved</th>
+                                        <th>Approved By</th>
+                                        <th class="text-center">Payslip Counts</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($records as $data)
+                                        <tr wire:key="search-{{ $data->id }}">
+                                            <td class="text-start">
+                                                <div class="icheck-primary d-inline"><input
+                                                        id="payroll-{{ $data->id }}" type="checkbox"
+                                                        wire:model.live="selectedRows"
+                                                        value="{{ $data->id }}"><label
+                                                        for="payroll-{{ $data->id }}"></div>
+                                            </td>
+                                            <td>{{ $data->status }}</td>
+                                            <td>{{ $data->payroll_code }}</td>
+                                            <td>{{ $data->fortnight->code }}</td>
+                                            <td>{{ $data->created_at }}</td>
+                                            <td>{{ \App\Models\User::find($data->created_by)->name }}</td>
+                                            <td></td>
+                                            <td>{{ \App\Models\User::find($data->approved_by)->name ?? '' }}</td>
+                                            <td class="text-center"><a title="Show Payslip Records"
+                                                    href="">{{ $data->payslips_count }}</a>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button"
+                                                        class="btn btn-default btn-sm">Action</button>
+                                                    <button type="button"
+                                                        class="btn btn-default btn-sm dropdown-toggle dropdown-icon"
+                                                        data-toggle="dropdown">
+                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                    </button>
+                                                    <div class="dropdown-menu" role="menu">
+                                                        <a class="dropdown-item" href="#"><i
+                                                                class="fa fa-edit"></i> Edit</a>
+                                                        <a class="dropdown-item" href="#"><i
+                                                                class="fa fa-trash"></i> Delete</a>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item" href="#"><i
+                                                                class="fa fa-download"></i> Download ABA</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="10">
+                                                <livewire:no-data-found />
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+
                         </div>
                     </div>
                 </div>
@@ -112,23 +183,31 @@
             <div class="modal-dialog modal-xxl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-
                         <div class="d-flex justify-content-between w-100">
-                            <h5 class="modal-title" id="addModalLabel">Generate Payroll</h5>
-                            <div>
+                            <div class="p-2">
+                                <h5 class="modal-title" id="addModalLabel">Generate Payroll</h5>
+                            </div>
+                            <div class="p-2 w-50">
+                                <div wire:loading wire:target="payrun">
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                            role="progressbar" :style="'width: ' + $employeeDone + '%;'"
+                                            :aria-valuenow="$employeeDone" aria-valuemin="0"
+                                            :aria-valuemax="$totalEmployees">{{ $employeeDone }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-2">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                 @if ($updateMode == true)
                                     <button wire:click.prevent="update()" class="btn btn-success">Update</button>
                                 @else
-                                    <button wire:click.prevent="submit()" class="btn btn-primary">
+                                    <button wire:click.prevent="payrunConfirm" class="btn btn-primary">
                                         <i class="fa fa-play"></i> Payrun
                                     </button>
                                 @endif
                             </div>
                         </div>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -138,15 +217,18 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <select class="form-control" wire:model.live="fortnight">
+                                                    <select
+                                                        class="form-control @error('selectedFortnight') is-invalid @enderror"
+                                                        wire:model.live="selectedFortnight">
                                                         <option value="">Select Fortnight</option>
                                                         @foreach ($fortnights as $fn)
-                                                            <option value="{{ $fn->id }}">{{ $fn->code }} --
+                                                            <option value="{{ $fn->id }}">{{ $fn->code }}
+                                                                --
                                                                 {{ \Carbon\Carbon::parse($fn->start)->format('d-M') . ' - ' . \Carbon\Carbon::parse($fn->end)->format('d-M') }}
                                                             </option>
                                                         @endforeach
                                                     </select>
-                                                    @error('fortnight')
+                                                    @error('selectedFortnight')
                                                         <p class="text-sm text-danger mt-1">Fortnight Required</p>
                                                     @enderror
                                                 </div>
@@ -223,7 +305,8 @@
                             <div class="col-md-12">
                                 <div class="d-flex justify-content-between w-100 mb-3">
                                     <label for="">Select Manually </label><button
-                                        wire:click="resetEmployeeSelection" class="btn btn-default">Reset
+                                        wire:click="resetEmployeeSelection" id="resetEmployeeSelection"
+                                        class="btn btn-default">Reset
                                         table</button>
                                 </div>
                                 <div style="max-height: 400px; overflow-y: auto;">
@@ -238,13 +321,15 @@
                                                 </th>
                                                 <th>EmpNo</th>
                                                 <th>Employee Name</th>
+                                                <th>Department</th>
                                                 <th>Position</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td colspan="4" class="text-center align-items-center">
-                                                    <div wire:loading wire:target="search, selectedDepartment, selectedDesignation, selectedByFilteredEmployees, resetEmployeeSelection">
+                                                    <div wire:loading
+                                                        wire:target="search, selectedDepartment, selectedDesignation, selectedByFilteredEmployees, resetEmployeeSelection">
                                                         <livewire:table-loader />
                                                     </div>
                                                 </td>
@@ -261,6 +346,7 @@
                                                     <td>{{ $employee->employee_number }}</td>
                                                     <td>{{ $employee->first_name }} {{ $employee->last_name }}
                                                     </td>
+                                                    <td>{{ $employee->department->name }}</td>
                                                     <td>{{ $employee->designation->name }}</td>
                                                 </tr>
                                             @empty
@@ -281,6 +367,7 @@
                                                 </th>
                                                 <th>EmpNo</th>
                                                 <th>Employee Name</th>
+                                                <th>Department</th>
                                                 <th>Position</th>
                                             </tr>
                                         </tfoot>
@@ -300,7 +387,7 @@
                                 @if ($updateMode == true)
                                     <button wire:click.prevent="update()" class="btn btn-success">Update</button>
                                 @else
-                                    <button wire:click.prevent="submit()" class="btn btn-primary">
+                                    <button wire:click.prevent="payrunConfirm" class="btn btn-primary">
                                         <i class="fa fa-play"></i> Payrun
                                     </button>
                                 @endif
@@ -328,11 +415,6 @@
                     var data = $(this).val();
                     @this.set('selectedFN', data);
                 });
-
-                // $('#selectedFilteredEmployees').on('change', function(e) {
-                //     var data = $(this).val();
-                //     @this.set('selectedFilteredEmployees', data);
-                // });
             });
 
             $(function() {
@@ -346,6 +428,16 @@
                     @this.set('selectedDesignation', data);
                 });
 
+            });
+        </script>
+
+        <script>
+            document.addEventListener('livewire:load', function() {
+                Livewire.on('delay-loading', (delay) => {
+                    setTimeout(() => {
+                        Livewire.emit('delay-finished');
+                    }, delay);
+                });
             });
         </script>
     @endpush

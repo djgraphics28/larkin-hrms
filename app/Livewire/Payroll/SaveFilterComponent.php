@@ -55,25 +55,25 @@ class SaveFilterComponent extends Component
 
     public function updatedSelectAll($value)
     {
-        if($value){
+        if ($value) {
             $this->selectedRows = $this->records->pluck('id');
-        }else{
+        } else {
             $this->selectedRows = [];
         }
     }
 
     public function updatedSelectAllEmployees($value)
     {
-        if($value){
+        if ($value) {
             $this->selectedEmployeeRows = $this->employees->pluck('id');
-        }else{
+        } else {
             $this->selectedEmployeeRows = [];
         }
     }
 
     public function updatedSelectedEmployeeRows()
     {
-        if(count($this->employees) == count($this->selectedEmployeeRows)) {
+        if (count($this->employees) == count($this->selectedEmployeeRows)) {
             $this->selectAllEmployees = true;
         } else {
             $this->selectAllEmployees = false;
@@ -103,7 +103,7 @@ class SaveFilterComponent extends Component
             'title' => 'required'
         ]);
 
-        if(count($this->selectedEmployeeRows) == 0) {
+        if (count($this->selectedEmployeeRows) == 0) {
             $this->alert('warning', 'Please Select Employees!');
             return;
         }
@@ -116,8 +116,8 @@ class SaveFilterComponent extends Component
             'selected_designation' => $this->selectedDesignation ? json_encode(array_map('intval', $this->selectedDesignation)) : null,
         ]);
 
-        if($create){
-            if($saveAndCreateNew) {
+        if ($create) {
+            if ($saveAndCreateNew) {
                 $this->alert('success', 'New Saved Filter has been save successfully!');
             } else {
                 $this->dispatch('hide-add-modal');
@@ -150,7 +150,7 @@ class SaveFilterComponent extends Component
             'title' => 'required'
         ]);
 
-        if(count($this->selectedEmployeeRows) == 0) {
+        if (count($this->selectedEmployeeRows) == 0) {
             $this->alert('warning', 'Please Select Employees!');
             return;
         }
@@ -163,8 +163,9 @@ class SaveFilterComponent extends Component
             'selected_designation' => $this->selectedDesignation ? json_encode(array_map('intval', $this->selectedDesignation)) : null,
         ]);
 
-        if($saveFilter) {
-            $this->alert('success', $saveFilter->title.' Filter has been save successfully!');
+        if ($saveFilter) {
+            $this->alert('success', $saveFilter->title . ' Filter has been save successfully!');
+            $this->dispatch('hide-add-modal');
         }
     }
 

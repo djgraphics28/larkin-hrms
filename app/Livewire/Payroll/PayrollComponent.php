@@ -21,6 +21,9 @@ class PayrollComponent extends Component
 
     use LivewireAlert, WithPagination;
 
+    protected $listeners = ['remove', 'selectedEmployee', 'approve', 'reject', 'onHold', 'cancel', 'revert', 'payrun'];
+
+
     public $perPage = 10;
     public $search = '';
 
@@ -50,6 +53,12 @@ class PayrollComponent extends Component
     public $saveFilters = [];
     public $selectedFilteredEmployees = [];
 
+    public $selectedFortnight = '';
+    public $approvedPayrunId;
+    public $showProgressBar = false;
+    public $totalEmployees = 0;
+    public $employeeDone = 0;
+
     #[Title('Payroll')]
     public function render()
     {
@@ -67,20 +76,23 @@ class PayrollComponent extends Component
         $this->saveFilters = SaveFilter::where('business_id', $this->businessId)->get();
         $this->employees = Employee::where('is_discontinued', false)
             ->where('business_id', $this->businessId)
-                ->get();
+            ->get();
 
     }
 
     public function getRecordsProperty()
     {
-        return Payroll::where('business_id', $this->businessId)->latest()->paginate($this->perPage);
+        return Payroll::withCount('payslips')->where('business_id', $this->businessId)->search(trim($this->search))
+            ->when($this->selectedFN, function ($query) {
+                $query->where('fortnight_id', $this->selectedFN);
+            })->latest()->paginate($this->perPage);
     }
 
     public function updatedSelectAll($value)
     {
-        if($value){
+        if ($value) {
             $this->selectedRows = $this->records->pluck('id');
-        }else{
+        } else {
             $this->selectedRows = [];
         }
     }
@@ -94,21 +106,21 @@ class PayrollComponent extends Component
 
     public function resetInputFields()
     {
-
+        $this->selectedFortnight = '';
     }
 
     public function updatedSelectAllEmployees($value)
     {
-        if($value){
+        if ($value) {
             $this->selectedEmployeeRows = $this->employees->pluck('id');
-        }else{
+        } else {
             $this->selectedEmployeeRows = [];
         }
     }
 
     public function updatedSelectedEmployeeRows()
     {
-        if(count($this->employees) == count($this->selectedEmployeeRows)) {
+        if (count($this->employees) == count($this->selectedEmployeeRows)) {
             $this->selectAllEmployees = true;
         } else {
             $this->selectAllEmployees = false;
@@ -144,7 +156,7 @@ class PayrollComponent extends Component
 
     public function selectedByFilteredEmployees($id)
     {
-        if($id == 'all') {
+        if ($id == 'all') {
             $this->employees = Employee::where('is_discontinued', false)->where('business_id', $this->businessId)->get();
         } else {
             $data = SaveFilter::find($id);
@@ -160,5 +172,61 @@ class PayrollComponent extends Component
         $this->employees = Employee::where('is_discontinued', false)->where('business_id', $this->businessId)->get();
         $this->updatedSelectAllEmployees(false);
         $this->selectAllEmployees = false;
+        $this->selectedDepartment = '';
+        $this->selectedDesignation = '';
+    }
+
+    public function payrunConfirm()
+    {
+        $this->confirm('Are you sure you want to Payrun?', [
+            'confirmButtonText' => 'Yes proceed!',
+            'onConfirmed' => 'payrun',
+        ]);
+    }
+
+    public function payrun()
+    {
+        $this->validate([
+            'selectedFortnight' => 'required'
+        ]);
+
+        if (count($this->selectedEmployeeRows) == 0) {
+            $this->alert('warning', 'No employee has been selected.');
+            return;
+        }
+
+        $payroll = Payroll::create([
+            'payroll_code' => Helpers::payrollCodeGenerator($this->businessId, $this->selectedFortnight),
+            'status' => 'For-Approval',
+            'remarks' => '',
+            'created_by' => Auth::user()->id,
+            'fortnight_id' => $this->selectedFortnight,
+            'business_id' => $this->businessId
+        ]);
+
+        if ($payroll) {
+            $this->totalEmployees = count($this->selectedEmployeeRows);
+            $this->employeeDone = 0;
+            foreach ($this->selectedEmployeeRows as $employee) {
+                $payroll->payslips()->create([
+                    'employee_id' => $employee,
+                    'fortnight_id' => $this->selectedFortnight,
+                    'business_id' => $this->businessId,
+                    'regular' => 0,
+                    'overtime' => 0,
+                    'sunday_ot' => 0,
+                    'holiday_ot' => 0,
+                    'plp_alp_fp' => 0,
+                    'other' => 0,
+                    'fn_tax' => 0,
+                    'npf' => 0,
+                    'ncsl' => 0,
+                    'cash_adv' => 0
+                ]);
+                $this->employeeDone += 1;
+            }
+            sleep(3);
+            $this->alert('success', 'Payroll has been created successfully.');
+        }
     }
 }

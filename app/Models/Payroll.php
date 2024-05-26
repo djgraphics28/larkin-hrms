@@ -45,4 +45,15 @@ class Payroll extends Model
     {
         return $this->belongsTo(Business::class, 'business_id', 'id');
     }
+
+    public function scopeSearch($query, $searchTerm)
+    {
+        $searchTerm = "%$searchTerm%";
+
+        $query->where(function ($query) use ($searchTerm) {
+
+            $query->where('payroll_code', 'like', $searchTerm);
+        });
+
+    }
 }
