@@ -218,7 +218,7 @@ class PayrollComponent extends Component
                     'holiday_ot' => 0,
                     'plp_alp_fp' => 0,
                     'other' => 0,
-                    'fn_tax' => 0,
+                    'fn_tax' => Helpers::computeTax(900),
                     'npf' => 0,
                     'ncsl' => 0,
                     'cash_adv' => 0

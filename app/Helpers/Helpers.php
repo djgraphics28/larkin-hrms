@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\TaxTable;
 use DateTime;
 use Carbon\Carbon;
 use App\Models\Asset;
@@ -635,6 +636,27 @@ class Helpers
         $paddedPayrollCode = $leadingZeros . $payrollCode;
 
         return 'P-' . $code . '-' . $fornightCode . '-' . $paddedPayrollCode;
+    }
+
+    public static function computeTax($gross)
+    {
+        $taxTable = TaxTable::with('tax_table_ranges')->where('is_active', 1)->first();
+        $taxValue = 0;
+
+        if ($taxTable) {
+            foreach($taxTable->tax_table_ranges as $taxRange) {
+                if(!is_null($taxRange->from) && !is_null($taxRange->to)) {
+                    if($gross >= $taxRange->from && $gross <= $taxRange->to) {
+                        $taxValue = $gross * ($taxRange->percentage / 100);
+                    }
+                } elseif(is_null($taxRange->to)) {
+                    if($gross >= $taxRange->from) {
+                        $taxValue = $gross * ($taxRange->percentage / 100);
+                    }
+                }
+            }
+        }
+        return $taxValue;
     }
 
 }
