@@ -187,9 +187,39 @@
                                                 </ul>
                                             </td>
                                             <td width="10%" class="text-center align-middle">
-
-
                                                 <div class="btn-group">
+                                                    <button type="button"
+                                                        class="btn btn-default btn-sm">Action</button>
+                                                    <button type="button"
+                                                        class="btn btn-default btn-sm dropdown-toggle dropdown-icon"
+                                                        data-toggle="dropdown">
+                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                    </button>
+                                                    <div class="dropdown-menu" role="menu">
+                                                        <a title="Show Employee Info" wire:navigate
+                                                            class="dropdown-item"
+                                                            href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"><i
+                                                                class="fa fa-edit"></i> Edit</a>
+                                                        <a title="Delete this Employee"
+                                                            wire:click="alertConfirm({{ $data->id }})"
+                                                            class="dropdown-item" href="#"><i
+                                                                class="fa fa-trash"></i> Delete</a>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item" href="#"><i
+                                                                class="fa fa-download"></i> Final Pay</a>
+                                                        <a class="dropdown-item" href="#"><i
+                                                            class="fa fa-print"></i>Print Summary of
+                                                            Earnings</a>
+                                                        <a class="dropdown-item" href="#"><i
+                                                            class="fa fa-print"></i>Print Contract</a>
+                                                        <a class="dropdown-item" href="#"><i
+                                                            class="fa fa-print"></i>Print
+                                                            Attendance</a>
+                                                    </div>
+                                                </div>
+
+
+                                                {{-- <div class="btn-group">
                                                     <div class="dropdown">
                                                         <button class="btn btn-default dropdown-toggle" type="button"
                                                             id="dropdownMenuButton" data-toggle="dropdown"
@@ -214,7 +244,7 @@
                                                         wire:click="alertConfirm({{ $data->id }})"
                                                         class="dropdown-item text-danger" href="javascript:void(0)"><i
                                                             class="fa fa-trash" aria-hidden="true"></i></a>
-                                                </div>
+                                                </div> --}}
                                             </td>
                                         </tr>
                                     @empty
