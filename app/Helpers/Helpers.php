@@ -137,7 +137,7 @@ class Helpers
                 $rate_id = $current_salary?->id;
             }
 
-            $getHours = Attendance::selectRaw('date, time_in, time_out, time_in_2, time_out_2, is_break, late_in_minutes, DAYNAME(date) as day_name')
+            $getHours = Attendance::selectRaw('date, time_in, time_out, time_in_2, time_out_2, is_break, late_in_minutes, DAYNAME(date) as day_name, on_leave')
                 ->where('employee_number', $employee->employee_number)
                 ->whereBetween('date', [$start, $endDateAttendance])
                 ->get();
@@ -153,7 +153,7 @@ class Helpers
 
             foreach ($getHours as $hours) {
 
-                $computed_hour = Helpers::compute_daily_hr($hours->date, $hours->time_in, $hours->time_out, $hours->time_in_2, $hours->time_out_2, $hours->is_break);
+                $computed_hour = Helpers::compute_daily_hr($hours->date, $hours->time_in, $hours->time_out, $hours->time_in_2, $hours->time_out_2, $hours->is_break, $hours?->on_leave);
 
 
                 $checkHoliday = Holiday::where('holiday_date', $hours->date)->first();
@@ -573,7 +573,7 @@ class Helpers
         return $fn_number;
     }
 
-    public static function compute_daily_hr($date, $time_in, $time_out, $time_in_2, $time_out_2, $is_break)
+    public static function compute_daily_hr($date, $time_in, $time_out, $time_in_2, $time_out_2, $is_break, $on_leave)
     {
         $date = $date;
         $comp_time_out = new DateTime($date . ' ' . $time_out);
@@ -590,6 +590,18 @@ class Helpers
             $hour_diff_total = $comp_time_out_2->diff($comp_time_in)->h - 1;
         } elseif (($time_out === '' || $time_in_2 === '' || $time_out === null || $time_in_2 === null) && $is_break === 0) {
             $hour_diff_total = $comp_time_out_2->diff($comp_time_in)->h;
+        }
+
+        if (($time_in !== null && $time_out !== null) && ($time_in_2 === null && $time_out_2 === null)) {
+            $hour_diff_total = $comp_time_out->diff($comp_time_in)->h;
+        } elseif (($time_in === null && $time_out === null) && ($time_in_2 !== null && $time_out_2 !== null)) {
+            $hour_diff_total = $comp_time_out_2->diff($comp_time_in_2)->h;
+        }
+
+        if ($on_leave === 'second_half') {
+            $hour_diff_total = $hour_diff_am->h + 4;
+        } elseif ($on_leave === 'first_half') {
+            $hour_diff_total = $hour_diff_pm->h + 4;
         }
 
         return $hour_diff_total;
@@ -685,7 +697,7 @@ class Helpers
 
             $employee_rate = $rate?->salary_rate;
 
-            $getHours = Attendance::selectRaw('date, time_in, time_out, time_in_2, time_out_2, is_break, late_in_minutes, DAYNAME(date) as day_name')
+            $getHours = Attendance::selectRaw('date, time_in, time_out, time_in_2, time_out_2, is_break, late_in_minutes, DAYNAME(date) as day_name, on_leave')
                 ->where('employee_number', $employee->employee_number)
                 ->whereBetween('date', [$start, $endDateAttendance])
                 ->get();
@@ -697,12 +709,9 @@ class Helpers
             $holiday_hours = 0;
             $holiday_work = [];
 
-
-
             foreach ($getHours as $hours) {
 
-                $computed_hour = Helpers::compute_daily_hr($hours->date, $hours->time_in, $hours->time_out, $hours->time_in_2, $hours->time_out_2, $hours->is_break);
-
+                $computed_hour = Helpers::compute_daily_hr($hours->date, $hours->time_in, $hours->time_out, $hours->time_in_2, $hours->time_out_2, $hours->is_break, $hours->on_leave);
 
                 $checkHoliday = Holiday::where('holiday_date', $hours->date)->first();
 
@@ -719,7 +728,7 @@ class Helpers
                 $total_hours = $total_hours + $computed_hour;
             }
 
-            $getHoliday = Holiday::whereBetween('holiday_date', [$start, $end])->get();
+            $getHoliday = Holiday::whereBetween('holiday_date', [$start, $endDateAttendance])->get();
 
             if ($getHoliday) {
                 foreach ($getHoliday as $holiday) {
