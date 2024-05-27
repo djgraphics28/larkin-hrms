@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Loan/Cash Advance Request</li>
                     </ol>
                 </div><!-- /.col -->
@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="col-md-4 text-right">
                                     <div class="btn-group" role="group" aria-label="Groups">
-                                        <a wire:navigate href="{{ route('loan-type') }}" type="button"
+                                        <a  href="{{ route('loan-type') }}" type="button"
                                             class="btn btn-success btn-md mr-2">
                                             <i class="fa fa-tasks" aria-hidden="true"></i> Loan Types
                                         </a>

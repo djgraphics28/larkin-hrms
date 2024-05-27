@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Leave Request</li>
                     </ol>
                 </div><!-- /.col -->
@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="col-md-4 text-right">
                                     <div class="btn-group" role="group" aria-label="Groups">
-                                        <a wire:navigate href="{{ route('leave-types') }}" type="button"
+                                        <a  href="{{ route('leave-types') }}" type="button"
                                             class="btn btn-success btn-md mr-2">
                                             <i class="fa fa-tasks" aria-hidden="true"></i> Leave Types
                                         </a>

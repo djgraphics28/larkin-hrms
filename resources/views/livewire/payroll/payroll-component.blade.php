@@ -58,7 +58,7 @@
                                     <button wire:click="addNew" class="btn btn-primary float-right"><i
                                             class="fa fa-plus"></i>
                                         Create Payroll</button>
-                                    <a wire:navigate href="{{ route('save-filters') }}"
+                                    <a  href="{{ route('save-filters') }}"
                                         class="btn btn-success float-right mr-2"><i class="fa fa-filter"></i>
                                         Employee Filters</a>
 
@@ -142,23 +142,20 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <button type="button"
-                                                        class="btn btn-default btn-sm">Action</button>
-                                                    <button type="button"
-                                                        class="btn btn-default btn-sm dropdown-toggle dropdown-icon"
-                                                        data-toggle="dropdown">
-                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                    <button type="button" class="btn btn-sm btn-default dropdown-toggle mr-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                      Action
                                                     </button>
-                                                    <div class="dropdown-menu" role="menu">
-                                                        <a class="dropdown-item" href="#"><i
-                                                                class="fa fa-edit"></i> Edit</a>
-                                                        <a class="dropdown-item" href="#"><i
-                                                                class="fa fa-trash"></i> Delete</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item" href="#"><i
-                                                                class="fa fa-download"></i> Download ABA</a>
+                                                    <div class="dropdown-menu">
+                                                      <a class="dropdown-item" href="#">Approved</a>
+                                                      <a class="dropdown-item" href="#">Cancel</a>
+                                                      <a class="dropdown-item" href="#">Reject</a>
+                                                      <a class="dropdown-item" href="#">Revert</a>
                                                     </div>
-                                                </div>
+                                                    <button class="btn btn-sm btn-warning mr-2"><i
+                                                        class="fa fa-edit"></i> Edit</button>
+                                                        <button class="btn btn-sm btn-danger"><i
+                                                            class="fa fa-trash"></i> Delete</button>
+                                                  </div>
                                             </td>
                                         </tr>
                                     @empty
@@ -188,14 +185,14 @@
                                 <h5 class="modal-title" id="addModalLabel">Generate Payroll</h5>
                             </div>
                             <div class="p-2 w-50">
-                                <div wire:loading wire:target="payrun">
+                                {{-- <div wire:loading wire:target="payrun">
                                     <div class="progress">
                                         <div class="progress-bar progress-bar-striped progress-bar-animated"
                                             role="progressbar" :style="'width: ' + $employeeDone + '%;'"
                                             :aria-valuenow="$employeeDone" aria-valuemin="0"
                                             :aria-valuemax="$totalEmployees">{{ $employeeDone }}</div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="p-2">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

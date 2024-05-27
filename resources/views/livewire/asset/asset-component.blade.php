@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Assets</li>
                     </ol>
                 </div><!-- /.col -->
@@ -25,7 +25,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <a wire:navigate href="{{ route('asset-type') }}" type="button"
+                                <a  href="{{ route('asset-type') }}" type="button"
                                     class="btn btn-success btn-sm mr-2"><i class="fa fa-tasks" aria-hidden="true"></i>
                                     Asset Type</a>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i

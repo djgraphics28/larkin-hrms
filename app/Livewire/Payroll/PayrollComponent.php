@@ -77,7 +77,6 @@ class PayrollComponent extends Component
         $this->employees = Employee::where('is_discontinued', false)
             ->where('business_id', $this->businessId)
             ->get();
-
     }
 
     public function getRecordsProperty()
@@ -186,6 +185,7 @@ class PayrollComponent extends Component
 
     public function payrun()
     {
+
         $this->validate([
             'selectedFortnight' => 'required'
         ]);
@@ -208,20 +208,41 @@ class PayrollComponent extends Component
             $this->totalEmployees = count($this->selectedEmployeeRows);
             $this->employeeDone = 0;
             foreach ($this->selectedEmployeeRows as $employee) {
+                //dito na lang ilalagay sir
+
+                $pay = Helpers::computePayslip($employee, $this->selectedFortnight);
+
+                $gross = $pay['regular'] + $pay['overtime'] + $pay['sunday_ot'] + $pay['holiday_ot'];
+
+                if ($gross === 0.0 || $gross === 0) {
+                    continue;
+                }
+
+                $regular = $pay['regular'];
+                $overtime = $pay['overtime'];
+                $sunday_ot = $pay['sunday_ot'];
+                $holiday_ot = $pay['holiday_ot'];
+                $plp_alp_fp = 0;
+                $other = 0;
+                $fn_tax = Helpers::computeTax($gross);
+                $npf = 0;
+                $ncsl = 0;
+                $cash_adv = 0;
+
                 $payroll->payslips()->create([
                     'employee_id' => $employee,
                     'fortnight_id' => $this->selectedFortnight,
                     'business_id' => $this->businessId,
-                    'regular' => 0,
-                    'overtime' => 0,
-                    'sunday_ot' => 0,
-                    'holiday_ot' => 0,
-                    'plp_alp_fp' => 0,
-                    'other' => 0,
-                    'fn_tax' => Helpers::computeTax(900),
-                    'npf' => 0,
-                    'ncsl' => 0,
-                    'cash_adv' => 0
+                    'regular' => $regular,
+                    'overtime' => $overtime,
+                    'sunday_ot' => $sunday_ot,
+                    'holiday_ot' => $holiday_ot,
+                    'plp_alp_fp' => $plp_alp_fp,
+                    'other' => $other,
+                    'fn_tax' => $fn_tax,
+                    'npf' => $npf,
+                    'ncsl' => $ncsl,
+                    'cash_adv' => $cash_adv
                 ]);
                 $this->employeeDone += 1;
             }
