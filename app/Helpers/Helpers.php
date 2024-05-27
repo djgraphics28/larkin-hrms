@@ -644,13 +644,13 @@ class Helpers
         $taxValue = 0;
 
         if ($taxTable) {
-            foreach($taxTable->tax_table_ranges as $taxRange) {
-                if(!is_null($taxRange->from) && !is_null($taxRange->to)) {
-                    if($gross >= $taxRange->from && $gross <= $taxRange->to) {
+            foreach ($taxTable->tax_table_ranges as $taxRange) {
+                if (!is_null($taxRange->from) && !is_null($taxRange->to)) {
+                    if ($gross >= $taxRange->from && $gross <= $taxRange->to) {
                         $taxValue = $gross * ($taxRange->percentage / 100);
                     }
-                } elseif(is_null($taxRange->to)) {
-                    if($gross >= $taxRange->from) {
+                } elseif (is_null($taxRange->to)) {
+                    if ($gross >= $taxRange->from) {
                         $taxValue = $gross * ($taxRange->percentage / 100);
                     }
                 }
@@ -659,4 +659,108 @@ class Helpers
         return $taxValue;
     }
 
+    public static function computePayslip($employeeId, $fn_id)
+    {
+
+        $getDates = Fortnight::where('id', $fn_id)->first();
+
+        $start = $getDates->start;
+        $end = $getDates->end;
+
+        $endDate = new DateTime($end);
+
+        $endDateAttendance = new DateTime($end);
+        $endDateAttendance->modify('+1 day');
+
+        $end = $endDate->format('Y-m-d');
+
+        $employee = Employee::where('id', $employeeId)
+            ->first();
+
+        if ($employee) {
+
+            $rate = SalaryHistory::where('is_active', 1)
+                ->where('employee_id', $employee->id)->first();
+
+            if ($rate) {
+                $employee_rate = $rate->salary_rate;
+            }
+
+            $getHours = Attendance::selectRaw('date, time_in, time_out, time_in_2, time_out_2, is_break, late_in_minutes, DAYNAME(date) as day_name')
+                ->where('employee_number', $employee->employee_number)
+                ->whereBetween('date', [$start, $endDateAttendance])
+                ->get();
+
+            $total_hours = 0;
+            $sunday_total_hours = 0;
+            $regular_hours = 0;
+            $ot_hours = 0;
+            $holiday_hours = 0;
+            $holiday_work = [];
+
+
+
+            foreach ($getHours as $hours) {
+
+                $computed_hour = Helpers::compute_daily_hr($hours->date, $hours->time_in, $hours->time_out, $hours->time_in_2, $hours->time_out_2, $hours->is_break);
+
+
+                $checkHoliday = Holiday::where('holiday_date', $hours->date)->first();
+
+                if ($checkHoliday) {
+                    $holiday_hours = $holiday_hours + $computed_hour;
+                    $holiday_work[$hours->date] = $computed_hour;
+                    continue;
+                }
+
+                if ($hours->day_name == 'Sunday') {
+                    $sunday_total_hours = $sunday_total_hours + ($computed_hour);
+                }
+
+                $total_hours = $total_hours + $computed_hour;
+            }
+
+            $getHoliday = Holiday::whereBetween('holiday_date', [$start, $end])->get();
+
+            if ($getHoliday) {
+                foreach ($getHoliday as $holiday) {
+                    if (array_key_exists($holiday->holiday_date, $holiday_work)) {
+                        foreach ($holiday_work as $date => $hours_worked) {
+                            if ($date === $holiday->holiday_date) {
+                                $total_hours = $total_hours + $hours_worked;
+                            }
+                        }
+                    } else {
+                        $total_hours = $total_hours + 8;
+                    }
+                }
+            }
+
+
+            if ($employee->workshift->number_of_hours_fn <= $total_hours) {
+                $ot_hours = ($total_hours - $employee->workshift->number_of_hours_fn);
+                $regular_hours = $employee->workshift->number_of_hours_fn;
+            } else {
+                $regular_hours = $total_hours;
+            }
+
+            $total_work_hours_fn = $employee->workshift->number_of_hours_fn;
+
+            $fn_rate = $employee_rate * $total_work_hours_fn;
+            $regular = ($fn_rate * $regular_hours) / $total_work_hours_fn;
+            $overtime = ($ot_hours * $employee_rate) * 1.5;
+            $sunday_ot = $sunday_total_hours * $employee_rate;
+            $holiday_ot = $holiday_hours * $employee_rate;
+        }
+
+
+        $data = [
+            'regular' => $regular,
+            'overtime' => $overtime,
+            'sunday_ot' => $sunday_ot,
+            'holiday_ot' => $holiday_ot,
+        ];
+
+        return $data;
+    }
 }

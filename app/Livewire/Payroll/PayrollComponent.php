@@ -77,7 +77,6 @@ class PayrollComponent extends Component
         $this->employees = Employee::where('is_discontinued', false)
             ->where('business_id', $this->businessId)
             ->get();
-
     }
 
     public function getRecordsProperty()
@@ -186,6 +185,7 @@ class PayrollComponent extends Component
 
     public function payrun()
     {
+
         $this->validate([
             'selectedFortnight' => 'required'
         ]);
@@ -209,10 +209,13 @@ class PayrollComponent extends Component
             $this->employeeDone = 0;
             foreach ($this->selectedEmployeeRows as $employee) {
                 //dito na lang ilalagay sir
-                $regular = 0;
-                $overtime = 0;
-                $sunday_ot = 0;
-                $holiday_ot = 0;
+
+                $pay = Helpers::computePayslip($employee, $this->selectedFortnight);
+
+                $regular = $pay['regular'];
+                $overtime = $pay['overtime'];
+                $sunday_ot = $pay['sunday_ot'];
+                $holiday_ot = $pay['holiday_ot'];
                 $plp_alp_fp = 0;
                 $other = 0;
                 $fn_tax = Helpers::computeTax(900); //example lang yung 900
