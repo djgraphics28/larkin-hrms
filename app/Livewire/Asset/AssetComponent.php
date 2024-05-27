@@ -18,7 +18,7 @@ class AssetComponent extends Component
 {
     use WithPagination, LivewireAlert;
 
-    protected $listeners = ['remove'];
+    protected $listeners = ['remove','selectedEmployee'];
     public $approveConfirmed;
     // filters
     public $perPage = 10;
@@ -34,10 +34,11 @@ class AssetComponent extends Component
     public $quantity = 1;
     public $date_received;
     public $date_returned;
-    public $status;
+    public $is_working;
     public $serial_number;
     public $asset_type;
     public $employee = '';
+    public $employeeName = '';
     public $edit_id;
 
     protected $paginationTheme = 'bootstrap';
@@ -144,6 +145,7 @@ class AssetComponent extends Component
         $this->employee = $data->employee_id;
         $this->date_received = $data->date_received;
         $this->date_returned = $data->date_returned;
+        $this->is_working = $data->is_working;
         $this->note = $data->note;
         $this->serial_number = $data->serial_number;
         $this->modalTitle = 'Edit '.$this->name;
@@ -161,6 +163,7 @@ class AssetComponent extends Component
         $data->update([
             'name' => $this->name,
             'note' => $this->note,
+            'is_working' => $this->is_working,
             'asset_type_id' => $this->asset_type,
             'quantity' => $this->quantity,
             'date_received' => $this->date_received,
@@ -195,5 +198,14 @@ class AssetComponent extends Component
         if($delete){
             $this->alert('success', $name.' has been removed!');
         }
+    }
+
+    public function selectedEmployee($employee_id)
+    {
+        $employee = Employee::find($employee_id);
+
+        $this->employee = $employee_id;
+        $this->employeeName = $employee->employee_number.' | '.$employee->first_name. ' ' .$employee->last_name;
+
     }
 }

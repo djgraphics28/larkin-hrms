@@ -3,6 +3,7 @@
 namespace App\Livewire\Employee;
 
 use Livewire\Component;
+use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\Workshift;
 use App\Models\Department;
@@ -17,6 +18,7 @@ class CreateEmployeeComponent extends Component
 {
     use LivewireAlert;
 
+    public $businessId;
     public $label;
     public $employee_number;
     public $first_name;
@@ -46,10 +48,19 @@ class CreateEmployeeComponent extends Component
     public $department;
     public $workshift;
 
+    public $bankSelected = false;
+    public $account_name;
+    public $account_number;
+    public $bank_name;
+    public $bsb_code;
+
     public $departments = [];
     public $workshifts = [];
     public $employeeStatuses = [];
     public $designations = [];
+
+    public $selectedLabel = '';
+    public $monthly_rate = '';
 
     #[Title('Create Employee')]
     public function render()
@@ -59,41 +70,47 @@ class CreateEmployeeComponent extends Component
 
     public function mount()
     {
-        $this->departments = Department::where('is_active',1)->get();
+        $this->businessId = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
+        $this->departments = Department::where('is_active', 1)->get();
         $this->workshifts = Workshift::all();
-        $this->employeeStatuses = EmployeeStatus::where('is_active',1)->get();
-        $this->designations = Designation::where('is_active',1)->get();
+        $this->employeeStatuses = EmployeeStatus::where('is_active', 1)->get();
+        $this->designations = Designation::where('is_active', 1)->get();
+        $this->employee_number = Helpers::generateEmployeeNumber($this->businessId);
+
     }
 
-    public function submit()
+    public function updateAccountName()
     {
+        $this->account_name = $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function submit($type)
+    {
+        // Validate the request data
         $this->validate([
-            'employee_number' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
-            'phone' => 'required',
-            'email' => 'required',
             'marital_status' => 'required',
             'gender' => 'required',
-            'birth_date' => 'required',
-            'joining_date' => 'required',
+            'birth_date' => 'required|date',
+            'joining_date' => 'required|date',
             'designation' => 'required',
-            'end_date' => 'required',
-            'salary_rate' => 'required',
-            'nasfund_number' => 'required',
             'employee_status' => 'required',
             'department' => 'required',
             'workshift' => 'required',
-            'label' => $this->label == 'all' ? 'required' : '', // Validation rule for label based on condition
-            'passport_number' => $this->label == 'expatriate' ? 'required' : '', // Validation rule for passport_number based on condition
-            'passport_expiry' => $this->label == 'expatriate' ? 'required' : '', // Validation rule for passport_expiry based on condition
-            'work_permit_number' => $this->label == 'expatriate' ? 'required' : '', // Validation rule for work_permit_number based on condition
-            'work_permit_expiry' => $this->label == 'expatriate' ? 'required' : '', // Validation rule for work_permit_expiry based on condition
-            'visa_number' => $this->label == 'expatriate' ? 'required' : '', // Validation rule for visa_number based on condition
-            'visa_expiry' => $this->label == 'expatriate' ? 'required' : '', // Validation rule for visa_expiry based on condition
+            'label' => $this->label == 'all' ? 'required' : '',
+            'passport_number' => $this->label == 'expatriate' ? 'required' : '',
+            'passport_expiry' => $this->label == 'expatriate' ? 'required|date' : '',
+            'work_permit_number' => $this->label == 'expatriate' ? 'required' : '',
+            'work_permit_expiry' => $this->label == 'expatriate' ? 'required|date' : '',
+            'visa_number' => $this->label == 'expatriate' ? 'required' : '',
+            'visa_expiry' => $this->label == 'expatriate' ? 'required|date' : '',
         ]);
 
-        $create = Employee::create([
+        $label = $this->selectedLabel == '' && $this->label !== 'all' ? ucfirst($this->label) : $this->selectedLabel;
+
+        // Prepare the data for insertion
+        $data = [
             'employee_number' => $this->employee_number,
             'first_name' => $this->first_name,
             'middle_name' => $this->middle_name,
@@ -106,34 +123,131 @@ class CreateEmployeeComponent extends Component
             'gender' => $this->gender,
             'birth_date' => $this->birth_date,
             'joining_date' => $this->joining_date,
-            'end_date' => $this->end_date,
-            'deployment_date_home_country' => $this->end_date,
-            'label' => $this->label,
+            'end_date' => $this->end_date ?? null,
+            'deployment_date_home_country' => $this->deployment_date_home_country ?? null,
+            'label' => $label,
             'nasfund_number' => $this->nasfund_number,
-            'passport_number' => $this->passport_number,
-            'passport_expiry' => $this->passport_expiry,
-            'work_permit_number' => $this->work_permit_number,
-            'work_permit_expiry' => $this->work_permit_expiry,
-            'visa_number' => $this->visa_number,
-            'visa_expiry' => $this->visa_expiry,
+            'passport_number' => $this->passport_number ?? '',
+            'passport_expiry' => $this->passport_expiry ?: null,
+            'work_permit_number' => $this->work_permit_number ?? '',
+            'work_permit_expiry' => $this->work_permit_expiry ?: null,
+            'visa_number' => $this->visa_number ?? '',
+            'visa_expiry' => $this->visa_expiry ?: null,
             'designation_id' => $this->designation,
             'employee_status_id' => $this->employee_status,
             'department_id' => $this->department,
             'workshift_id' => $this->workshift,
-            'business_id' => BusinessUser::where('user_id',Auth::user()->id)->where('is_active', true)->first()->business_id,
-        ]);
+            'business_id' => $this->businessId,
+            'default_pay_method' => 'cash',
+        ];
 
-        $create->salaries()->create([
-            'salary_rate' => $this->salary_rate,
-            'is_active' => true
-        ]);
+        // Create a new employee record
+        $create = Employee::create($data);
 
+        // Handle salary rates if provided
+        if ($this->salary_rate !== '') {
+            $create->salaries()->create([
+                'monthly_rate' => null,
+                'salary_rate' => $this->salary_rate,
+                'is_active' => true
+            ]);
+        }
+
+        if ($this->monthly_rate !== '') {
+            $create->salaries()->create([
+                'salary_rate' => null,
+                'monthly_rate' => $this->monthly_rate,
+                'is_active' => true
+            ]);
+        }
+
+        // Handle bank details if provided
+        if ($this->bankSelected) {
+            if ($this->account_name && $this->account_number && $this->bank_name && $this->bsb_code) {
+                $create->bank_details()->create([
+                    'account_name' => $this->account_name,
+                    'account_number' => $this->account_number,
+                    'bank_name' => $this->bank_name,
+                    'bsb_code' => $this->bsb_code,
+                    'is_active' => true,
+                ]);
+
+                // Update pay method to bank
+                $create->update(['default_pay_method' => 'bank']);
+            } else {
+                $this->alert('error', 'Please fill in all bank details fields!');
+                return;
+            }
+        }
+
+        // Respond to the outcome of the creation process
         if ($create) {
-            // $this->alert('success', 'New Employee has been saved successfully!');
-            return redirect()->route('employee.index', $this->label)->with('success', 'New Employee has been saved successfully!');
+            if ($type == 1) {
+                return redirect()->route('employee.index', $this->label)->with('success', 'New Employee has been saved successfully!');
+            } else {
+                $this->resetFields();
+                $this->alert('success', 'New Employee has been saved successfully!');
+            }
         } else {
             $this->alert('error', 'Something went wrong, please try again!');
         }
+    }
 
+
+    public function resetFields()
+    {
+        $this->first_name = '';
+        $this->middle_name = '';
+        $this->last_name = '';
+        $this->ext_name = '';
+        $this->phone = '';
+        $this->email = '';
+        $this->address = '';
+        $this->marital_status = '';
+        $this->birth_date = '';
+        $this->joining_date = '';
+        $this->end_date = '';
+        $this->deployment_date_home_country = '';
+        $this->nasfund_number = '';
+        $this->passport_number = '';
+        $this->passport_expiry = '';
+        $this->work_permit_number = '';
+        $this->work_permit_expiry = '';
+        $this->visa_number = '';
+        $this->visa_expiry = '';
+        $this->designation_id = '';
+        $this->employee_status_id = '';
+        $this->department_id = '';
+        $this->workshift_id = '';
+        $this->salary_rate = '';
+        $this->passport_number = '';
+        $this->passport_expiry = '';
+        $this->work_permit_number = '';
+        $this->work_permit_number = '';
+        $this->visa_number = '';
+        $this->visa_expiry = '';
+        $this->account_name = '';
+        $this->account_number = '';
+        $this->bank_name = '';
+        $this->bsb_code = '';
+    }
+
+    public function updatedSelectedLabel($value)
+    {
+        if ($value !== '') {
+            $this->selectedLabel = $value;
+
+        } else {
+            $this->selectedLabel = '';
+        }
+        $this->salary_rate = '';
+        $this->monthly_rate = '';
+
+        $this->passport_number = '';
+        $this->passport_expiry = '';
+        $this->work_permit_number = '';
+        $this->work_permit_number = '';
+        $this->visa_number = '';
+        $this->visa_expiry = '';
     }
 }

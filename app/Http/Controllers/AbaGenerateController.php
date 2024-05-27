@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Payrun;
 use App\Models\Employee;
 use App\Models\Fortnight;
+use App\Models\CompanyBank;
 use Illuminate\Http\Request;
 use ABWebDevelopers\AbaGenerator\Aba;
 
@@ -32,15 +33,21 @@ class AbaGenerateController extends Controller
 
         $aba = new Aba();
 
+        $company_bank = CompanyBank::where('is_active', 1)->first();
+
         $aba->addFileDetails([
-            'bank_name' => 'CBA',
-            'user_name' => 'LARKIN ENTERPRISES LIMITED',
-            'bsb' => '088-950',
-            'account_number' => '700927641',
-            'remitter' => 'LARKIN',
-            'user_number' => '301500',
-            'description' => 'Payroll',
-            'process_date'  => $now->format('dmy')
+            // 'bank_name' => 'BSP',
+            // 'user_name' => 'LARKIN ENTERPRISES LIMITED',
+            // 'bsb' => '088-950',
+            // 'account_number' => '700927641',
+            'bank_name' => $company_bank->bank_name,
+            'user_name' => $company_bank->account_name,
+            'bsb' => $company_bank->account_bsb,
+            'account_number' => $company_bank->account_number,
+            'remitter' => substr($company_bank->account_name, 0, 16),
+            'user_number' => '000001',
+            'description' => 'SALARY',
+            'process_date'  => $now->format('Ymd')
         ]);
         $total_amount = 0;
         $transactions = [];
@@ -58,7 +65,7 @@ class AbaGenerateController extends Controller
                         'bsb' => $employee->active_bank_detail->bsb_code, // bsb with hyphen
                         'account_number' => $employee->active_bank_detail->account_number,
                         'account_name'  => $employee->active_bank_detail->account_name,
-                        'reference' => 'Payroll number',
+                        'reference' => $FN,
                         'transaction_code'  => '53',
                         'amount' => $payslip_amount
                     ];

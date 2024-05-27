@@ -8,8 +8,8 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('asset') }}">Assets</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('asset') }}">Assets</a></li>
                         <li class="breadcrumb-item active">Asset Type</li>
                     </ol>
                 </div><!-- /.col -->
@@ -26,7 +26,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <a wire:navigate href="{{ route('asset') }}" type="button" class="btn btn-secondary btn-sm mr-2"><i
+                                <a  href="{{ route('asset') }}" type="button" class="btn btn-secondary btn-sm mr-2"><i
                                     class="fa fa-arrow-left" aria-hidden="true"></i> Return to Assets</a>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
                                         class="fa fa-plus" aria-hidden="true"></i> Add New</button>

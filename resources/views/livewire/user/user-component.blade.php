@@ -25,7 +25,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <a wire:navigate href="{{ route('roles') }}" type="button"
+                                <a  href="{{ route('roles') }}" type="button"
                                     class="btn btn-success btn-sm mr-2"><i class="fa fa-tasks" aria-hidden="true"></i>
                                     Roles</a>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i

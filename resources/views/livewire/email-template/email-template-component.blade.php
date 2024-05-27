@@ -18,7 +18,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Email Templates</li>
                     </ol>
                 </div><!-- /.col -->
@@ -36,12 +36,12 @@
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
                                 @can('access_email_variables')
-                                    <a wire:navigate href="{{ route('email-variable') }}" type="button"
+                                    <a  href="{{ route('email-variable') }}" type="button"
                                         class="btn btn-success btn-sm mr-2"><i class="fa fa-tasks" aria-hidden="true"></i>
                                         Email Variables</a>
                                 @endcan
                                 @can('access_email_template_types')
-                                    <a wire:navigate href="{{ route('email-template-type') }}" type="button"
+                                    <a  href="{{ route('email-template-type') }}" type="button"
                                         class="btn btn-success btn-sm mr-2"><i class="fa fa-tasks" aria-hidden="true"></i>
                                         Email Types</a>
                                 @endcan

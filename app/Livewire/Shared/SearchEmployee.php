@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Shared;
 
+use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 use App\Models\Employee;
 use App\Models\BusinessUser;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SearchEmployee extends Component
 {
+    use LivewireAlert;
     public $businessId;
     public $query;
     public $search_results;
@@ -35,11 +37,7 @@ class SearchEmployee extends Component
     }
 
     public function updatedQuery() {
-        $this->search_results = Employee::where('business_id', $this->businessId)
-            ->orWhere('first_name', 'like', '%' . $this->query . '%')
-            ->orWhere('last_name', 'like', '%' . $this->query . '%')
-            ->orWhere('employee_number', 'like', '%' . $this->query . '%')
-            ->orWhere('email', 'like', '%' . $this->query . '%')
+        $this->search_results = Employee::where('business_id', $this->businessId)->search(trim($this->query))
             ->take($this->how_many)->get();
     }
 
@@ -52,10 +50,15 @@ class SearchEmployee extends Component
         $this->query = '';
         $this->how_many = 5;
         $this->search_results = Collection::empty();
-        $this->selectEmployee(null);
+        // $this->selectEmployee(null);
     }
 
     public function selectEmployee($employee_id) {
+        $employee = Employee::find($employee_id);
+        if($employee->is_discontinued) {
+            $this->alert('error', 'You can\'t select this employee because this is already discontinued');
+            return;
+        }
         $this->dispatch('selectedEmployee',$employee_id);
     }
 }

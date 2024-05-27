@@ -3,14 +3,17 @@
 namespace App\Livewire\Payroll;
 
 use App\Models\Payrun;
+use App\Models\Payslip;
 use Livewire\Component;
 use App\Helpers\Helpers;
+use App\Models\Attendance;
 use App\Models\Business;
 use App\Models\Employee;
 use App\Models\Fortnight;
 use App\Models\Department;
-use App\Models\Payslip;
+use App\Models\BusinessUser;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 class PayrunComponent extends Component
@@ -49,14 +52,16 @@ class PayrunComponent extends Component
 
     public function getRecordsProperty()
     {
-        return Payrun::search(trim($this->search))->orderBy('id', 'desc')->paginate($this->perPage);
+
+        return Payrun::where('business_id', $this->business_id)
+            ->search(trim($this->search))->orderBy('id', 'desc')->paginate($this->perPage);
     }
 
     public function mount()
     {
         $this->fortnights = Fortnight::all();
 
-        $this->businesses = Business::all();
+        $this->business_id = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;
 
         $this->departments = Department::all();
     }
@@ -64,7 +69,6 @@ class PayrunComponent extends Component
     public function resetInputFields()
     {
         $this->fortnight_id = '';
-        $this->business_id = '';
         $this->department_ids = [];
         $this->employee_ids = [];
     }
@@ -127,7 +131,6 @@ class PayrunComponent extends Component
 
         $this->validate([
             'fortnight_id' => 'required',
-            'business_id' => 'required',
             'department_ids' => 'required',
             'employee_ids' => 'required'
         ]);
@@ -158,22 +161,36 @@ class PayrunComponent extends Component
             }
         }
 
-        $payrun = Payrun::create(
-            [
-                'fortnight_id' => $this->fortnight_id,
-                'business_id' => $this->business_id,
-                'remarks' => $remarks
-            ],
-        );
+        $employees = Employee::whereIn('id', $this->employee_ids)
+            ->select('employee_number')
+            ->get();
 
-        $payrun_id = $payrun->id;
+        $attendance = Attendance::where('fortnight_id', $this->fortnight_id)
+            ->whereIn('employee_number', $employees)
+            ->get()->map(function ($attendance) {
+                return $attendance->employee_number;
+            })->toArray();
 
-        Helpers::computeHours($this->fortnight_id, $this->business_id, 'payrun', $payrun_id, $this->employee_ids);
+        if ($attendance) {
+            $payrun = Payrun::create(
+                [
+                    'fortnight_id' => $this->fortnight_id,
+                    'business_id' => $this->business_id,
+                    'remarks' => $remarks
+                ],
+            );
 
-        $this->resetInputFields();
+            $payrun_id = $payrun->id;
 
-        $this->dispatch('hide-add-modal');
-        $this->alert('success', 'Payrun Generated');
+            Helpers::computeHours($this->fortnight_id, $this->business_id, 'payrun', $payrun_id, $this->employee_ids);
+
+            $this->resetInputFields();
+
+            $this->dispatch('hide-add-modal');
+            $this->alert('success', 'Payrun Generated');
+        } else {
+            $this->alert('error', 'Payrun Error, No attendance record found!');
+        }
     }
 
     public function generateAba($payrun_id)

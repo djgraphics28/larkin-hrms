@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\TaxTableRange;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TaxTable extends Model
 {
@@ -19,5 +21,15 @@ class TaxTable extends Model
 
             $query->where('description', 'like', $searchTerm);
         });
+    }
+
+    /**
+     * Get all of the tax_table_ranges for the TaxTable
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tax_table_ranges(): HasMany
+    {
+        return $this->hasMany(TaxTableRange::class, 'tax_table_id', 'id');
     }
 }

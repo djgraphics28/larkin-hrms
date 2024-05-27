@@ -23,7 +23,7 @@
            with font-awesome or any other icon font library -->
                 @can('access_dashboard')
                     <li class="nav-item">
-                        <a wire:navigate href="{{ route('dashboard') }}"
+                        <a  href="{{ route('dashboard') }}"
                             class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>
@@ -44,7 +44,7 @@
                         <ul class="nav nav-treeview">
                             @can('access_businesses')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('business') }}"
+                                    <a  href="{{ route('business') }}"
                                         class="nav-link {{ request()->is('apps/business') ? 'active' : '' }}">
                                         <i class="far fa-building nav-icon"></i>
                                         <p>
@@ -55,7 +55,7 @@
                             @endcan
                             @can('access_departments')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('department') }}"
+                                    <a  href="{{ route('department') }}"
                                         class="nav-link {{ request()->is('apps/department') ? 'active' : '' }}">
                                         <i class="far fa-user-circle nav-icon"></i>
                                         <p>Departments</p>
@@ -64,16 +64,16 @@
                             @endcan
                             @can('access_workshifts')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('workshift') }}"
+                                    <a  href="{{ route('workshift') }}"
                                         class="nav-link {{ request()->is('apps/workshift') ? 'active' : '' }}">
                                         <i class="far fa-user-circle nav-icon"></i>
                                         <p>Workshift</p>
                                     </a>
                                 </li>
                             @endcan
-                            @can('access_fortnights')
+                            @can('access_fortnight')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('fortnight-generator') }}"
+                                    <a  href="{{ route('fortnight-generator') }}"
                                         class="nav-link {{ request()->is('apps/fortnight-generator') ? 'active' : '' }}">
                                         <i class="far fa-user-circle nav-icon"></i>
                                         <p>Fortnight Generator</p>
@@ -82,7 +82,7 @@
                             @endcan
                             @can('access_users')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('users') }}"
+                                    <a  href="{{ route('users') }}"
                                         class="nav-link {{ request()->is('apps/users') || request()->is('apps/roles') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-users"></i>
                                         <p>
@@ -93,7 +93,7 @@
                             @endcan
                             @can('access_company_bank_details')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('bank-details') }}"
+                                    <a  href="{{ route('bank-details') }}"
                                         class="nav-link {{ request()->is('apps/bank-details') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-piggy-bank"></i>
                                         <p>
@@ -104,7 +104,7 @@
                             @endcan
                             @can('access_taxes')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('tax-table') }}"
+                                    <a  href="{{ route('tax-table') }}"
                                         class="nav-link {{ request()->is('apps/tax-table') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-percent"></i>
                                         <p>
@@ -115,7 +115,7 @@
                             @endcan
                             @can('access_holidays')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('set-holiday') }}"
+                                    <a  href="{{ route('set-holiday') }}"
                                         class="nav-link {{ request()->is('apps/set-holiday') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-calendar"></i>
                                         <p>
@@ -126,7 +126,7 @@
                             @endcan
                             @can('access_nasfunds')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('nasfund') }}"
+                                    <a  href="{{ route('nasfund') }}"
                                         class="nav-link {{ request()->is('apps/nasfund') ? 'active' : '' }}">
                                         <i class="nav-icon fas fa-money-bill"></i>
                                         <p>
@@ -152,7 +152,7 @@
                         <ul class="nav nav-treeview">
                             @can('import_employees')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('import-employee') }}"
+                                    <a  href="{{ route('import-employee') }}"
                                         class="nav-link {{ request()->is('employee/import') ? 'active' : '' }}">
                                         <i class="far fa fa-upload nav-icon"></i>
                                         <p>Import</p>
@@ -161,7 +161,7 @@
                             @endcan
                             @can('access_employees')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('employee.index', 'all') }}"
+                                    <a  href="{{ route('employee.index', 'all') }}"
                                         class="nav-link {{ request()->is('employee/all/employees') || request()->is('employee/all/create') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>
@@ -170,7 +170,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('employee.index', 'national') }}"
+                                    <a  href="{{ route('employee.index', 'national') }}"
                                         class="nav-link {{ request()->is('employee/national/employees') || request()->is('employee/national/create') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>
@@ -179,7 +179,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('employee.index', 'expatriate') }}"
+                                    <a  href="{{ route('employee.index', 'expatriate') }}"
                                         class="nav-link {{ request()->is('employee/expatriate/employees') || request()->is('employee/expatriate/create') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>
@@ -190,7 +190,7 @@
                             @endcan
                             @can('access_designations')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('designation') }}"
+                                    <a  href="{{ route('designation') }}"
                                         class="nav-link {{ request()->is('employee/designation') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Designation/Position</p>
@@ -199,7 +199,7 @@
                             @endcan
                             @can('access_employee_statuses')
                                 <li class="nav-item">
-                                    <a wire:navigate href="{{ route('employee-status') }}"
+                                    <a  href="{{ route('employee-status') }}"
                                         class="nav-link {{ request()->is('employee/status') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Employee Status</p>
@@ -220,16 +220,25 @@
                             <ul class="nav nav-treeview">
                                 @can('access_logs_timesheets')
                                     <li class="nav-item">
-                                        <a wire:navigate href="{{ route('attendance-logs') }}"
+                                        <a  href="{{ route('attendance-logs') }}"
                                             class="nav-link {{ request()->is('attendance/logs') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p> Logs | Timesheets</p>
                                         </a>
                                     </li>
                                 @endcan
+                                @can('create_attendances')
+                                    <li class="nav-item">
+                                        <a  href="{{ route('attendance-create') }}"
+                                            class="nav-link {{ request()->is('attendance/create') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p> Create</p>
+                                        </a>
+                                    </li>
+                                @endcan
                                 @can('import_attendances')
                                     <li class="nav-item">
-                                        <a wire:navigate href="{{ route('attendance-import') }}"
+                                        <a  href="{{ route('attendance-import') }}"
                                             class="nav-link {{ request()->is('attendance/import') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p> Import</p>
@@ -238,7 +247,7 @@
                                 @endcan
                                 @can('access_attendance_adjustments')
                                     <li class="nav-item">
-                                        <a wire:navigate href="{{ route('attendance-adjustment') }}"
+                                        <a  href="{{ route('attendance-adjustment') }}"
                                             class="nav-link {{ request()->is('attendance/adjustment') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p> Adjustment</p>
@@ -260,7 +269,7 @@
                             <ul class="nav nav-treeview">
                                 @can('access_leaves')
                                     <li class="nav-item">
-                                        <a wire:navigate href="{{ route('leave-request') }}"
+                                        <a  href="{{ route('leave-request') }}"
                                             class="nav-link {{ request()->is('leave/request') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p> Leave Request</p>
@@ -269,7 +278,7 @@
                                 @endcan
                                 @can('access_leave_types')
                                     <li class="nav-item">
-                                        <a wire:navigate href="{{ route('leave-types') }}"
+                                        <a  href="{{ route('leave-types') }}"
                                             class="nav-link {{ request()->is('leave/types') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p> Leave Types</p>
@@ -289,12 +298,12 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                @can('access_payruns')
+                                @can('access_payroll')
                                     <li class="nav-item">
-                                        <a href="{{ route('payrun') }}"
-                                            class="nav-link {{ request()->is('payroll/payrun') ? 'active' : '' }}">
-                                            <i class="far fa-print nav-icon"></i>
-                                            <p> Payrun</p>
+                                        <a href="{{ route('payroll') }}"
+                                            class="nav-link {{ request()->is('payroll/lists') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p> Payroll</p>
                                         </a>
                                     </li>
                                 @endcan
@@ -302,17 +311,8 @@
                                     <li class="nav-item">
                                         <a href="{{ route('payslip') }}"
                                             class="nav-link {{ request()->is('payroll/payslip') ? 'active' : '' }}">
-                                            <i class="far fa-print nav-icon"></i>
+                                            <i class="far fa-circle nav-icon"></i>
                                             <p> Payslip</p>
-                                        </a>
-                                    </li>
-                                @endcan
-                                @can('access_aba_generator')
-                                    <li class="nav-item">
-                                        <a href="{{ route('aba-generate') }}"
-                                            class="nav-link {{ request()->is('payroll/aba-generate') ? 'active' : '' }}">
-                                            <i class="far fa-print nav-icon"></i>
-                                            <p> Generate ABA File</p>
                                         </a>
                                     </li>
                                 @endcan

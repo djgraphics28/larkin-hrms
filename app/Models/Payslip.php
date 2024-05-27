@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Payroll;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Payslip extends Model
 {
@@ -17,9 +18,9 @@ class Payslip extends Model
         return $this->belongsTo(Employee::class);
     }
 
-    public function payrun(): BelongsTo
+    public function payroll(): BelongsTo
     {
-        return $this->belongsTo(Payrun::class);
+        return $this->belongsTo(Payroll::class);
     }
 
     public function fortnight(): BelongsTo

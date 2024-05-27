@@ -9,6 +9,7 @@ use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use App\Exports\BusinessExport;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
@@ -102,14 +103,16 @@ class BusinessComponent extends Component
 
         $create->departments()->sync($this->selectedDepartmentRows);
 
+        $create->users()->sync(Auth::user()->id);
+
         if($create){
             $this->resetInputFields();
             if($saveAndCreateNew) {
-                $this->alert('success', 'New Business has been save successfully!');
+                return redirect(request()->header('Referer'))->with('success', $this->name.' has been save successfully!');
             } else {
                 $this->dispatch('hide-add-modal');
 
-                $this->alert('success', 'New Business has been save successfully!');
+                return redirect(request()->header('Referer'))->with('success', $this->name.' has been save successfully!');
             }
         }
     }

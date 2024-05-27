@@ -3,7 +3,7 @@
         <div class="form-group row">
             <label for="employee_number" class="col-sm-2 col-form-label">Employee Number</label>
             <div class="col-sm-10">
-                <input wire:model="employee_number" type="text"
+                <input disabled wire:model="employee_number" type="text"
                     class="form-control @error('employee_number') is-invalid @enderror" id="employee_number"
                     placeholder="Employee Number">
                 @error('employee_number')
@@ -33,9 +33,9 @@
             <div class="col-sm-10">
                 <select wire:model="employee_status" id="employee_status"
                     class="form-control @error('employee_status') is-invalid @enderror">
-                    <option value="">Select Workshift</option>
+                    <option value="">Select Employee Status</option>
                     @foreach ($employeeStatuses as $employee_status)
-                        <option value="{{ $employee_status->id }}">{{ $employee_status->name }}</option>
+                        <option value="{{ $employee_status->id }}">{{ $employee_status->name }} </option>
                     @endforeach
                 </select>
                 @error('employee_status')
@@ -69,7 +69,10 @@
                     class="form-control @error('workshift') is-invalid @enderror">
                     <option value="">Select Workshift</option>
                     @foreach ($workshifts as $workshift)
-                        <option value="{{ $workshift->id }}">{{ $workshift->title }}</option>
+                        <option value="{{ $workshift->id }}">{{ $workshift->title }} |
+                            {{ \Carbon\Carbon::parse($workshift->start)->format('h:i A') }}
+                            -
+                            {{ \Carbon\Carbon::parse($workshift->end)->format('h:i A') }}</option>
                     @endforeach
                 </select>
                 @error('workshift')
@@ -92,7 +95,7 @@
             @enderror
         </div>
         <div class="form-group row">
-            <label for="end_date" class="col-sm-2 col-form-label">End Date</label>
+            <label for="end_date" class="col-sm-2 col-form-label">End Date <small>(optional)</small></label>
             <div class="col-sm-10">
                 <input wire:model="end_date" type="date" class="form-control @error('end_date') is-invalid @enderror"
                     id="end_date">
@@ -105,14 +108,14 @@
         </div>
         <div class="form-group row">
             <label for="deployment_date_home_country" class="col-sm-2 col-form-label">Deployment Date Home
-                Country</label>
+                Country <small>(optional)</small></label>
             <div class="col-sm-10">
                 <input wire:model="deployment_date_home_country" type="date" class="form-control"
                     id="deployment_date_home_country">
             </div>
         </div>
         <div class="form-group row">
-            <label for="nasfund_number" class="col-sm-2 col-form-label">Nasfund Number</label>
+            <label for="nasfund_number" class="col-sm-2 col-form-label">Nasfund Number <small>(optional)</small></label>
             <div class="col-sm-10">
                 <input wire:model="nasfund_number" type="text"
                     class="form-control @error('nasfund_number') is-invalid @enderror" id="nasfund_number">
@@ -126,7 +129,13 @@
 
         <div class="form-group row">
             <div class="offset-sm-2 col-sm-10">
-                <button type="submit" class="btn btn-primary float-right">Update</button>
+                <button wire:click="update" class="btn btn-primary float-right" wire:loading.attr="disabled">
+                    <span wire:loading.remove wire:target="update">Save Changes</span>
+                    <span wire:loading wire:target="update">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="visually-hidden">Loading...</span>
+                    </span>
+                </button>
             </div>
         </div>
     </form>

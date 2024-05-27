@@ -6,11 +6,11 @@
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <div class="input-group-text">
-                                <i class="bi bi-search text-primary"></i>
+                                <i class="fa fa-search text-primary"></i>
                             </div>
                         </div>
                         <input wire:keydown.escape="resetQuery" wire:model.live="query" type="text"
-                            class="form-control" placeholder="Type Employee name or Employee number....">
+                            class="form-control form-control-lg" placeholder="Type Employee name or Employee number....">
                     </div>
 
                 </div>
@@ -38,7 +38,7 @@
                                 <li class="list-group-item list-group-item-action">
                                     <a wire:click="resetQuery" wire:click.prevent="selectEmployee({{ $result->id }})"
                                         href="#">
-                                        {{ $result->employee_number }} | {{ $result->first_name }} {{ $result->last_name }}
+                                        {{ $result->employee_number }} | {{ $result->first_name }} {{ $result->last_name }} {{ $result->is_discontinued ? '---- Discontinued' : '' }}
                                     </a>
                                 </li>
                             @endforeach

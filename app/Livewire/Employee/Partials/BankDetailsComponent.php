@@ -3,6 +3,7 @@
 namespace App\Livewire\Employee\Partials;
 
 use Livewire\Component;
+use App\Models\Employee;
 use App\Models\BankDetail;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 
@@ -40,17 +41,35 @@ class BankDetailsComponent extends Component
             'records.*.bsb_code' => 'required',
         ]);
 
-        foreach ($this->records as $record) {
-            BankDetail::updateOrCreate(['employee_id' => $this->id, 'account_number' => $record['account_number']], [
-                'employee_id' => $this->id,
-                'account_name' => $record['account_name'],
-                'account_number' => $record['account_number'],
-                'bank_name' => $record['bank_name'],
-                'bsb_code' => $record['bsb_code']
-            ]);
-        }
+        try {
+            \DB::beginTransaction();
 
-        $this->alert('success', 'Bank details saved successfully');
+            foreach ($this->records as $record) {
+                BankDetail::updateOrCreate(
+                    ['employee_id' => $this->id, 'bank_name' => $record['bank_name']],
+                    [
+                        'employee_id' => $this->id,
+                        'account_name' => $record['account_name'],
+                        'account_number' => $record['account_number'],
+                        'bank_name' => $record['bank_name'],
+                        'bsb_code' => $record['bsb_code'],
+                        'is_active' => $record['is_active'] ?? false,
+                    ]
+                );
+            }
+
+            $emp = Employee::find($this->id);
+            $emp->update([
+                'default_pay_method' => 'bank'
+            ]);
+
+            \DB::commit();
+
+            $this->alert('success', 'Bank details saved successfully');
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            $this->alert('error', 'Failed to save bank details. Please try again.');
+        }
     }
 
     public function addBank()
@@ -59,14 +78,15 @@ class BankDetailsComponent extends Component
             'account_name' => '',
             'account_number' => '',
             'bank_name' => '',
-            'bsb_code' => ''
+            'bsb_code' => '',
+            'is_active' => false,
         ];
     }
 
     public function alertConfirm($index)
     {
         $this->deleteIndex = $index;
-        if(!isset($this->records[$index]['id'])) {
+        if (!isset($this->records[$index]['id'])) {
             $this->removeBank($index);
             return;
         }

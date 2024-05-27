@@ -8,6 +8,7 @@ use App\Models\BankDetail;
 use App\Models\LeaveCredit;
 use App\Models\LeaveRequest;
 use App\Models\SalaryHistory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -20,6 +21,7 @@ class Employee extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    use SoftDeletes;
 
     protected $guarded = [];
 
@@ -140,7 +142,8 @@ class Employee extends Model implements HasMedia
         $query->where(function ($query) use ($searchTerm) {
 
             $query->where('first_name', 'like', $searchTerm)
-                ->orWhere('last_name', 'like', $searchTerm);
+                ->orWhere('last_name', 'like', $searchTerm)
+                ->orWhere('employees.employee_number', 'like', $searchTerm);
         });
     }
 
@@ -187,5 +190,15 @@ class Employee extends Model implements HasMedia
     public function assets(): HasMany
     {
         return $this->hasMany(Asset::class, 'employee_id', 'id');
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name. ' ' .$this->last_name;
+    }
+
+    public function getFullNameWithEmpNoAttribute()
+    {
+        return $this->employee_number.' | '. $this->first_name. ' ' .$this->last_name;
     }
 }

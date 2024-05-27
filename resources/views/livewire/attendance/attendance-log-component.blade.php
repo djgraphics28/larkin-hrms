@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Attendance Logs | Timesheets</li>
                     </ol>
                 </div><!-- /.col -->
@@ -201,21 +201,20 @@
                                                 @forelse ($ranges as $dr)
                                                     @php
                                                         $found = false;
+
+                                                        // echo $data;
                                                     @endphp
 
                                                     @foreach ($data->attendances as $attendance)
-                                                        @php
-                                                            $time_out = new DateTime($attendance->time_out);
-                                                            $time_in = new DateTime($attendance->time_in);
-                                                            $interval = $time_out->diff($time_in);
-                                                        @endphp
 
-                                                        @if ($dr['fortnight_id'] === $attendance->fortnight_id && $time_in->format('Y-m-d') === $dr['full_date'])
-                                                            <td>{{ $interval->format('%h') - 1 }}</td>
+                                                        @if ($dr['fortnight_id'] === $attendance->fortnight_id && $attendance->date === $dr['full_date'])
+                                                            {{-- <td>{{ $hour_diff_total }}</td> --}}
+                                                            <td>{{ \App\Helpers\Helpers::compute_daily_hr($attendance->date,$attendance->time_in,$attendance->time_out,$attendance->time_in_2,$attendance->time_out_2,$attendance->is_break) }}</td>
                                                             @php
                                                                 $found = true;
                                                             @endphp
                                                         @endif
+
                                                     @endforeach
 
                                                     @if (!$found)

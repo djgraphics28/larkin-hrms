@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="middle_name" class="col-sm-2 col-form-label">Middle name</label>
+            <label for="middle_name" class="col-sm-2 col-form-label">Middle name <small>(optional)</small></label>
             <div class="col-sm-10">
                 <input wire:model="middle_name" type="text" class="form-control" id="middle_name"
                     placeholder="Middle name">
@@ -34,14 +34,14 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="ext_name" class="col-sm-2 col-form-label">Extension name</label>
+            <label for="ext_name" class="col-sm-2 col-form-label">Extension name <small>(optional)</small></label>
             <div class="col-sm-10">
                 <input wire:model="ext_name" type="text" class="form-control" id="ext_name"
                     placeholder="Extension name">
             </div>
         </div>
         <div class="form-group row">
-            <label for="email" class="col-sm-2 col-form-label">Email</label>
+            <label for="email" class="col-sm-2 col-form-label">Email <small>(optional)</small></label>
             <div class="col-sm-10">
                 <input wire:model="email" type="email"
                     class="form-control @error ('last_name') is-invalid @enderror" id="email"
@@ -54,7 +54,7 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="phone" class="col-sm-2 col-form-label">Mobile Number</label>
+            <label for="phone" class="col-sm-2 col-form-label">Mobile Number <small>(optional)</small></label>
             <div class="col-sm-10">
                 <input wire:model="phone" type="text"
                     class="form-control @error ('phone') is-invalid @enderror" id="phone"
@@ -113,7 +113,7 @@
             </div>
         </div>
         <div class="form-group row">
-            <label for="address" class="col-sm-2 col-form-label">Address</label>
+            <label for="address" class="col-sm-2 col-form-label">Address <small>(optional)</small></label>
             <div class="col-sm-10">
                 <input wire:model="address" type="text"
                     class="form-control @error ('address') is-invalid @enderror" id="address">
@@ -126,7 +126,13 @@
         </div>
         <div class="form-group row">
             <div class="offset-sm-2 col-sm-10">
-                <button type="submit" class="btn btn-primary float-right">Update</button>
+                <button wire:click="update" class="btn btn-primary float-right" wire:loading.attr="disabled">
+                    <span wire:loading.remove wire:target="update">Save Changes</span>
+                    <span wire:loading wire:target="update">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="visually-hidden">Loading...</span>
+                    </span>
+                </button>
             </div>
         </div>
     </form>

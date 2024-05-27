@@ -13,12 +13,17 @@ class SendLoanRequest extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $employee;
+    public $data;
+    public $loanId;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($employee, $data)
     {
-        //
+        $this->employee = $employee;
+        $this->data = $data;
+        $this->loanId = $data->id;
     }
 
     /**
@@ -37,7 +42,13 @@ class SendLoanRequest extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            markdown: 'emails.sendLoanRequestMail',
+            with: [
+                'data' => $this->data,
+                'employee' => $this->employee,
+                'link' => env('APP_URL') . "/loan-request/approve/" . $this->loanId,
+
+            ],
         );
     }
 
