@@ -11,7 +11,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active"><a
                                 href="{{ route('employee.index', $label) }}">{{ ucfirst($label) }} Employees</a></li>
                         <li class="breadcrumb-item active">Create</li>
@@ -196,47 +196,35 @@
                             <div class="form-row">
                                 <div class="form-group col-md-3">
                                     <label for="workshift">Workshift</label><span class="text-danger">*</span>
-                                    <select wire:model="workshift" id="workshift"
-                                        class="form-control @error('workshift') is-invalid @enderror">
-                                        <option value="">Select Department</option>
-                                        @foreach ($workshifts as $data)
-                                            <option value="{{ $data->id }}">{{ $data->title }} -
-                                                {{ $data->number_of_hours }} Hours / Day</option>
-                                        @endforeach
-                                    </select>
+                                    <div wire:ignore>
+                                        <select wire:model="workshift" id="workshift"
+                                            class="form-control select2bs4 @error('workshift') is-invalid @enderror">
+                                            <option value="">Select Workshift</option>
+                                            @foreach ($workshifts as $data)
+                                                <option value="{{ $data->id }}">{{ $data->title }} -
+                                                    {{ $data->number_of_hours }} Hours / Day</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     @error('workshift')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
                                 </div>
-                                @if ($label == 'all')
-                                    <div class="form-group col-md-3">
-                                        <label for="label">Employee Label</label><span class="text-danger">*</span>
-                                        <select wire:model="label" id="label"
-                                            class="form-control @error('label') is-invalid @enderror">
-                                            <option value="">Select Label</option>
-                                            <option value="National">National</option>
-                                            <option value="Expatriate">Expatriate</option>
-                                        </select>
-                                        @error('label')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                @endif
 
                                 <div class="form-group col-md-3">
                                     <label for="designation">Position/Designation</label><span
                                         class="text-danger">*</span>
-                                    <select wire:model="designation" id="designation"
-                                        class="form-control @error('designation') is-invalid @enderror">
-                                        <option value="">Select Position/Designation</option>
-                                        @foreach ($designations as $data)
-                                            <option value="{{ $data->id }}">{{ $data->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <div wire:ignore>
+                                        <select wire:model="designation" id="designation"
+                                            class="form-control select2bs4 @error('designation') is-invalid @enderror">
+                                            <option value="">Select Position/Designation</option>
+                                            @foreach ($designations as $data)
+                                                <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     @error('designation')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -246,13 +234,15 @@
                                 <div class="form-group col-md-3">
                                     <label for="employee_status">Employee Status</label><span
                                         class="text-danger">*</span>
-                                    <select wire:model="employee_status" id="employee_status"
-                                        class="form-control @error('employee_status') is-invalid @enderror">
-                                        <option value="">Select Employee Status</option>
-                                        @foreach ($employeeStatuses as $data)
-                                            <option value="{{ $data->id }}">{{ $data->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <div wire:ignore>
+                                        <select wire:model="employee_status" id="employee_status"
+                                            class="form-control select2bs4 @error('employee_status') is-invalid @enderror">
+                                            <option value="">Select Employee Status</option>
+                                            @foreach ($employeeStatuses as $data)
+                                                <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     @error('employee_status')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -261,13 +251,15 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="department">Department</label><span class="text-danger">*</span>
-                                    <select wire:model="department" id="department"
-                                        class="form-control @error('department') is-invalid @enderror">
-                                        <option value="">Select Department</option>
-                                        @foreach ($departments as $data)
-                                            <option value="{{ $data->id }}">{{ $data->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <div wire:ignore>
+                                        <select wire:model="department" id="department"
+                                            class="form-control select2bs4 @error('department') is-invalid @enderror">
+                                            <option value="">Select Department</option>
+                                            @foreach ($departments as $data)
+                                                <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     @error('department')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -275,20 +267,9 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="salary_rate">Salary Rate / Hour</label><span
-                                        class="text-danger">*</span>
-                                    <input wire:model="salary_rate" type="text"
-                                        class="form-control @error('salary_rate') is-invalid @enderror"
-                                        id="salary_rate">
-                                    @error('salary_rate')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                                <div class="form-group col-md-6">
+
+                            <div class="form-group row">
+                                <div class="form-group col-md-12">
                                     <label for="nasfund_number">NASFUND Number</label>
                                     <input wire:model="nasfund_number" type="text"
                                         class="form-control @error('nasfund_number') is-invalid @enderror"
@@ -300,12 +281,46 @@
                                     @enderror
                                 </div>
                             </div>
+                            <hr>
+                            <div class="form-row">
+                                @if ($label == 'all')
+                                    <div class="form-group col-md-6">
+                                        <label for="selectedLabel">Employee Label</label><span
+                                            class="text-danger">*</span>
+                                        <select wire:model.live="selectedLabel" id="selectedLabel"
+                                            class="form-control @error('selectedLabel') is-invalid @enderror">
+                                            <option value="">Select Label</option>
+                                            <option value="National">National</option>
+                                            <option value="Expatriate">Expatriate</option>
+                                        </select>
+                                        @error('label')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                @endif
+                                @if ($selectedLabel == 'National' || $label == 'national')
+                                    <div class="form-group col-md-6">
+                                        <label for="salary_rate">Salary Rate / Hour</label>
+                                        <input wire:model="salary_rate" type="text" class="form-control"
+                                            id="salary_rate">
+                                    </div>
+                                @elseif ($selectedLabel == 'Expatriate' || $label == 'expatriate')
+                                    <div class="form-group col-md-6">
+                                        <label for="monthly_rate">Monthly Rate</label>
+                                        <input wire:model="monthly_rate" type="text" class="form-control"
+                                            id="monthly_rate">
+                                    </div>
+                                @endif
+
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- /.row -->
-            @if ($label != 'national')
+            @if ($selectedLabel == 'Expatriate' || $label == 'expatriate')
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-outline card-warning">
@@ -423,15 +438,15 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="bsb_code">BSB Code</label>
-                                    <input {{ !$bankSelected ? 'disabled' : '' }} wire:model="bsb_code"
-                                        type="text" class="form-control" id="bsb_code">
+                                    <input data-mask data-inputmask="&quot;mask&quot;: &quot;999-999&quot;"
+                                        {{ !$bankSelected ? 'disabled' : '' }} wire:model="bsb_code" type="text"
+                                        class="form-control" id="bsb_code">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
 
             <div class="row">
                 <div class="col-md-12">
@@ -464,3 +479,36 @@
         </div><!-- /.container-fluid -->
     </section>
 </div>
+
+
+@push('scripts')
+    <script>
+        $(function() {
+            $('#workshift').on('change', function(e) {
+                var data = $(this).val();
+                @this.set('workshift', data);
+            });
+
+            $('#department').on('change', function(e) {
+                var data = $(this).val();
+                @this.set('department', data);
+            });
+
+            $('#designation').on('change', function(e) {
+                var data = $(this).val();
+                @this.set('designation', data);
+            });
+
+            $('#employee_status').on('change', function(e) {
+                var data = $(this).val();
+                @this.set('employee_status', data);
+            });
+
+            $('#bsb_code').on('change', function(e) {
+                var data = $(this).val();
+                @this.set('bsb_code', data);
+            });
+
+        });
+    </script>
+@endpush
