@@ -38,7 +38,7 @@
                                 <li class="list-group-item list-group-item-action">
                                     <a wire:click="resetQuery" wire:click.prevent="selectEmployee({{ $result->id }})"
                                         href="#">
-                                        {{ $result->employee_number }} | {{ $result->first_name }} {{ $result->last_name }}
+                                        {{ $result->employee_number }} | {{ $result->first_name }} {{ $result->last_name }} {{ $result->is_discontinued ? '---- Discontinued' : '' }}
                                     </a>
                                 </li>
                             @endforeach

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Asset;
+use App\Models\Payroll;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -72,5 +73,15 @@ class Business extends Model
     public function assets(): HasMany
     {
         return $this->hasMany(Asset::class, 'business_id', 'id');
+    }
+
+    /**
+     * Get all of the payrolls for the Business
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function payrolls(): HasMany
+    {
+        return $this->hasMany(Payroll::class, 'business_id', 'id');
     }
 }

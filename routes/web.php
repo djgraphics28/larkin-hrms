@@ -2,6 +2,7 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Payroll\SaveFilterComponent;
 use App\Livewire\User\RoleComponent;
 use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
@@ -14,8 +15,10 @@ use App\Livewire\Payroll\PayrunComponent;
 use App\Livewire\Asset\AssetTypeComponent;
 use App\Livewire\Leave\LeaveTypeComponent;
 use App\Livewire\Nasfund\NasfundComponent;
+use App\Livewire\Payroll\PayrollComponent;
 use App\Livewire\Payroll\PayslipComponent;
 use App\Livewire\Loan\LoanRequestComponent;
+use App\Http\Controllers\ApproveLoanRequest;
 use App\Livewire\Business\BusinessComponent;
 use App\Livewire\Employee\EmployeeComponent;
 use App\Http\Controllers\ApproveLeaveRequest;
@@ -96,9 +99,11 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
 
     // Payroll routes
     Route::group(['prefix' => 'payroll'], function () {
+        Route::get('/lists', PayrollComponent::class)->name('payroll');
         Route::get('/payslip', PayslipComponent::class)->name('payslip');
         Route::get('/aba-generate', AbaGeneratorComponent::class)->name('aba-generate');
         Route::get('/payrun', PayrunComponent::class)->name('payrun');
+        Route::get('/save-filters', SaveFilterComponent::class)->name('save-filters');
     });
 
     // Leave routes
@@ -139,6 +144,10 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
 //Leave Approve Route
 Route::get('/leave-request/approve/{id}', [ApproveLeaveRequest::class, 'approve'])->name('approve-leave-request');
 Route::get('/leave-request/success', [ApproveLeaveRequest::class, 'success'])->name('success-leave-request');
+
+//Loan Approve Route
+Route::get('/loan-request/approve/{id}', [ApproveLoanRequest::class, 'approve'])->name('approve-loan-request');
+Route::get('/loan-request/success', [ApproveLoanRequest::class, 'success'])->name('success-loan-request');
 
 // Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 

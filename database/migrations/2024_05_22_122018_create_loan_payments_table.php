@@ -4,25 +4,23 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('bank_details', function (Blueprint $table) {
+        Schema::create('loan_payments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('account_name');
-            $table->string('account_number')->unique();
-            $table->string('bank_name');
-            $table->string('bsb_code');
-            $table->boolean('is_active')->default(false);
-            $table->unsignedBigInteger('employee_id');
+            $table->string('particulars');
+            $table->decimal('paid', 16);
+            $table->decimal('balance', 16);
+            $table->string('fn_code');
+            $table->unsignedBigInteger('loan_id');
             $table
-                ->foreign('employee_id')
+                ->foreign('loan_id')
                 ->references('id')
-                ->on('employees')
+                ->on('loans')
                 ->onUpdate('CASCADE')
                 ->onDelete('CASCADE');
             $table->timestamps();
@@ -34,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bank_details');
+        Schema::dropIfExists('loan_payments');
     }
 };
