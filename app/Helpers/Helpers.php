@@ -682,9 +682,8 @@ class Helpers
             $rate = SalaryHistory::where('is_active', 1)
                 ->where('employee_id', $employee->id)->first();
 
-            if ($rate) {
-                $employee_rate = $rate->salary_rate;
-            }
+
+            $employee_rate = $rate?->salary_rate;
 
             $getHours = Attendance::selectRaw('date, time_in, time_out, time_in_2, time_out_2, is_break, late_in_minutes, DAYNAME(date) as day_name')
                 ->where('employee_number', $employee->employee_number)
