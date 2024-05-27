@@ -211,6 +211,7 @@ class PayrollComponent extends Component
                 //dito na lang ilalagay sir
 
                 $pay = Helpers::computePayslip($employee, $this->selectedFortnight);
+                $gross = $pay['regular'] + $pay['overtime'] + $pay['sunday_ot'] + $pay['holiday_ot'];
 
                 $regular = $pay['regular'];
                 $overtime = $pay['overtime'];
@@ -218,7 +219,7 @@ class PayrollComponent extends Component
                 $holiday_ot = $pay['holiday_ot'];
                 $plp_alp_fp = 0;
                 $other = 0;
-                $fn_tax = Helpers::computeTax(900); //example lang yung 900
+                $fn_tax = Helpers::computeTax($gross);
                 $npf = 0;
                 $ncsl = 0;
                 $cash_adv = 0;
