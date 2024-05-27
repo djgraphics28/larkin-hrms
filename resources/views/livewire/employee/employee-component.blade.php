@@ -1,3 +1,4 @@
+
 <div>
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -8,7 +9,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">{{ ucfirst($label) }} Employees</li>
                     </ol>
                 </div><!-- /.col -->
@@ -97,7 +98,7 @@
                                         class="fa fa-file-excel" aria-hidden="true"></i> Export</button>
                                 <button type="button" class="btn btn-danger btn-md mr-2"><i class="fa fa-file-pdf"
                                         aria-hidden="true"></i> PDF</button>
-                                <a wire:navigate href="{{ route('employee.create', $label) }}" type="button"
+                                <a href="{{ route('employee.create', $label) }}" type="button"
                                     class="btn btn-primary btn-md mr-2"><i class="fa fa-plus" aria-hidden="true"></i>
                                     Add New</a>
                             </div>
@@ -111,8 +112,10 @@
                             <table class="table table-condensed table-sm table-hover">
                                 <thead class="table-info">
                                     <tr>
-                                        <th width="3%" class="text-start"><input width="3%" type="checkbox"
-                                                wire:model.live="selectAll"></th>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
                                         <th width="7%"class="text-center">IMAGE</th>
                                         <th width="5%"class="text-center">EMP NO</th>
                                         <th class="text-start">EMPLOYEE DETAILS</th>
@@ -136,26 +139,31 @@
                                     </tr>
                                     @forelse ($records as $data)
                                         <tr wire:key="search-{{ $data->id }}">
-                                            <td width="3%"
-                                                class="text-start align-middle {{ $data->is_discontinued ? 'bg-danger' : '' }}">
-                                                <input type="checkbox" wire:model.prevent="selectedRows"
-                                                    value="{{ $data->id }}"><strong>{{ $data->is_discontinued ? ' D' : '' }}</strong>
+                                            <td width="3%" class="text-start align-middle">
+                                                <div class="icheck-primary d-inline">
+                                                    <input id="employee-{{ $data->id }}" type="checkbox"
+                                                        wire:model.live="selectedRows" value="{{ $data->id }}">
+                                                    <label for="employee-{{ $data->id }}"></label>
+                                                </div>
                                             </td>
 
-                                            <td class="text-center align-middle p-0"><img class="w-50 h-50"
+                                            <td wire:ignore class="text-center align-middle p-0 {{ $data->is_discontinued ? 'bg-danger' : '' }}">
+                                                <img class="w-50 h-50"
                                                     src="{{ $data->gender == 'Male' ? asset('assets/images/male.png') : asset('assets/images/female.png') }}"
-                                                    alt="Profile Picture"></td>
-                                            <td class="text-center align-middle"><a wire:navigate
-                                                    href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
-                                                    href="javascript:void(0)">{{ $data->employee_number }}</a></td>
-                                            <td class="text-start align-middle"><strong>{{ $data->first_name }}
-                                                    {{ $data->last_name }}</strong>
-                                                <br><small>Email: {{ $data->email }}</small>
-                                                <br><small>Contact: {{ $data->phone }}</small>
+                                                    alt="Profile Picture">
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <a
+                                                    href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}">{{ $data->employee_number }}</a>
+                                            </td>
+                                            <td class="text-start align-middle">
+                                                <strong>{{ $data->first_name }} {{ $data->last_name }}</strong><br>
+                                                <small>Email: {{ $data->email }}</small><br>
+                                                <small>Contact: {{ $data->phone }}</small>
                                             </td>
                                             <td class="text-center align-middle">{{ $data->designation->name }}</td>
                                             <td class="text-center align-middle">
-                                                {{ $data->workshift->title }} <br>
+                                                {{ $data->workshift->title }}<br>
                                                 <small>{{ \Carbon\Carbon::parse($data->workshift->start)->format('h:i A') }}
                                                     -
                                                     {{ \Carbon\Carbon::parse($data->workshift->end)->format('h:i A') }}</small>
@@ -189,64 +197,37 @@
                                             <td width="10%" class="text-center align-middle">
                                                 <div class="btn-group">
                                                     <button type="button"
-                                                        class="btn btn-default btn-sm">Action</button>
-                                                    <button type="button"
-                                                        class="btn btn-default btn-sm dropdown-toggle dropdown-icon"
-                                                        data-toggle="dropdown">
-                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                        class="btn btn-sm btn-default dropdown-toggle mr-2"
+                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        Action
                                                     </button>
-                                                    <div class="dropdown-menu" role="menu">
-                                                        <a title="Show Employee Info" wire:navigate
-                                                            class="dropdown-item"
-                                                            href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"><i
-                                                                class="fa fa-edit"></i> Edit</a>
-                                                        <a title="Delete this Employee"
-                                                            wire:click="alertConfirm({{ $data->id }})"
-                                                            class="dropdown-item" href="#"><i
-                                                                class="fa fa-trash"></i> Delete</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item" href="#"><i
-                                                                class="fa fa-download"></i> Final Pay</a>
-                                                        <a class="dropdown-item" href="#"><i
-                                                            class="fa fa-print"></i>Print Summary of
-                                                            Earnings</a>
-                                                        <a class="dropdown-item" href="#"><i
-                                                            class="fa fa-print"></i>Print Contract</a>
-                                                        <a class="dropdown-item" href="#"><i
-                                                            class="fa fa-print"></i>Print
-                                                            Attendance</a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="#">
+                                                            <i class="fa fa-download"></i> Final Pay
+                                                        </a>
+                                                        <a class="dropdown-item" href="#">
+                                                            <i class="fa fa-print"></i> Print Summary of Earnings
+                                                        </a>
+                                                        <a class="dropdown-item" href="#">
+                                                            <i class="fa fa-print"></i> Print Contract
+                                                        </a>
+                                                        <a class="dropdown-item" href="#">
+                                                            <i class="fa fa-print"></i> Print Attendance
+                                                        </a>
                                                     </div>
+                                                    <a class="btn btn-sm btn-info mr-2"
+                                                        href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}">
+                                                        <i class="fa fa-eye"></i> Info
+                                                    </a>
+                                                    <button wire:click="alertConfirm({{ $data->id }})"
+                                                        class="btn btn-sm btn-danger">
+                                                        <i class="fa fa-trash"></i> Delete
+                                                    </button>
                                                 </div>
-
-
-                                                {{-- <div class="btn-group">
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-default dropdown-toggle" type="button"
-                                                            id="dropdownMenuButton" data-toggle="dropdown"
-                                                            aria-haspopup="true" aria-expanded="false">
-                                                            Action
-                                                        </button>
-                                                        <div class="dropdown-menu"
-                                                            aria-labelledby="dropdownMenuButton">
-                                                            <a class="dropdown-item" href="#">Print Summary of
-                                                                Earnings</a>
-                                                            <a class="dropdown-item" href="#">Print Contract</a>
-                                                            <a class="dropdown-item" href="#">Print
-                                                                Attendance</a>
-                                                        </div>
-                                                    </div>
-                                                    <a title="Show Employee Info" wire:navigate
-                                                        href="{{ route('employee.info', ['label' => $label, 'id' => $data->id]) }}"
-                                                        class="dropdown-item text-warning"
-                                                        href="javascript:void(0)"><i class="fa fa-edit"
-                                                            aria-hidden="true"></i></a>
-                                                    <a title="Delete this Employee"
-                                                        wire:click="alertConfirm({{ $data->id }})"
-                                                        class="dropdown-item text-danger" href="javascript:void(0)"><i
-                                                            class="fa fa-trash" aria-hidden="true"></i></a>
-                                                </div> --}}
                                             </td>
                                         </tr>
+
                                     @empty
                                         <tr>
                                             <td colspan="11">
@@ -257,8 +238,10 @@
                                     @endforelse
                                 <tfoot class="table-info">
                                     <tr>
-                                        <th width="3%" class="text-start"><input width="3%" type="checkbox"
-                                                wire:model.live="selectAll"></th>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
                                         <th width="7%"class="text-center">IMAGE</th>
                                         <th width="5%"class="text-center">EMP NO</th>
                                         <th class="text-start">EMPLOYEE DETAILS</th>

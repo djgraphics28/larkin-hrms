@@ -3,7 +3,7 @@
         <div class="form-group row">
             <label for="employee_number" class="col-sm-2 col-form-label">Employee Number</label>
             <div class="col-sm-10">
-                <input wire:model="employee_number" type="text"
+                <input disabled wire:model="employee_number" type="text"
                     class="form-control @error('employee_number') is-invalid @enderror" id="employee_number"
                     placeholder="Employee Number">
                 @error('employee_number')

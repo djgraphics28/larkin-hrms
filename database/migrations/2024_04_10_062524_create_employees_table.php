@@ -78,6 +78,7 @@ return new class extends Migration {
                 ->onDelete('CASCADE');
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
