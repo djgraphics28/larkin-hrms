@@ -38,6 +38,11 @@ class LeaveTypeComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
         return LeaveType::search(trim($this->search))

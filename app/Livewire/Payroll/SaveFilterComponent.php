@@ -48,6 +48,11 @@ class SaveFilterComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
         return SaveFilter::where('business_id', $this->businessId)->search(trim($this->search))->latest()->paginate($this->perPage);

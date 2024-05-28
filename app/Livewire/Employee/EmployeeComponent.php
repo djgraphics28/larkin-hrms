@@ -77,6 +77,11 @@ class EmployeeComponent extends Component
 
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
         $label = $this->label == 'all' ? $this->sortByLabel : $this->label;

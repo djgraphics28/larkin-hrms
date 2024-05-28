@@ -68,6 +68,11 @@ class LoanRequestComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function mount()
     {
         $businessUser = BusinessUser::where('user_id', Auth::user()->id)

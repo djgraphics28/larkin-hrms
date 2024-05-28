@@ -50,6 +50,11 @@ class BusinessComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function mount()
     {
         $this->departments = Department::where('is_active',1)->get();

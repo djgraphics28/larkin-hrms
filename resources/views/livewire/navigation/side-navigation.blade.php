@@ -408,7 +408,7 @@
                                 @can('access_email_templates')
                                     <li class="nav-item">
                                         <a href="{{ route('email-template') }}"
-                                            class="nav-link {{ request()->is('email-template/') ? 'active' : '' }}">
+                                            class="nav-link {{ request()->is('email-template/list') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Email Template</p>
                                         </a>

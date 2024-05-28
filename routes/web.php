@@ -125,7 +125,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
 
         Route::get('/type', EmailTemplateTypeComponent::class)->name('email-template-type');
         Route::get('/variable', EmailVariableComponent::class)->name('email-variable');
-        Route::get('/', EmailTemplateComponent::class)->name('email-template');
+        Route::get('/list', EmailTemplateComponent::class)->name('email-template');
     });
 
     // Asset routes
