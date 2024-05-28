@@ -210,6 +210,8 @@ class PayrollComponent extends Component
             foreach ($this->selectedEmployeeRows as $employee) {
                 //dito na lang ilalagay sir
 
+                $label = Employee::where('id', $employee)->first()->label;
+
                 $pay = Helpers::computePayslip($employee, $this->selectedFortnight);
 
                 $gross = $pay['regular'] + $pay['overtime'] + $pay['sunday_ot'] + $pay['holiday_ot'];
@@ -224,10 +226,17 @@ class PayrollComponent extends Component
                 $holiday_ot = $pay['holiday_ot'];
                 $plp_alp_fp = 0;
                 $other = 0;
-                $fn_tax = Helpers::computeTax($gross);
-                $npf = 0;
+                $npf = Helpers::computeEmployeeNPF($employee, $regular);
                 $ncsl = 0;
                 $cash_adv = 0;
+
+                if ($label === 'National') {
+                    $taxable = $gross;
+                } elseif ($label === 'Expatriate') {
+                    $taxable = $gross - ($npf + $ncsl + $cash_adv);
+                }
+
+                $fn_tax = Helpers::computeTax($taxable);
 
                 $payroll->payslips()->create([
                     'employee_id' => $employee,
