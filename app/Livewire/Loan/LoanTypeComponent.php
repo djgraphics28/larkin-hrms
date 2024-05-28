@@ -38,6 +38,11 @@ class LoanTypeComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
         return LoanType::search(trim($this->search))

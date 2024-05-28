@@ -55,9 +55,12 @@
 
 
                             <table class="table table-condensed table-sm table-hover">
-                                <thead>
+                                <thead class="table-info">
                                     <tr>
-                                        <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
                                         <th class="text-start">Leave Type</th>
                                         <th class="text-center">Is Payable</th>
                                         <th class="text-center">Action</th>
@@ -71,8 +74,13 @@
                                     </tr>
                                     @forelse ($records as $data)
                                         <tr wire:key="search-{{ $data->id }}">
-                                            <td class="text-start"><input type="checkbox"
-                                                    wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
+                                            <td width="3%" class="text-start align-middle">
+                                                <div class="icheck-primary d-inline">
+                                                    <input id="leaveType-{{ $data->id }}" type="checkbox"
+                                                        wire:model.live="selectedRows" value="{{ $data->id }}">
+                                                    <label for="leaveType-{{ $data->id }}"></label>
+                                                </div>
+                                            </td>
                                             <td class="text-start">{{ $data->name }}</td>
                                             <td class="text-center">{{ $data->is_payable ? 'Yes' : 'No' }}</td>
                                             <td class="text-center">
@@ -95,6 +103,17 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
+                                <tfoot class="table-info">
+                                    <tr>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
+                                        <th class="text-start">Leave Type</th>
+                                        <th class="text-center">Is Payable</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                         <div class="card-footer">

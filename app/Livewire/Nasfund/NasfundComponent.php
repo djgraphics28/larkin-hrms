@@ -42,6 +42,11 @@ class NasfundComponent extends Component
         return view('livewire.nasfund.nasfund-component');
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function updatedSelectAll($value)
     {
         if ($value) {

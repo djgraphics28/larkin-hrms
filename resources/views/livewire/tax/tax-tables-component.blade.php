@@ -119,9 +119,12 @@
             <div class="card">
                 <div class="card-body p-0">
                     <table class="table table-striped">
-                        <thead class="table-dark">
+                        <thead class="table-info">
                             <tr>
-                                <th><input type="checkbox" wire:model.live="selectAll"></th>
+                                <th width="3%" class="text-start">
+                                    <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                            wire:model.live="selectAll"><label for="selectAll"></div>
+                                </th>
                                 <th class="text-start">Description</th>
                                 <th class="text-start">Date</th>
                                 <th>Salary Ranges</th>
@@ -137,8 +140,13 @@
                             </tr>
                             @forelse ($records as $data)
                                 <tr wire:key="search-{{ $data->id }}">
-                                    <td class="text-start"><input type="checkbox" wire:model.prevent="selectedRows"
-                                            value="{{ $data->id }}"></td>
+                                    <td width="3%" class="text-start align-middle">
+                                        <div class="icheck-primary d-inline">
+                                            <input id="tax-{{ $data->id }}" type="checkbox"
+                                                wire:model.live="selectedRows" value="{{ $data->id }}">
+                                            <label for="tax-{{ $data->id }}"></label>
+                                        </div>
+                                    </td>
                                     <td class="text-start">{{ $data->description }}</td>
                                     <td class="text-start">{{ $data->effective_date }}</td>
                                     <td width="60%" class="text-start">
@@ -190,8 +198,20 @@
                                     <livewire:no-data-found />
                                 </td>
                             @endforelse
-
                         </tbody>
+                        <tfoot class="table-info">
+                            <tr>
+                                <th width="3%" class="text-start">
+                                    <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                            wire:model.live="selectAll"><label for="selectAll"></div>
+                                </th>
+                                <th class="text-start">Description</th>
+                                <th class="text-start">Date</th>
+                                <th>Salary Ranges</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

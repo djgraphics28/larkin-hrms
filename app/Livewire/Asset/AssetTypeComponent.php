@@ -38,6 +38,11 @@ class AssetTypeComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
         return AssetType::search(trim($this->search))

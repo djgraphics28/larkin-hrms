@@ -89,7 +89,9 @@
                             <table class="table table-condensed table-sm table-hover">
                                 <thead class="table-info">
                                     <tr>
-                                        <th class="text-center"><input type="checkbox" wire:model.live="selectAll">
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
                                         </th>
                                         <th class="text-center">Status</th>
                                         <th class="text-start">Employee Details</th>
@@ -110,8 +112,12 @@
                                     </tr>
                                     @forelse ($records as $data)
                                         <tr wire:key="search-{{ $data->id }}">
-                                            <td class="text-center"><input type="checkbox"
-                                                    wire:model.prevent="selectedRows" value="{{ $data->id }}">
+                                            <td width="3%" class="text-start align-middle">
+                                                <div class="icheck-primary d-inline">
+                                                    <input id="loan-{{ $data->id }}" type="checkbox"
+                                                        wire:model.live="selectedRows" value="{{ $data->id }}">
+                                                    <label for="loan-{{ $data->id }}"></label>
+                                                </div>
                                             </td>
                                             <td class="text-center">
                                                 @if ($data->status == 'Approved')

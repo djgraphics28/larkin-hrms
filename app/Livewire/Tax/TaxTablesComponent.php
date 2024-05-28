@@ -45,6 +45,11 @@ class TaxTablesComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function mount()
     {
         $this->addRange();
