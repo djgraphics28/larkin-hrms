@@ -348,7 +348,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="4">
+                                                    <td colspan="5">
                                                         <livewire:no-data-found />
                                                     </td>
                                                 </tr>

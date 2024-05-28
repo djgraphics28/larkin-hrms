@@ -40,6 +40,11 @@ class SetHolidayComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
         return Holiday::search(trim($this->search))->paginate($this->perPage);

@@ -231,6 +231,11 @@ class RoleComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
         return Role::whereNot('name','SuperAdmin')->paginate($this->perPage);

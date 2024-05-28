@@ -46,6 +46,11 @@ class EmailTemplateComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function mount()
     {
         $this->emailTemplateTypes = EmailTemplateType::all();

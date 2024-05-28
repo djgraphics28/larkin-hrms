@@ -50,6 +50,11 @@ class BankDetailsComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function mount()
     {
         $this->businesses = Business::where('is_active', 1)->get();

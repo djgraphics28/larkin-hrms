@@ -40,6 +40,11 @@ class DesignationComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
         return Designation::withCount('employees')->search(trim($this->search))

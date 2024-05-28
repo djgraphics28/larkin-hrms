@@ -91,9 +91,9 @@
                         <div class="card-body">
 
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <button wire:click="openImportModal()" type="button"
+                                {{-- <button wire:click="openImportModal()" type="button"
                                     class="btn btn-warning btn-md mr-2"><i class="fa fa-upload" aria-hidden="true"></i>
-                                    Import</button>
+                                    Import</button> --}}
                                 <button wire:click="export()" type="button" class="btn btn-success btn-md mr-2"><i
                                         class="fa fa-file-excel" aria-hidden="true"></i> Export</button>
                                 <button type="button" class="btn btn-danger btn-md mr-2"><i class="fa fa-file-pdf"
