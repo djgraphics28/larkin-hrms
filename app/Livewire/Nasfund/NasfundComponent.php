@@ -28,6 +28,7 @@ class NasfundComponent extends Component
     public $records = [];
     public $ranges = [];
     public $holidays = [];
+    public $filteredPayslips = [];
 
     public $fn_start;
     public $fn_end;
@@ -91,10 +92,21 @@ class NasfundComponent extends Component
                     ->select('employee_id')
                     ->where('fortnight_id', $fnId)
                     ->where('is_approved', 1);
-            })->get();
+            })
+            ->with('aba_payslip')
+            ->get();
+
+
+        foreach ($employees as $employee) {
+            $payslips = $employee->aba_payslip->where('fortnight_id', $this->selectedFN);
+            if ($payslips->count()) {
+                $filteredPayslips[$employee->id] = $payslips;
+            }
+        }
 
         sleep(2);
 
         $this->records = $employees;
+        $this->filteredPayslips = $filteredPayslips;
     }
 }
