@@ -157,26 +157,6 @@
         </div>
         <!-- /.content -->
     </div>
-    <script>
-        document.getElementById('generatePdfButton').addEventListener('click', function() {
-            fetch('/your-controller-method-url', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.url) {
-                    window.open(data.url, '_blank');
-                } else {
-                    console.error('URL not found in response');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
 
     @push('scripts')
         <script>
