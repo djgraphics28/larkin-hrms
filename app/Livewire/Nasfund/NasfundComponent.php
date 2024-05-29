@@ -28,6 +28,7 @@ class NasfundComponent extends Component
     public $records = [];
     public $ranges = [];
     public $holidays = [];
+    public $filteredPayslips = [];
 
     public $fn_start;
     public $fn_end;
@@ -35,6 +36,8 @@ class NasfundComponent extends Component
 
     public $selectAll = false;
     public $selectedRows = [];
+
+    public $employerRN;
 
     #[Title('Nasfund')]
     public function render()
@@ -68,6 +71,8 @@ class NasfundComponent extends Component
         $this->businessId = $businessUser->business_id;
 
         $this->fortnights = Fortnight::all();
+        $this->employerRN = '131934';
+
         $this->generate();
     }
 
@@ -77,12 +82,31 @@ class NasfundComponent extends Component
             'selectedFN' => 'required'
         ]);
 
+        $fnId = $this->selectedFN;
+
         $employees = Employee::where('business_id', $this->businessId)
-            ->search(trim($this->search))->get();
+            ->where('collect_nasfund', 1)
+            ->where('nasfund_number', '<>', null)
+            ->whereIn('id', function ($query) use ($fnId) {
+                $query->from('payslips')
+                    ->select('employee_id')
+                    ->where('fortnight_id', $fnId)
+                    ->where('is_approved', 1);
+            })
+            ->with('aba_payslip')
+            ->get();
+
+
+        foreach ($employees as $employee) {
+            $payslips = $employee->aba_payslip->where('fortnight_id', $this->selectedFN);
+            if ($payslips->count()) {
+                $filteredPayslips[$employee->id] = $payslips;
+            }
+        }
 
         sleep(2);
 
         $this->records = $employees;
-        Helpers::computeNPF($this->selectedFN, $this->businessId);
+        $this->filteredPayslips = $filteredPayslips;
     }
 }
