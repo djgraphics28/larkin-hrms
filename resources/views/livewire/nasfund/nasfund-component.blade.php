@@ -25,16 +25,6 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                {{-- <div class="col-md-1">
-                                    <div class="form-group">
-                                        <select class="form-control" wire:model.live="perPage">
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
-                                        </select>
-                                    </div>
-                                </div> --}}
                                 <div class="col-md-3">
                                     <div class="form-group row">
                                         <select class="form-control" wire:model.live="selectedFN">
@@ -52,21 +42,8 @@
                                         <button wire:click="generate" class="btn btn-primary">Generate</button>
                                     </div>
                                 </div>
-
-
-                                {{-- <div class="col-md-3">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control"
-                                            placeholder="Search term here" wire:model.live.debounce.500="search">
-                                    </div>
-                                </div> --}}
                             </div>
-
-
                         </div>
-                        {{-- <div class="card-footer">
-                            {{ $records->links() }}
-                        </div> --}}
                     </div>
                 </div>
                 <!-- /.col-md-12 -->
@@ -81,7 +58,7 @@
                                             aria-hidden="true"></i> Import</button>
                                     <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i
                                             class="fa fa-file-excel" aria-hidden="true"></i> Export</button>
-                                    <a href="{{ route('nasfund-pdf', ['businessId' => $businessId, 'fnId' => $selectedFN]) }}" target="_blank" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
+                                    <a target="_blank" wire:click="generatePdf" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
                                             aria-hidden="true"></i> PDF</a>
                                 </div>
                             </div>
@@ -105,7 +82,7 @@
                                             <th  class="text-start align-middle">
                                                 <small class="text-start text-bold">LAST NAME</small>
                                             </th>
-                                            <th class="text-center align-middle">
+                                            <th class="text-start align-middle">
                                                 <small class="text-center text-bold">FIRST NAME</small>
                                             </th>
                                             <th  class="text-center align-middle">
@@ -148,29 +125,7 @@
                                                 <td class="text-center">{{ $data->nasfund_number }} </td>
                                                 <td class="text-center">{{ $employerRN }}</td>
 
-                                                {{-- <td class="text-center">{{ $data->aba_payslip }}</td> --}}
-
-                                                {{-- @forelse($data->aba_payslip as $payslip)
-
-
-                                                    @if((int)$payslip->fortnight_id === $selectedFN && (int)$payslip->employee_id === $data->id)
-
-                                                        @php
-                                                            $er = round($payslip->regular * 0.084, 2);
-                                                            $ee = round($payslip->regular * 0.06, 2);
-                                                        @endphp
-
-                                                        <td class="text-center">{{$payslip->regular}}</td>
-                                                        <td class="text-center">{{ $er }}</td>
-                                                        <td class="text-center">{{ $ee }}</td>
-                                                        <td class="text-center">{{ $er + $ee }}</td>
-                                                    @endif
-                                                @empty
-                                                    <td colspan="4" class="text-center">No Record</td>
-                                                @endforelse --}}
-                                                @if (isset($filteredPayslips[$data->id]))
-
-                                                    @forelse($filteredPayslips[$data->id] as $payslip)
+                                                    @forelse($data->payslip as $payslip)
                                                         @php
                                                             $er = round($payslip->regular * 0.084, 2);
                                                             $ee = round($payslip->regular * 0.06, 2);
@@ -181,11 +136,8 @@
                                                         <td class="text-center">{{ $ee }}</td>
                                                         <td class="text-center">{{ $er + $ee }}</td>
                                                     @empty
-                                                        <td colspan="4" class="text-center">No Record</td>
+                                                        <td colspan="4" class="text-center">No Payslip for this Fortnight</td>
                                                     @endforelse
-                                                @else
-                                                    <td colspan="4" class="text-center">No Payslip for this Fortnight</td>
-                                                @endif
 
                                             </tr>
                                         @empty
@@ -205,6 +157,26 @@
         </div>
         <!-- /.content -->
     </div>
+    <script>
+        document.getElementById('generatePdfButton').addEventListener('click', function() {
+            fetch('/your-controller-method-url', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.url) {
+                    window.open(data.url, '_blank');
+                } else {
+                    console.error('URL not found in response');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
 
     @push('scripts')
         <script>

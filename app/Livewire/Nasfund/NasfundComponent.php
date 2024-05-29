@@ -84,29 +84,32 @@ class NasfundComponent extends Component
 
         $fnId = $this->selectedFN;
 
-        $employees = Employee::where('business_id', $this->businessId)
-            ->where('collect_nasfund', 1)
-            ->where('nasfund_number', '<>', null)
-            ->whereIn('id', function ($query) use ($fnId) {
-                $query->from('payslips')
-                    ->select('employee_id')
-                    ->where('fortnight_id', $fnId)
-                    ->where('is_approved', 1);
-            })
-            ->with('aba_payslip')
-            ->get();
-
-
-        foreach ($employees as $employee) {
-            $payslips = $employee->aba_payslip->where('fortnight_id', $this->selectedFN);
-            if ($payslips->count()) {
-                $filteredPayslips[$employee->id] = $payslips;
-            }
+        if($fnId == '') {
+            $this->records = [];
+            return;
         }
+
+        $employees = Employee::with(['payslip' => function($query) use ($fnId) {
+            $query->where('fortnight_id', $fnId)
+                ->where('is_approved', 1);
+        }])
+            ->where('business_id', $this->businessId)
+            ->where('collect_nasfund', 1)
+            ->whereNotNull('nasfund_number')
+            ->where('is_discontinued', false)
+            ->get();
 
         sleep(2);
 
         $this->records = $employees;
-        $this->filteredPayslips = $filteredPayslips;
+    }
+
+    public function generatePdf()
+    {
+        if($this->selectedFN == '') {
+            $this->alert('warning', ' Please select Fortnight First!');
+            return;
+        }
+        return redirect()->route('nasfund-pdf', ['businessId' => $this->businessId, 'fnId' => $this->selectedFN]);
     }
 }
