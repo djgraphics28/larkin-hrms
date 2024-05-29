@@ -120,10 +120,10 @@ class EmployeeComponent extends Component
     public function remove()
     {
         $delete = Employee::find($this->approveConfirmed);
-        $name = $delete->name;
+        $this->name = $delete->name;
         $delete->delete();
         if ($delete) {
-            $this->alert('success', $name . ' has been removed!');
+            $this->alert('success', $this->name . ' has been removed!');
         }
     }
 
