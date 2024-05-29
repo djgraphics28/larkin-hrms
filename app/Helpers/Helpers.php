@@ -30,7 +30,7 @@ class Helpers
     public static function generateEmployeeNumber($businessId)
     {
         $code = Business::find($businessId)->code;
-        $lastEmployee = Employee::where('business_id', $businessId)->orderBy('employee_number', 'desc')->first();
+        $lastEmployee = Employee::withTrashed()->where('business_id', $businessId)->orderBy('employee_number', 'desc')->first();
 
         if ($lastEmployee) {
             $existingNumber = explode('-', $lastEmployee->employee_number)[1];
@@ -532,6 +532,8 @@ class Helpers
                 return 1; // Return 1 if status is not found
         }
     }
+
+    // public static function departmentToId($department)
 
     public static function computeNPF($selected_fn, $businessId)
     {
