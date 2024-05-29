@@ -81,8 +81,8 @@
                                             aria-hidden="true"></i> Import</button>
                                     <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i
                                             class="fa fa-file-excel" aria-hidden="true"></i> Export</button>
-                                    <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
-                                            aria-hidden="true"></i> PDF</button>
+                                    <a href="{{ route('nasfund-pdf', ['businessId' => $businessId, 'fnId' => $selectedFN]) }}" target="_blank" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
+                                            aria-hidden="true"></i> PDF</a>
                                 </div>
                             </div>
                         @endif
@@ -146,14 +146,24 @@
                                                 <td class="text-start">{{ $data->first_name }} </td>
                                                 <td class="text-center">{{ date('d-M-y', strtotime($data->joining_date)) }} </td>
                                                 <td class="text-center">{{ $data->nasfund_number }} </td>
-                                                <td class="text-center"> </td>
+                                                <td class="text-center">{{ $employerRN }}</td>
 
-                                                @forelse($data->nasfund as $nasfund)
-                                                    @if((int)$nasfund->fortnight_id === $selectedFN && (int)$nasfund->employee_id === $data->id)
-                                                        <td class="text-center">{{$nasfund->pay}}</td>
-                                                        <td class="text-center">{{$nasfund->ER}}</td>
-                                                        <td class="text-center">{{$nasfund->EE}}</td>
-                                                        <td class="text-center">{{$nasfund->ER + $nasfund->EE}}</td>
+                                                {{-- <td class="text-center">{{ $data->aba_payslip }}</td> --}}
+
+                                                @forelse($data->aba_payslip as $payslip)
+
+
+                                                    @if((int)$payslip->fortnight_id === $selectedFN && (int)$payslip->employee_id === $data->id)
+
+                                                        @php
+                                                            $er = round($payslip->regular * 0.084, 2);
+                                                            $ee = round($payslip->regular * 0.06, 2);
+                                                        @endphp
+
+                                                        <td class="text-center">{{$payslip->regular}}</td>
+                                                        <td class="text-center">{{ $er }}</td>
+                                                        <td class="text-center">{{ $ee }}</td>
+                                                        <td class="text-center">{{ $er + $ee }}</td>
                                                     @endif
                                                 @empty
                                                     <td colspan="4" class="text-center">No Record</td>

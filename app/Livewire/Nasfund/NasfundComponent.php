@@ -36,6 +36,8 @@ class NasfundComponent extends Component
     public $selectAll = false;
     public $selectedRows = [];
 
+    public $employerRN;
+
     #[Title('Nasfund')]
     public function render()
     {
@@ -68,6 +70,8 @@ class NasfundComponent extends Component
         $this->businessId = $businessUser->business_id;
 
         $this->fortnights = Fortnight::all();
+        $this->employerRN = '131934';
+
         $this->generate();
     }
 
@@ -77,12 +81,20 @@ class NasfundComponent extends Component
             'selectedFN' => 'required'
         ]);
 
+        $fnId = $this->selectedFN;
+
         $employees = Employee::where('business_id', $this->businessId)
-            ->search(trim($this->search))->get();
+            ->where('collect_nasfund', 1)
+            ->where('nasfund_number', '<>', null)
+            ->whereIn('id', function ($query) use ($fnId) {
+                $query->from('payslips')
+                    ->select('employee_id')
+                    ->where('fortnight_id', $fnId)
+                    ->where('is_approved', 1);
+            })->get();
 
         sleep(2);
 
         $this->records = $employees;
-        Helpers::computeNPF($this->selectedFN, $this->businessId);
     }
 }

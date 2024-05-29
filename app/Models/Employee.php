@@ -177,9 +177,9 @@ class Employee extends Model implements HasMedia
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function aba_payslip(): HasOne
+    public function aba_payslip(): HasMany
     {
-        return $this->hasOne(Payslip::class);
+        return $this->hasMany(Payslip::class)->where('is_approved', 1);
     }
 
     /**
@@ -194,11 +194,11 @@ class Employee extends Model implements HasMedia
 
     public function getFullNameAttribute()
     {
-        return $this->first_name. ' ' .$this->last_name;
+        return $this->first_name . ' ' . $this->last_name;
     }
 
     public function getFullNameWithEmpNoAttribute()
     {
-        return $this->employee_number.' | '. $this->first_name. ' ' .$this->last_name;
+        return $this->employee_number . ' | ' . $this->first_name . ' ' . $this->last_name;
     }
 }
