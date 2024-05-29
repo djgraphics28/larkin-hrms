@@ -533,6 +533,8 @@ class Helpers
         }
     }
 
+    public static function departmentToId($department)
+
     public static function computeNPF($selected_fn, $businessId)
     {
         $get_employees = Employee::where('business_id', $businessId)->get();

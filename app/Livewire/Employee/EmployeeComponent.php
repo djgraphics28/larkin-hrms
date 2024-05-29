@@ -119,7 +119,7 @@ class EmployeeComponent extends Component
 
     public function remove()
     {
-        $delete = Designation::find($this->approveConfirmed);
+        $delete = Employee::find($this->approveConfirmed);
         $name = $delete->name;
         $delete->delete();
         if ($delete) {
