@@ -40,6 +40,11 @@ class EmployeeStatusComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
         return EmployeeStatus::withCount('employees')->search(trim($this->search))

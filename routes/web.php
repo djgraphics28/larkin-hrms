@@ -1,8 +1,8 @@
 <?php
 
+
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
-use App\Livewire\Payroll\SaveFilterComponent;
 use App\Livewire\User\RoleComponent;
 use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
@@ -24,8 +24,10 @@ use App\Livewire\Employee\EmployeeComponent;
 use App\Http\Controllers\ApproveLeaveRequest;
 use App\Livewire\Holiday\SetHolidayComponent;
 use App\Livewire\Leave\LeaveRequestComponent;
+use App\Livewire\Payroll\SaveFilterComponent;
 use App\Livewire\Workshift\WorkshiftComponent;
 use App\Http\Controllers\AbaGenerateController;
+use App\Http\Controllers\PdfDownloadController;
 use App\Livewire\Department\DepartmentComponent;
 use App\Livewire\Employee\EmployeeInfoComponent;
 use App\Livewire\Designation\DesignationComponent;
@@ -40,6 +42,7 @@ use App\Livewire\EmailTemplate\EmailTemplateComponent;
 use App\Livewire\EmailTemplate\EmailVariableComponent;
 use App\Livewire\Fortnight\FortnightGeneratorComponent;
 use App\Livewire\EmployeeStatus\EmployeeStatusComponent;
+use Spatie\MediaLibrary\Conversions\ImageGenerators\Pdf;
 use App\Livewire\Attendance\AttendanceAdjustmentComponent;
 use App\Livewire\EmailTemplate\EmailTemplateTypeComponent;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -125,7 +128,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
 
         Route::get('/type', EmailTemplateTypeComponent::class)->name('email-template-type');
         Route::get('/variable', EmailVariableComponent::class)->name('email-variable');
-        Route::get('/', EmailTemplateComponent::class)->name('email-template');
+        Route::get('/list', EmailTemplateComponent::class)->name('email-template');
     });
 
     // Asset routes
@@ -153,4 +156,7 @@ Route::get('/loan-request/success', [ApproveLoanRequest::class, 'success'])->nam
 
 Route::get('/aba-download/{payrun_id}', [AbaGenerateController::class, 'generate'])->name('aba-download');
 // Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+//PDF Download
+Route::get('/nasfund-download/{businessId}/{fnId}', [PdfDownloadController::class, 'nasfund'])->name('nasfund-pdf');
 require __DIR__ . '/auth.php';

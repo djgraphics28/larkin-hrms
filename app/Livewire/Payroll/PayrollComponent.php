@@ -67,6 +67,11 @@ class PayrollComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function mount()
     {
         $this->businessId = BusinessUser::where('user_id', Auth::user()->id)->where('is_active', true)->first()->business_id;

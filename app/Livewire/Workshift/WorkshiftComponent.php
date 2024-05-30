@@ -50,6 +50,11 @@ class WorkshiftComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function mount()
     {
         $this->weekDays = WeekDay::all();

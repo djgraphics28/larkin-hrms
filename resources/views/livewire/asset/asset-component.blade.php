@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Assets</li>
                     </ol>
                 </div><!-- /.col -->
@@ -25,10 +25,10 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <a wire:navigate href="{{ route('asset-type') }}" type="button"
-                                    class="btn btn-success btn-sm mr-2"><i class="fa fa-tasks" aria-hidden="true"></i>
+                                <a  href="{{ route('asset-type') }}" type="button"
+                                    class="btn btn-success btn-md mr-2"><i class="fa fa-tasks" aria-hidden="true"></i>
                                     Asset Type</a>
-                                <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
+                                <button wire:click="addNew()" type="button" class="btn btn-primary btn-md mr-2"><i
                                         class="fa fa-plus" aria-hidden="true"></i> Add New</button>
                             </div>
                         </div>
@@ -55,9 +55,12 @@
 
 
                             <table class="table table-condensed table-sm table-hover">
-                                <thead>
+                                <thead class="table-info">
                                     <tr>
-                                        <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
                                         <th class="text-start">Asset Code</th>
                                         <th class="text-start">Asset Name</th>
                                         <th class="text-start">Asset Type</th>
@@ -77,8 +80,13 @@
                                     </tr>
                                     @forelse ($records as $data)
                                         <tr wire:key="search-{{ $data->id }}">
-                                            <td class="text-start"><input type="checkbox"
-                                                    wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
+                                            <td width="3%" class="text-start align-middle">
+                                                <div class="icheck-primary d-inline">
+                                                    <input id="asset-{{ $data->id }}" type="checkbox"
+                                                        wire:model.live="selectedRows" value="{{ $data->id }}">
+                                                    <label for="asset-{{ $data->id }}"></label>
+                                                </div>
+                                            </td>
                                             <td class="text-start">{{ $data->asset_code }}</td>
                                             <td class="text-start">{{ $data->name }}</td>
                                             <td class="text-start">{{ $data->asset_type->name }}</td>
@@ -129,6 +137,23 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
+                                <tfoot class="table-info">
+                                    <tr>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
+                                        <th class="text-start">Asset Code</th>
+                                        <th class="text-start">Asset Name</th>
+                                        <th class="text-start">Asset Type</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-start">Employee</th>
+                                        <th class="text-start">Date Received</th>
+                                        <th class="text-start">Date Returned</th>
+                                        <th class="text-center">Is Working?</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                         <div class="card-footer">

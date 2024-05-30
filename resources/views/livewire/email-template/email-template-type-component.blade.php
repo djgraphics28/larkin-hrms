@@ -8,8 +8,8 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('email-template') }}">Email
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('email-template') }}">Email
                                 Templates</a>
                         </li>
                         <li class="breadcrumb-item active">Email Template Type</li>
@@ -28,10 +28,10 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <a wire:navigate href="{{ route('email-template') }}" type="button"
-                                    class="btn btn-secondary btn-sm mr-2"><i class="fa fa-arrow-left"
+                                <a  href="{{ route('email-template') }}" type="button"
+                                    class="btn btn-secondary btn-md mr-2"><i class="fa fa-arrow-left"
                                         aria-hidden="true"></i> Return to Email Templates</a>
-                                <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
+                                <button wire:click="addNew()" type="button" class="btn btn-primary btn-md mr-2"><i
                                         class="fa fa-plus" aria-hidden="true"></i> Add New</button>
                             </div>
                         </div>
@@ -58,9 +58,12 @@
 
 
                             <table class="table table-condensed table-sm table-hover">
-                                <thead>
+                                <thead class="table-info">
                                     <tr>
-                                        <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
                                         <th class="text-start">Name</th>
                                         <th class="text-center">Action</th>
                                     </tr>
@@ -73,8 +76,13 @@
                                     </tr>
                                     @forelse ($records as $data)
                                         <tr wire:key="search-{{ $data->id }}">
-                                            <td class="text-start"><input type="checkbox"
-                                                    wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
+                                            <td width="3%" class="text-start align-middle">
+                                                <div class="icheck-primary d-inline">
+                                                    <input id="emailType-{{ $data->id }}" type="checkbox"
+                                                        wire:model.live="selectedRows" value="{{ $data->id }}">
+                                                    <label for="emailType-{{ $data->id }}"></label>
+                                                </div>
+                                            </td>
                                             <td class="text-start">{{ $data->name }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group">
@@ -96,6 +104,16 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
+                                <tfoot class="table-info">
+                                    <tr>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
+                                        <th class="text-start">Name</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                         <div class="card-footer">

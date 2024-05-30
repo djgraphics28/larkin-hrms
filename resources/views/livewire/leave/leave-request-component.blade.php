@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Leave Request</li>
                     </ol>
                 </div><!-- /.col -->
@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="col-md-4 text-right">
                                     <div class="btn-group" role="group" aria-label="Groups">
-                                        <a wire:navigate href="{{ route('leave-types') }}" type="button"
+                                        <a  href="{{ route('leave-types') }}" type="button"
                                             class="btn btn-success btn-md mr-2">
                                             <i class="fa fa-tasks" aria-hidden="true"></i> Leave Types
                                         </a>
@@ -86,7 +86,10 @@
                             <table class="table table-condensed table-sm table-hover">
                                 <thead class="table-info">
                                     <tr>
-                                        <th class="text-center"><input type="checkbox" wire:model.live="selectAll"></th>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
                                         <th class="text-center">Status</th>
                                         <th class="text-start">Employee Details</th>
                                         <th class="text-start">Date Filed</th>
@@ -109,8 +112,13 @@
                                     </tr>
                                     @forelse ($records as $data)
                                         <tr wire:key="search-{{ $data->id }}">
-                                            <td class="text-start"><input type="checkbox"
-                                                    wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
+                                            <td width="3%" class="text-start align-middle">
+                                                <div class="icheck-primary d-inline">
+                                                    <input id="leave-{{ $data->id }}" type="checkbox"
+                                                        wire:model.live="selectedRows" value="{{ $data->id }}">
+                                                    <label for="leave-{{ $data->id }}"></label>
+                                                </div>
+                                            </td>
                                             <td class="text-start">
                                                 @if ($data->status == 'Approved')
                                                     <span class="badge bg-success">Approved</span>

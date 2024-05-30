@@ -40,6 +40,11 @@ class DepartmentComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
         return Department::withCount('employees')->search(trim($this->search))

@@ -28,6 +28,7 @@ class NasfundComponent extends Component
     public $records = [];
     public $ranges = [];
     public $holidays = [];
+    public $filteredPayslips = [];
 
     public $fn_start;
     public $fn_end;
@@ -36,10 +37,17 @@ class NasfundComponent extends Component
     public $selectAll = false;
     public $selectedRows = [];
 
+    public $employerRN;
+
     #[Title('Nasfund')]
     public function render()
     {
         return view('livewire.nasfund.nasfund-component');
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
     }
 
     public function updatedSelectAll($value)
@@ -63,6 +71,8 @@ class NasfundComponent extends Component
         $this->businessId = $businessUser->business_id;
 
         $this->fortnights = Fortnight::all();
+        $this->employerRN = '131934';
+
         $this->generate();
     }
 
@@ -72,12 +82,34 @@ class NasfundComponent extends Component
             'selectedFN' => 'required'
         ]);
 
-        $employees = Employee::where('business_id', $this->businessId)
-            ->search(trim($this->search))->get();
+        $fnId = $this->selectedFN;
+
+        if($fnId == '') {
+            $this->records = [];
+            return;
+        }
+
+        $employees = Employee::with(['payslip' => function($query) use ($fnId) {
+            $query->where('fortnight_id', $fnId)
+                ->where('is_approved', 1);
+        }])
+            ->where('business_id', $this->businessId)
+            ->where('collect_nasfund', 1)
+            ->whereNotNull('nasfund_number')
+            ->where('is_discontinued', false)
+            ->get();
 
         sleep(2);
 
         $this->records = $employees;
-        Helpers::computeNPF($this->selectedFN, $this->businessId);
+    }
+
+    public function generatePdf()
+    {
+        if($this->selectedFN == '') {
+            $this->alert('warning', ' Please select Fortnight First!');
+            return;
+        }
+        return redirect()->route('nasfund-pdf', ['businessId' => $this->businessId, 'fnId' => $this->selectedFN]);
     }
 }

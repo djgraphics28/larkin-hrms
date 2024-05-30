@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('salary_histories', function (Blueprint $table) {
             $table->id();
-            $table->decimal('salary_rate',16);
+            $table->decimal('salary_rate',16)->nullable();//hourly rate for national
+            $table->decimal('monthly_rate',16)->nullable();//monthly rate for expat
             $table->boolean('is_active')->default(false);
             $table->unsignedBigInteger('employee_id');
             $table

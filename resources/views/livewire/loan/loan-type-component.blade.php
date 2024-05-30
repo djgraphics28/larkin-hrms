@@ -8,8 +8,8 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('loans') }}">Loans</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('loans') }}">Loans</a></li>
                         <li class="breadcrumb-item active">Loan Types</li>
                     </ol>
                 </div><!-- /.col -->
@@ -26,7 +26,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="btn-group float-right" role="group" aria-label="Groups">
-                                <a wire:navigate href="{{ route('loans') }}" type="button"
+                                <a  href="{{ route('loans') }}" type="button"
                                     class="btn btn-secondary btn-sm mr-2"><i class="fa fa-arrow-left"
                                         aria-hidden="true"></i> Return to Loans</a>
                                 <button wire:click="addNew()" type="button" class="btn btn-primary btn-sm mr-2"><i
@@ -56,9 +56,12 @@
 
 
                             <table class="table table-condensed table-sm table-hover">
-                                <thead>
+                                <thead class="table-info">
                                     <tr>
-                                        <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
                                         <th class="text-start">Loan Type Name</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Action</th>
@@ -74,8 +77,13 @@
                                     </tr>
                                     @forelse ($records as $data)
                                         <tr wire:key="search-{{ $data->id }}">
-                                            <td class="text-start"><input type="checkbox"
-                                                    wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
+                                            <td width="3%" class="text-start align-middle">
+                                                <div class="icheck-primary d-inline">
+                                                    <input id="loanType-{{ $data->id }}" type="checkbox"
+                                                        wire:model.live="selectedRows" value="{{ $data->id }}">
+                                                    <label for="loanType-{{ $data->id }}"></label>
+                                                </div>
+                                            </td>
                                             <td class="text-start">{{ $data->name }}</td>
                                             <td class="text-center">@livewire('active-status', ['model' => $data, 'field' => 'is_active'], key($data->id))</td>
                                             <td class="text-center">
@@ -98,6 +106,17 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
+                                <tfoot class="table-info">
+                                    <tr>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
+                                        <th class="text-start">Loan Type Name</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                         <div class="card-footer">

@@ -38,6 +38,11 @@ class EmailVariableComponent extends Component
         ]);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function getRecordsProperty()
     {
         return EmailVariable::search(trim($this->search))

@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Nasfund</li>
                     </ol>
                 </div><!-- /.col -->
@@ -25,16 +25,6 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                {{-- <div class="col-md-1">
-                                    <div class="form-group">
-                                        <select class="form-control" wire:model.live="perPage">
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
-                                        </select>
-                                    </div>
-                                </div> --}}
                                 <div class="col-md-3">
                                     <div class="form-group row">
                                         <select class="form-control" wire:model.live="selectedFN">
@@ -49,24 +39,11 @@
                                 </div>
                                 <div class="col-md-1">
                                     <div class="form-group">
-                                        <button wire:click="generate" class="btn btn-primary">Search</button>
+                                        <button wire:click="generate" class="btn btn-primary">Generate</button>
                                     </div>
                                 </div>
-
-
-                                {{-- <div class="col-md-3">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control"
-                                            placeholder="Search term here" wire:model.live.debounce.500="search">
-                                    </div>
-                                </div> --}}
                             </div>
-
-
                         </div>
-                        {{-- <div class="card-footer">
-                            {{ $records->links() }}
-                        </div> --}}
                     </div>
                 </div>
                 <!-- /.col-md-12 -->
@@ -81,8 +58,8 @@
                                             aria-hidden="true"></i> Import</button>
                                     <button wire:click="export()" type="button" class="btn btn-success btn-sm mr-2"><i
                                             class="fa fa-file-excel" aria-hidden="true"></i> Export</button>
-                                    <button type="button" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
-                                            aria-hidden="true"></i> PDF</button>
+                                    <a target="_blank" wire:click="generatePdf" class="btn btn-danger btn-sm mr-2"><i class="fa fa-file-pdf"
+                                            aria-hidden="true"></i> PDF</a>
                                 </div>
                             </div>
                         @endif
@@ -105,7 +82,7 @@
                                             <th  class="text-start align-middle">
                                                 <small class="text-start text-bold">LAST NAME</small>
                                             </th>
-                                            <th class="text-center align-middle">
+                                            <th class="text-start align-middle">
                                                 <small class="text-center text-bold">FIRST NAME</small>
                                             </th>
                                             <th  class="text-center align-middle">
@@ -140,24 +117,27 @@
                                         </tr>
 
                                         @forelse ($records as $data)
-                                            <tr wire:key="search-{{ $data->id }}">
+                                            <tr wire:key="employee-{{ $data->id }}">
                                                 <td class="text-center">{{ $data->employee_number }}</td>
                                                 <td class="text-start">{{ $data->last_name }} </td>
                                                 <td class="text-start">{{ $data->first_name }} </td>
                                                 <td class="text-center">{{ date('d-M-y', strtotime($data->joining_date)) }} </td>
                                                 <td class="text-center">{{ $data->nasfund_number }} </td>
-                                                <td class="text-center"> </td>
+                                                <td class="text-center">{{ $employerRN }}</td>
 
-                                                @forelse($data->nasfund as $nasfund)
-                                                    @if((int)$nasfund->fortnight_id === $selectedFN && (int)$nasfund->employee_id === $data->id)
-                                                        <td class="text-center">{{$nasfund->pay}}</td>
-                                                        <td class="text-center">{{$nasfund->ER}}</td>
-                                                        <td class="text-center">{{$nasfund->EE}}</td>
-                                                        <td class="text-center">{{$nasfund->ER + $nasfund->EE}}</td>
-                                                    @endif
-                                                @empty
-                                                    <td colspan="4" class="text-center">No Record</td>
-                                                @endforelse
+                                                    @forelse($data->payslip as $payslip)
+                                                        @php
+                                                            $er = round($payslip->regular * 0.084, 2);
+                                                            $ee = round($payslip->regular * 0.06, 2);
+                                                        @endphp
+
+                                                        <td class="text-center">{{$payslip->regular}}</td>
+                                                        <td class="text-center">{{ $er }}</td>
+                                                        <td class="text-center">{{ $ee }}</td>
+                                                        <td class="text-center">{{ $er + $ee }}</td>
+                                                    @empty
+                                                        <td colspan="4" class="text-center">No Payslip for this Fortnight</td>
+                                                    @endforelse
 
                                             </tr>
                                         @empty

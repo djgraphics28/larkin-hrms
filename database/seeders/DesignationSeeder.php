@@ -63,7 +63,6 @@ class DesignationSeeder extends Seeder
             'Production Staff',
             'Works Manager',
             'Sales & Marketing Manager',
-            'Admin Director',
             'Security Manager',
             'General Manager',
             'Reserved Guard',

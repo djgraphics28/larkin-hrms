@@ -8,6 +8,7 @@ use App\Models\BankDetail;
 use App\Models\LeaveCredit;
 use App\Models\LeaveRequest;
 use App\Models\SalaryHistory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -20,6 +21,7 @@ class Employee extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
+    use SoftDeletes;
 
     protected $guarded = [];
 
@@ -175,9 +177,9 @@ class Employee extends Model implements HasMedia
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function aba_payslip(): HasOne
+    public function aba_payslip(): HasMany
     {
-        return $this->hasOne(Payslip::class);
+        return $this->hasMany(Payslip::class)->where('is_approved', 1);
     }
 
     /**
@@ -192,11 +194,11 @@ class Employee extends Model implements HasMedia
 
     public function getFullNameAttribute()
     {
-        return $this->first_name. ' ' .$this->last_name;
+        return $this->first_name . ' ' . $this->last_name;
     }
 
     public function getFullNameWithEmpNoAttribute()
     {
-        return $this->employee_number.' | '. $this->first_name. ' ' .$this->last_name;
+        return $this->employee_number . ' | ' . $this->first_name . ' ' . $this->last_name;
     }
 }

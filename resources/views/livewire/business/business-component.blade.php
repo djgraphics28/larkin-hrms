@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a wire:navigate href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Businesses</li>
                     </ol>
                 </div><!-- /.col -->
@@ -58,9 +58,12 @@
 
 
                             <table class="table table-condensed table-sm table-hover">
-                                <thead>
+                                <thead class="table-info">
                                     <tr>
-                                        <th class="text-start"><input type="checkbox" wire:model.live="selectAll"></th>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
                                         <th class="text-center">Code</th>
                                         <th class="text-start">Business Name</th>
                                         <th width="30%" class="text-start">Departments</th>
@@ -79,8 +82,13 @@
                                     </tr>
                                     @forelse ($records as $data)
                                         <tr wire:key="search-{{ $data->id }}">
-                                            <td class="text-start"><input type="checkbox"
-                                                    wire:model.prevent="selectedRows" value="{{ $data->id }}"></td>
+                                            <td width="3%" class="text-start align-middle">
+                                                <div class="icheck-primary d-inline">
+                                                    <input id="business-{{ $data->id }}" type="checkbox"
+                                                        wire:model.live="selectedRows" value="{{ $data->id }}">
+                                                    <label for="business-{{ $data->id }}"></label>
+                                                </div>
+                                            </td>
                                             <td class="text-center">{{ $data->code }}</td>
                                             <td class="text-start">{{ $data->name }}</td>
                                             <td class="text-start">
@@ -114,6 +122,22 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
+                                <tfoot class="table-info">
+                                    <tr>
+                                        <th width="3%" class="text-start">
+                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
+                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                        </th>
+                                        <th class="text-center">Code</th>
+                                        <th class="text-start">Business Name</th>
+                                        <th width="30%" class="text-start">Departments</th>
+                                        <th class="text-center">Contact Number</th>
+                                        <th class="text-start">Address</th>
+                                        <th width="10%" class="text-center">Status</th>
+                                        <th width="5%" class="text-center">Employees</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                         <div class="card-footer">
