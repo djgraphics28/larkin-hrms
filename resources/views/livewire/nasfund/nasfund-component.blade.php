@@ -27,7 +27,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group row">
-                                        <select class="form-control" wire:model.live="selectedFN">
+                                        <select class="form-control" wire:model="selectedFN">
                                             <option value="">Select Fortnight range</option>
                                             @foreach ($fortnights as $fn)
                                                 <option value="{{ $fn->id }}">{{ $fn->code }} --
@@ -73,7 +73,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <table class="table table-sm table-hover table-bordered" wire:loading.remove>
+                                <table class="table table-sm table-hover table-bordered" wire:target="generate">
                                     <thead>
                                         <tr>
                                             <th  class="text-center align-middle">
