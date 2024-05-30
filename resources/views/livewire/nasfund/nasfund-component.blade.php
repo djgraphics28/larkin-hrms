@@ -27,7 +27,7 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group row">
-                                        <select class="form-control" wire:model.live="selectedFN">
+                                        <select class="form-control" wire:model="selectedFN">
                                             <option value="">Select Fortnight range</option>
                                             @foreach ($fortnights as $fn)
                                                 <option value="{{ $fn->id }}">{{ $fn->code }} --
@@ -73,7 +73,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <table class="table table-sm table-hover table-bordered" wire:loading.remove>
+                                <table class="table table-sm table-hover table-bordered" wire:target="generate">
                                     <thead>
                                         <tr>
                                             <th  class="text-center align-middle">
@@ -125,19 +125,19 @@
                                                 <td class="text-center">{{ $data->nasfund_number }} </td>
                                                 <td class="text-center">{{ $employerRN }}</td>
 
-                                                    @forelse($data->payslip as $payslip)
-                                                        @php
-                                                            $er = round($payslip->regular * 0.084, 2);
-                                                            $ee = round($payslip->regular * 0.06, 2);
-                                                        @endphp
+                                                @forelse($data->payslip as $payslip)
+                                                    @php
+                                                        $er = round($payslip->regular * 0.084, 2);
+                                                        $ee = round($payslip->regular * 0.06, 2);
+                                                    @endphp
 
-                                                        <td class="text-center">{{$payslip->regular}}</td>
-                                                        <td class="text-center">{{ $er }}</td>
-                                                        <td class="text-center">{{ $ee }}</td>
-                                                        <td class="text-center">{{ $er + $ee }}</td>
-                                                    @empty
-                                                        <td colspan="4" class="text-center">No Payslip for this Fortnight</td>
-                                                    @endforelse
+                                                    <td class="text-center">{{$payslip->regular}}</td>
+                                                    <td class="text-center">{{ $er }}</td>
+                                                    <td class="text-center">{{ $ee }}</td>
+                                                    <td class="text-center">{{ $er + $ee }}</td>
+                                                @empty
+                                                    <td colspan="4" class="text-center">No Payslip for this Fortnight</td>
+                                                @endforelse
 
                                             </tr>
                                         @empty

@@ -11,7 +11,7 @@ class PdfDownloadController extends Controller
     public function nasfund($businessId, $fnId)
     {
 
-        $employees = Employee::with(['payslip' => function($query) use ($fnId) {
+        $employees = Employee::with(['payslip' => function ($query) use ($fnId) {
             $query->where('fortnight_id', $fnId)
                 ->where('is_approved', 1);
         }])
