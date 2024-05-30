@@ -84,12 +84,12 @@ class NasfundComponent extends Component
 
         $fnId = $this->selectedFN;
 
-        if($fnId == '') {
+        if ($fnId == '') {
             $this->records = [];
             return;
         }
 
-        $employees = Employee::with(['payslip' => function($query) use ($fnId) {
+        $employees = Employee::with(['payslip' => function ($query) use ($fnId) {
             $query->where('fortnight_id', $fnId)
                 ->where('is_approved', 1);
         }])
@@ -106,7 +106,7 @@ class NasfundComponent extends Component
 
     public function generatePdf()
     {
-        if($this->selectedFN == '') {
+        if ($this->selectedFN == '') {
             $this->alert('warning', ' Please select Fortnight First!');
             return;
         }

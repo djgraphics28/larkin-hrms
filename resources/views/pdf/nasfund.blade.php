@@ -60,22 +60,20 @@
                         <td class="text-center">{{ $employee->nasfund_number }}</td>
                         <td class="text-center">{{ $employerRN }}</td>
 
-                        @forelse($employee->aba_payslip as $payslip)
-                            @if((int)$payslip->fortnight_id == $fnId && (int)$payslip->employee_id == $employee->id)
+                        @forelse($employee->payslip as $payslip)
 
-                                @php
-                                    $total_pay += $payslip->regular;
-                                    $total_er += $er = round($payslip->regular * 0.084, 2);
-                                    $total_ee += $ee = round($payslip->regular * 0.06, 2);
-                                @endphp
+                            @php
+                                $total_pay += $payslip->regular;
+                                $total_er += $er = round($payslip->regular * 0.084, 2);
+                                $total_ee += $ee = round($payslip->regular * 0.06, 2);
+                            @endphp
 
-                                <td class="text-right">{{ number_format($payslip->regular, 2) }}</td>
-                                <td class="text-right">{{ number_format($er, 2) }}</td>
-                                <td class="text-right">{{ number_format($ee, 2) }}</td>
-                                <td class="text-right">{{ number_format($er + $ee, 2) }}</td>
-                            @endif
+                            <td class="text-right">{{ number_format($payslip->regular, 2) }}</td>
+                            <td class="text-right">{{ number_format($er, 2) }}</td>
+                            <td class="text-right">{{ number_format($ee, 2) }}</td>
+                            <td class="text-right">{{ number_format($er + $ee, 2) }}</td>
                         @empty
-                            <td colspan="10">No Records Found</td>
+                            <td colspan="4" class="text-center">No Payslip for this Fortnight</td>
                         @endforelse
                     </tr>
 

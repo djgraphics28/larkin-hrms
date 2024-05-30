@@ -125,19 +125,19 @@
                                                 <td class="text-center">{{ $data->nasfund_number }} </td>
                                                 <td class="text-center">{{ $employerRN }}</td>
 
-                                                    @forelse($data->payslip as $payslip)
-                                                        @php
-                                                            $er = round($payslip->regular * 0.084, 2);
-                                                            $ee = round($payslip->regular * 0.06, 2);
-                                                        @endphp
+                                                @forelse($data->payslip as $payslip)
+                                                    @php
+                                                        $er = round($payslip->regular * 0.084, 2);
+                                                        $ee = round($payslip->regular * 0.06, 2);
+                                                    @endphp
 
-                                                        <td class="text-center">{{$payslip->regular}}</td>
-                                                        <td class="text-center">{{ $er }}</td>
-                                                        <td class="text-center">{{ $ee }}</td>
-                                                        <td class="text-center">{{ $er + $ee }}</td>
-                                                    @empty
-                                                        <td colspan="4" class="text-center">No Payslip for this Fortnight</td>
-                                                    @endforelse
+                                                    <td class="text-center">{{$payslip->regular}}</td>
+                                                    <td class="text-center">{{ $er }}</td>
+                                                    <td class="text-center">{{ $ee }}</td>
+                                                    <td class="text-center">{{ $er + $ee }}</td>
+                                                @empty
+                                                    <td colspan="4" class="text-center">No Payslip for this Fortnight</td>
+                                                @endforelse
 
                                             </tr>
                                         @empty
