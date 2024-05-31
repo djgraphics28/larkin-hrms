@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>NASFUND</title>
     <!-- Link to Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
@@ -9,6 +9,7 @@
         @page {
             size: A4 landscape;
             margin: 5mm 5mm 5mm 5mm; /* Top, Right, Bottom, Left */
+            footer: page-footer;
         }
         body {
             margin: 0; /* Reset body margin to zero */
@@ -19,9 +20,20 @@
         table {
             font-size: 12px; /* Adjust table font size */
         }
+        .page-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+        .page-number:before {
+            content: counter(page);
+        }
     </style>
 </head>
 <body>
+    <div class="page-number page-footer"></div>
     <div class="container">
         <img src="{{ public_path('assets/images/logo.png') }}" alt="larkin" width="200" />
         <h5 class="text-center">NASFUND</h5>
@@ -31,12 +43,12 @@
         <table class="table table-bordered table-striped table-sm">
             <thead>
                 <tr>
-                    <th class="text-center">EMP. NO</th>
-                    <th class="text-center">LAST NAME</th>
-                    <th class="text-center">FIRST NAME</th>
-                    <th class="text-center">EMPLOYMENT DATE</th>
-                    <th class="text-center">NPF NUMBER</th>
-                    <th class="text-center">EMPLOYER RN</th>
+                    <th class="text-center" style="width: 60px;">EMP. NO</th>
+                    <th class="text-center" style="width: 80px;">LAST NAME</th>
+                    <th class="text-center" style="width: 80px;">FIRST NAME</th>
+                    <th class="text-center" style="width: 70px;">EMPLOYMENT DATE</th>
+                    <th class="text-center" style="width: 70px;">NPF NUMBER</th>
+                    <th class="text-center" style="width: 70px;">EMPLOYER RN</th>
                     <th class="text-center">PAY</th>
                     <th class="text-center">ER (8.4%)</th>
                     <th class="text-center">EE (6%)</th>
