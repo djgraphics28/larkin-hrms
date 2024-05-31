@@ -54,4 +54,6 @@ class PayslipComponent extends Component
 
         $this->payslip = Payslip::where('fortnight_id', $this->selectedFN)->get();
     }
+
+
 }

@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Business;
 
+use App\Models\BusinessCompensation;
+use App\Models\CompensationItem;
 use Livewire\Component;
 use App\Models\Business;
 use App\Models\Department;
@@ -17,8 +19,13 @@ class BusinessComponent extends Component
 {
     use WithPagination, LivewireAlert;
 
-    protected $listeners = ['remove'];
+    protected $listeners = ['remove','removeAllowanceApproved', 'removeDeductionApproved'];
     public $approveConfirmed;
+    public $approveRemoveAllowance;
+    public $approveRemoveDeduction;
+
+    public $allowanceIndex;
+    public $deductionIndex;
     // filters
     public $perPage = 10;
     #[Url]
@@ -26,6 +33,7 @@ class BusinessComponent extends Component
     public $modalTitle = 'Add New Business|Branch';
     public $updateMode = false;
 
+    public $businesId;
     public $code;
     public $name;
     public $contact_number;
@@ -41,6 +49,11 @@ class BusinessComponent extends Component
     public $selectedDepartmentRows = [];
 
     public $departments = [];
+    public $allowances = [];
+    public $deductions = [];
+
+    public $allowanceItems = [];
+    public $deductionItems = [];
 
     #[Title('Business')]
     public function render()
@@ -58,6 +71,8 @@ class BusinessComponent extends Component
     public function mount()
     {
         $this->departments = Department::where('is_active',1)->get();
+        $this->allowanceItems = CompensationItem::where('type','Allowance')->get();
+        $this->deductionItems = CompensationItem::where('type','Deduction')->get();
     }
 
     public function getRecordsProperty()
@@ -192,5 +207,168 @@ class BusinessComponent extends Component
     public function export()
     {
         return Excel::download(new BusinessExport, 'business.xlsx');
+    }
+
+    public function addAllowance($id)
+    {
+        $this->allowances = [];
+        $this->dispatch('show-allowance-modal');
+        $this->businesId = $id;
+        $allowances = BusinessCompensation::with('compensation')->where('business_id',$id)->get();
+
+        if(count($allowances) > 0) {
+            $countAllowance = 0;
+            foreach ($allowances as $allowance) {
+                if($allowance->compensation->type == 'allowance') {
+                    $this->allowances[] = ['id' => $allowance->id, 'name' => $allowance->compensation_item_id, 'label' => $allowance->label, 'amount' => $allowance->amount];
+                    $countAllowance++;
+                }
+            }
+
+            if($countAllowance == 0) {
+                $this->addAllowanceRow();
+            }
+        } else {
+            $this->addAllowanceRow();
+        }
+
+    }
+
+    public function addDeduction($id)
+    {
+        $this->deductions = [];
+        $this->dispatch('show-deduction-modal');
+        $this->businesId = $id;
+        $deductions = BusinessCompensation::with('compensation')->where('business_id',$id)->get();
+
+        if(count($deductions) > 0) {
+            $countDeduction = 0;
+            foreach ($deductions as $deduction) {
+                if($deduction->compensation->type == 'deduction') {
+                    $this->deductions[] = ['id' => $deduction->id, 'name' => $deduction->compensation_item_id, 'label' => $deduction->label, 'amount' => $deduction->amount];
+                    $countDeduction++;
+                }
+            }
+
+            if($countDeduction == 0) {
+                $this->addDeductionRow();
+            }
+        } else {
+            $this->addDeductionRow();
+        }
+    }
+
+    public function addAllowanceRow()
+    {
+        $this->allowances[] = ['id' => null, 'name' => null, 'label' => null, 'amount' => null];
+    }
+
+    public function removeAllowanceRow($index)
+    {
+        if(is_null($this->allowances[$index]['id'])) {
+            unset($this->allowances[$index]);
+            $this->allowances = array_values($this->allowances); // Reset array keys
+        } else {
+            $this->allowanceIndex = $index;
+            $this->approveRemoveAllowance = $this->allowances[$index]['id'];
+            $this->confirm('Are you sure you want to delete this?', [
+                'confirmButtonText' => 'Yes Delete it!',
+                'onConfirmed' => 'removeAllowanceApproved',
+            ]);
+        }
+    }
+
+    public function addDeductionRow()
+    {
+        $this->deductions[] = ['id' => null, 'name' => null, 'label' => null, 'amount' => null];
+    }
+
+    public function removeDeductionRow($index)
+    {
+        if(is_null($this->deductions[$index]['id'])) {
+            unset($this->deductions[$index]);
+            $this->deductions = array_values($this->deductions); // Reset array keys
+        } else {
+            $this->approveRemoveDeduction = $this->deductions[$index]['id'];
+            $this->deductionIndex = $index;
+            $this->confirm('Are you sure you want to delete this?', [
+                'confirmButtonText' => 'Yes Delete it!',
+                'onConfirmed' => 'removeDeductionApproved',
+            ]);
+        }
+    }
+
+    public function saveAllowance()
+    {
+        if(count($this->allowances) > 0) {
+            foreach ($this->allowances as $allowance) {
+                if(!is_null($allowance['id'])) {
+                    BusinessCompensation::find($allowance['id'])->update([
+                        'compensation_item_id' => $allowance['name'],
+                        'label' => $allowance['label'],
+                        'amount' => $allowance['amount'],
+                    ]);
+                } else {
+                    BusinessCompensation::create([
+                        'compensation_item_id' => $allowance['name'],
+                        'label' => $allowance['label'],
+                        'amount' => $allowance['amount'],
+                        'business_id' => $this->businesId
+                    ]);
+                }
+            }
+        }
+
+        $this->alert('success', 'Allowance has been removed!');
+        $this->dispatch('hide-allowance-modal');
+    }
+
+    public function saveDeduction()
+    {
+        if(count($this->deductions) > 0) {
+            foreach ($this->deductions as $deduction) {
+                if(!is_null($deduction['id'])) {
+                    BusinessCompensation::find($deduction['id'])->update([
+                        'compensation_item_id' => $deduction['name'],
+                        'label' => $deduction['label'],
+                        'amount' => $deduction['amount'],
+                    ]);
+                } else {
+                    BusinessCompensation::create([
+                        'compensation_item_id' => $deduction['name'],
+                        'label' => $deduction['label'],
+                        'amount' => $deduction['amount'],
+                        'business_id' => $this->businesId
+                    ]);
+                }
+            }
+        }
+
+        $this->alert('success', 'Allowance has been removed!');
+        $this->dispatch('hide-deduction-modal');
+    }
+
+    public function removeAllowanceApproved()
+    {
+        $delete = BusinessCompensation::find($this->approveRemoveAllowance);
+        $delete->delete();
+        if($delete){
+            $this->alert('success', 'Allowance has been removed!');
+
+            unset($this->allowances[$this->allowanceIndex]);
+            $this->allowances = array_values($this->allowances); // Reset array keys
+        }
+    }
+
+    public function removeDeductionApproved()
+    {
+        $delete = BusinessCompensation::find($this->approveRemoveDeduction);
+        $delete->delete();
+        if($delete){
+            $this->alert('success', 'Deduction has been removed!');
+
+            unset($this->deductions[$this->deductionIndex]);
+            $this->deductions = array_values($this->deductions); // Reset array keys
+        }
     }
 }

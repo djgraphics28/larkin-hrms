@@ -6,6 +6,7 @@ use App\Models\Payroll;
 use Livewire\Component;
 use App\Helpers\Helpers;
 use App\Models\Employee;
+use App\Models\Attendance;
 use App\Models\Department;
 use App\Models\SaveFilter;
 use App\Models\Designation;
@@ -53,11 +54,15 @@ class PayrollComponent extends Component
     public $saveFilters = [];
     public $selectedFilteredEmployees = [];
 
+    #[Url]
     public $selectedFortnight = '';
     public $approvedPayrunId;
     public $showProgressBar = false;
     public $totalEmployees = 0;
     public $employeeDone = 0;
+
+    public $employeeAttendances = [];
+    public $employeeName = '';
 
     #[Title('Payroll')]
     public function render()
@@ -79,7 +84,11 @@ class PayrollComponent extends Component
         $this->designations = Designation::where('is_active', true)->get();
         $this->fortnights = Helpers::activeFortnights();
         $this->saveFilters = SaveFilter::where('business_id', $this->businessId)->get();
-        $this->employees = Employee::where('is_discontinued', false)
+        $this->employees = Employee::withCount([
+            'attendances' => function ($query) {
+                $query->where('fortnight_id', $this->selectedFortnight);
+            }
+        ])->where('is_discontinued', false)
             ->where('business_id', $this->businessId)
             ->get();
     }
@@ -120,6 +129,7 @@ class PayrollComponent extends Component
         } else {
             $this->selectedEmployeeRows = [];
         }
+        $this->filterEmployees();
     }
 
     public function updatedSelectedEmployeeRows()
@@ -129,6 +139,7 @@ class PayrollComponent extends Component
         } else {
             $this->selectAllEmployees = false;
         }
+        $this->filterEmployees();
     }
 
     public function updatedSelectedDepartment()
@@ -145,9 +156,18 @@ class PayrollComponent extends Component
         $this->selectAllEmployees = false;
     }
 
+    public function updatedSelectedFortnight()
+    {
+        $this->filterEmployees();
+    }
+
     public function filterEmployees()
     {
-        $this->employees = Employee::where('is_discontinued', false)
+        $this->employees = Employee::withCount([
+            'attendances' => function ($query) {
+                $query->where('fortnight_id', $this->selectedFortnight);
+            }
+        ])->where('is_discontinued', false)
             ->where('business_id', $this->businessId)
             ->when($this->selectedDepartment, function ($query) {
                 $query->whereIn('department_id', $this->selectedDepartment);
@@ -161,10 +181,18 @@ class PayrollComponent extends Component
     public function selectedByFilteredEmployees($id)
     {
         if ($id == 'all') {
-            $this->employees = Employee::where('is_discontinued', false)->where('business_id', $this->businessId)->get();
+            $this->employees = Employee::withCount([
+                'attendances' => function ($query) {
+                    $query->where('fortnight_id', $this->selectedFortnight);
+                }
+            ])->where('is_discontinued', false)->where('business_id', $this->businessId)->get();
         } else {
             $data = SaveFilter::find($id);
-            $this->employees = Employee::where('is_discontinued', false)->where('business_id', $this->businessId)->whereIn('id', json_decode($data->employee_lists))->get();
+            $this->employees = Employee::withCount([
+                'attendances' => function ($query) {
+                    $query->where('fortnight_id', $this->selectedFortnight);
+                }
+            ])->where('is_discontinued', false)->where('business_id', $this->businessId)->whereIn('id', json_decode($data->employee_lists))->get();
         }
 
         $this->updatedSelectAllEmployees(true);
@@ -173,7 +201,11 @@ class PayrollComponent extends Component
 
     public function resetEmployeeSelection()
     {
-        $this->employees = Employee::where('is_discontinued', false)->where('business_id', $this->businessId)->get();
+        $this->employees = Employee::withCount([
+            'attendances' => function ($query) {
+                $query->where('fortnight_id', $this->selectedFortnight);
+            }
+        ])->where('is_discontinued', false)->where('business_id', $this->businessId)->get();
         $this->updatedSelectAllEmployees(false);
         $this->selectAllEmployees = false;
         $this->selectedDepartment = '';
@@ -210,8 +242,6 @@ class PayrollComponent extends Component
         ]);
 
         if ($payroll) {
-            $this->totalEmployees = count($this->selectedEmployeeRows);
-            $this->employeeDone = 0;
             foreach ($this->selectedEmployeeRows as $employee) {
                 //dito na lang ilalagay sir
 
@@ -227,9 +257,9 @@ class PayrollComponent extends Component
 
                 $regular = $pay['regular'];
                 $overtime = $pay['overtime'];
-                $sunday_ot = $pay['sunday_ot'];
-                $holiday_ot = $pay['holiday_ot'];
-                $plp_alp_fp = 0;
+                $sundayOt = $pay['sunday_ot'];
+                $holidayOt = $pay['holiday_ot'];
+                $plpAlpFp = 0;
                 $other = 0;
                 $npf = Helpers::computeEmployeeNPF($employee, $regular);
                 $ncsl = 0;
@@ -249,19 +279,26 @@ class PayrollComponent extends Component
                     'business_id' => $this->businessId,
                     'regular' => $regular,
                     'overtime' => $overtime,
-                    'sunday_ot' => $sunday_ot,
-                    'holiday_ot' => $holiday_ot,
-                    'plp_alp_fp' => $plp_alp_fp,
+                    'sunday_ot' => $sundayOt,
+                    'holiday_ot' => $holidayOt,
+                    'plp_alp_fp' => $plpAlpFp,
                     'other' => $other,
-                    'fn_tax' => $fn_tax,
+                    'fn_tax' => $fnTax,
                     'npf' => $npf,
                     'ncsl' => $ncsl,
-                    'cash_adv' => $cash_adv
+                    'cash_adv' => $cashAdv
                 ]);
-                $this->employeeDone += 1;
             }
-            sleep(3);
+            sleep(2);
             $this->alert('success', 'Payroll has been created successfully.');
         }
+    }
+
+    public function showAttendance($empNo)
+    {
+        $this->employeeName = Employee::where('employee_number',$empNo)->first()->first_name;
+        $this->dispatch('show-attendance-modal');
+        $this->employeeAttendances = Attendance::where('employee_number', $empNo)->where('fortnight_id',$this->selectedFortnight)->orderBy('date')->get();
+        $this->filterEmployees();
     }
 }
