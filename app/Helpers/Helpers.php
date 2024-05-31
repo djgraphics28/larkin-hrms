@@ -694,8 +694,12 @@ class Helpers
             $rate = SalaryHistory::where('is_active', 1)
                 ->where('employee_id', $employee->id)->first();
 
+            if ($employee->label === 'Expatriate') {
+                $employee_rate = round((($rate?->monthly_rate * 12) / 26) / 84, 2);
+            } elseif ($employee->label === 'National') {
+                $employee_rate = $rate?->salary_rate;
+            }
 
-            $employee_rate = $rate?->salary_rate;
 
             $getHours = Attendance::selectRaw('date, time_in, time_out, time_in_2, time_out_2, is_break, late_in_minutes, DAYNAME(date) as day_name, on_leave')
                 ->where('employee_number', $employee->employee_number)
@@ -770,5 +774,19 @@ class Helpers
         ];
 
         return $data;
+    }
+
+    public static function computeEmployeeNPF($employeeId, $regular)
+    {
+        $employee_npf = Employee::where('id', $employeeId)->first();
+
+        $npf = 0;
+
+        if ($employee_npf->collect_nasfund === 1 && $employee_npf->nasfund_number !== null) {
+
+            $npf = $regular * 0.06;
+        }
+
+        return $npf;
     }
 }
