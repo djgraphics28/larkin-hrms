@@ -536,6 +536,42 @@
                                 </div>
                             </div>
                             {{-- Nasfunds --}}
+                             {{-- COMPENSATIONS (ALLOWANCES AND DEDUCTIONS) --}}
+                             <div class="card">
+                                <div class="card-body mt-2">
+                                    <div class="checkbox-list">
+                                        <div class="custom-control custom-switch">
+                                            <input {{ $access_compensations ? 'checked' : '' }} type="checkbox"
+                                                class="custom-control-input" id="access_compensations"
+                                                wire:model="access_compensations">
+                                            <label class="custom-control-label" for="access_compensations">Access to
+                                                Compensations (Allowances & Deductions)</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input {{ $create_compensations ? 'checked' : '' }} type="checkbox"
+                                                class="custom-control-input" id="create_compensations"
+                                                wire:model="create_nasfunds">
+                                            <label class="custom-control-label" for="create_compensations">Can Create New
+                                                Allowance or Deduction</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input {{ $edit_compensations ? 'checked' : '' }} type="checkbox"
+                                                class="custom-control-input" id="edit_compensations"
+                                                wire:model="edit_compensations">
+                                            <label class="custom-control-label" for="edit_compensations">Can Edit
+                                                Allowance or Deduction</label>
+                                        </div>
+                                        <div class="custom-control custom-switch">
+                                            <input {{ $delete_compensations ? 'checked' : '' }} type="checkbox"
+                                                class="custom-control-input" id="delete_compensations"
+                                                wire:model="delete_compensations">
+                                            <label class="custom-control-label" for="delete_compensations">Can Delete
+                                                Allowance or Deduction</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- COMPENSATIONS (ALLOWANCES AND DEDUCTIONS) --}}
                         </div>
                     </div>
                     {{-- HR MANAGEMENT --}}
