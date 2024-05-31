@@ -8,7 +8,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a  href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active">Businesses</li>
                     </ol>
                 </div><!-- /.col -->
@@ -104,9 +104,26 @@
                                             <td class="text-center">{{ $data->employees_count }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group">
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-default dropdown-toggle mr-2"
+                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        Compensations
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <a wire:click="addAllowance({{ $data->id }})"
+                                                            class="dropdown-item" href="#">
+                                                            <i class="fa fa-plus"></i> Allowances
+                                                        </a>
+                                                        <a wire:click="addDeduction({{ $data->id }})"
+                                                            class="dropdown-item" href="#">
+                                                            <i class="fa fa-minus"></i> Deductions
+                                                        </a>
+                                                    </div>
                                                     <a wire:click="edit({{ $data->id }})"
-                                                        class="dropdown-item text-warning" href="javascript:void(0)"><i
-                                                            class="fa fa-edit" aria-hidden="true"></i></a>
+                                                        class="dropdown-item text-warning"
+                                                        href="javascript:void(0)"><i class="fa fa-edit"
+                                                            aria-hidden="true"></i></a>
                                                     <a wire:click="alertConfirm({{ $data->id }})"
                                                         class="dropdown-item text-danger" href="javascript:void(0)"><i
                                                             class="fa fa-trash" aria-hidden="true"></i></a>
@@ -125,8 +142,9 @@
                                 <tfoot class="table-info">
                                     <tr>
                                         <th width="3%" class="text-start">
-                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
-                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                            <div class="icheck-primary d-inline"><input id="selectAll"
+                                                    type="checkbox" wire:model.live="selectAll"><label
+                                                    for="selectAll"></div>
                                         </th>
                                         <th class="text-center">Code</th>
                                         <th class="text-start">Business Name</th>
@@ -153,7 +171,7 @@
 
     <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
         aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">{{ $modalTitle }}</h5>
@@ -214,15 +232,23 @@
                         <table class="table table-sm table-condensed">
                             <tbody>
                                 <tr>
-                                    <th width="10px" class="text-start"><input type="checkbox"
-                                            wire:model.live="selectAllDepartment"></th>
+                                    <th width="10px" class="text-start">
+                                        <div class="icheck-primary d-inline"><input id="selectAllDepartment"
+                                                type="checkbox" wire:model.live="selectAllDepartment"><label
+                                                for="selectAllDepartment"></div>
+                                    </th>
                                     <th>Select All</th>
                                 </tr>
                                 @foreach ($departments as $data)
                                     <tr>
-                                        <td class="text-start"><input id="{{ $data->name }}" type="checkbox"
-                                                wire:model.prevent="selectedDepartmentRows"
-                                                value="{{ $data->id }}"></td>
+                                        <td class="text-start">
+                                            <div class="icheck-primary d-inline">
+                                                <input id="department-{{ $data->id }}" type="checkbox"
+                                                    wire:model.live="selectedDepartmentRows"
+                                                    value="{{ $data->id }}">
+                                                <label for="department-{{ $data->id }}"></label>
+                                            </div>
+                                        </td>
                                         <td><label for="{{ $data->name }}">{{ $data->name }}</label></td>
                                     </tr>
                                 @endforeach
@@ -243,6 +269,133 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="allowanceModal" tabindex="-1" role="dialog" aria-labelledby="allowanceModalLabel"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="allowanceModalLabel">Add Allowances </h5>
+                    {{-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> --}}
+                    <button wire:click.live="addAllowanceRow" class="btn btn-primary"><i
+                            class="fa fa-plus"></i></button>
+                </div>
+                <div class="modal-body">
+                    @foreach ($allowances as $key => $item)
+                        {{-- @if ($key > 0) --}}
+                        <div class="row allowance" wire:key="allowance-{{ $key }}">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select wire:model="allowances.{{ $key }}.name" id=""
+                                        class="form-control">
+                                        <option value="">Choose Allowance</option>
+                                        @forelse ($allowanceItems as $data)
+                                            <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                        @empty
+                                            <option value="">No Options</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select wire:model="allowances.{{ $key }}.label" id=""
+                                        class="form-control">
+                                        <option value="">Choose Label</option>
+                                        <option value="National">National</option>
+                                        <option value="Expatriate">Expatriate</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input placeholder="0.00" wire:model="allowances.{{ $key }}.amount"
+                                        type="number" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <button wire:click.live="removeAllowanceRow({{ $key }})"
+                                        class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- @endif --}}
+                    @endforeach
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button wire:click.prevent="saveAllowance" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deductionModal" tabindex="-1" role="dialog" aria-labelledby="deductionModalLabel"
+        aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deductionModalLabel">Add Deductions</h5>
+                    {{-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> --}}
+                    <button wire:click.live="addDeductionRow" class="btn btn-primary"><i
+                            class="fa fa-plus"></i></button>
+                </div>
+                <div class="modal-body">
+                    @foreach ($deductions as $key => $item)
+                        {{-- @if ($key > 0) --}}
+                        <div class="row deduction" wire:key="deduction-{{ $key }}">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select wire:model="deductions.{{ $key }}.name" id=""
+                                        class="form-control">
+                                        <option value="">Choose Deduction</option>
+                                        @forelse ($deductionItems as $data)
+                                            <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                        @empty
+                                            <option value="">No Options</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select wire:model="deductions.{{ $key }}.label" id=""
+                                        class="form-control">
+                                        <option value="">Choose Label</option>
+                                        <option value="National">National</option>
+                                        <option value="Expatriate">Expatriate</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input placeholder="0.00" wire:model="deductions.{{ $key }}.amount"
+                                        type="number" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <button wire:click.live="removeDeductionRow({{ $key }})"
+                                        class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- @endif --}}
+                    @endforeach
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button wire:click.prevent="saveDeduction" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @push('scripts')
@@ -253,6 +406,22 @@
 
         window.addEventListener('hide-add-modal', () => {
             $('#addModal').modal('hide');
+        });
+
+        window.addEventListener('show-allowance-modal', () => {
+            $('#allowanceModal').modal('show');
+        });
+
+        window.addEventListener('hide-allowance-modal', () => {
+            $('#allowanceModal').modal('hide');
+        });
+
+        window.addEventListener('show-deduction-modal', () => {
+            $('#deductionModal').modal('show');
+        });
+
+        window.addEventListener('hide-deduction-modal', () => {
+            $('#deductionModal').modal('hide');
         });
     </script>
 

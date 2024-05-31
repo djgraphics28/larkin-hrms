@@ -135,6 +135,17 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('access_compensations')
+                                <li class="nav-item">
+                                    <a  href="{{ route('allowance-and-deduction') }}"
+                                        class="nav-link {{ request()->is('apps/compensation') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-money-bill"></i>
+                                        <p>
+                                            Allowances & Deductions
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </li>
                 @endcan

@@ -58,8 +58,8 @@
                                     <button wire:click="addNew" class="btn btn-primary float-right"><i
                                             class="fa fa-plus"></i>
                                         Create Payroll</button>
-                                    <a  href="{{ route('save-filters') }}"
-                                        class="btn btn-success float-right mr-2"><i class="fa fa-filter"></i>
+                                    <a href="{{ route('save-filters') }}" class="btn btn-success float-right mr-2"><i
+                                            class="fa fa-filter"></i>
                                         Employee Filters</a>
 
                                 </div>
@@ -142,20 +142,23 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <button type="button" class="btn btn-sm btn-default dropdown-toggle mr-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                      Action
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-default dropdown-toggle mr-2"
+                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        Action
                                                     </button>
                                                     <div class="dropdown-menu">
-                                                      <a class="dropdown-item" href="#">Approved</a>
-                                                      <a class="dropdown-item" href="#">Cancel</a>
-                                                      <a class="dropdown-item" href="#">Reject</a>
-                                                      <a class="dropdown-item" href="#">Revert</a>
+                                                        <a class="dropdown-item" href="#">Approved</a>
+                                                        <a class="dropdown-item" href="#">Cancel</a>
+                                                        <a class="dropdown-item" href="#">Reject</a>
+                                                        <a class="dropdown-item" href="#">Revert</a>
                                                     </div>
                                                     <button class="btn btn-sm btn-warning mr-2"><i
-                                                        class="fa fa-edit"></i> Edit</button>
-                                                        <button class="btn btn-sm btn-danger"><i
-                                                            class="fa fa-trash"></i> Delete</button>
-                                                  </div>
+                                                            class="fa fa-edit"></i> Edit</button>
+                                                    <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i>
+                                                        Delete</button>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty
@@ -318,6 +321,7 @@
                                                 </th>
                                                 <th>EmpNo</th>
                                                 <th>Employee Name</th>
+                                                <th class="text-center">Attendance Count</th>
                                                 <th>Department</th>
                                                 <th>Position</th>
                                             </tr>
@@ -326,7 +330,7 @@
                                             <tr>
                                                 <td colspan="4" class="text-center align-items-center">
                                                     <div wire:loading
-                                                        wire:target="search, selectedDepartment, selectedDesignation, selectedByFilteredEmployees, resetEmployeeSelection">
+                                                        wire:target="search, selectedFortnight, selectedDepartment, selectedDesignation, selectedByFilteredEmployees, resetEmployeeSelection">
                                                         <livewire:table-loader />
                                                     </div>
                                                 </td>
@@ -343,12 +347,18 @@
                                                     <td>{{ $employee->employee_number }}</td>
                                                     <td>{{ $employee->first_name }} {{ $employee->last_name }}
                                                     </td>
+                                                    <td class="text-center">
+                                                        {{ $employee->attendances_count ? $employee->attendances_count . ' day(s)' : '0 day' }}
+                                                        <a class="cursor-pointer"
+                                                            wire:click.live="showAttendance('{{ $employee->employee_number }}')"><i
+                                                                title="Show Attendance" class="fa fa-eye"></i></a>
+                                                    </td>
                                                     <td>{{ $employee->department->name }}</td>
                                                     <td>{{ $employee->designation->name }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="5">
+                                                    <td colspan="6">
                                                         <livewire:no-data-found />
                                                     </td>
                                                 </tr>
@@ -364,6 +374,7 @@
                                                 </th>
                                                 <th>EmpNo</th>
                                                 <th>Employee Name</th>
+                                                <th class="text-center">Attendance Count</th>
                                                 <th>Department</th>
                                                 <th>Position</th>
                                             </tr>
@@ -394,6 +405,53 @@
                 </div>
             </div>
         </div>
+
+        {{-- //Attendance Modal --}}
+        <div class="modal fade"  id="attendanceModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Attendance of {{ $employeeName }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time In</th>
+                                    <th>Time Out</th>
+                                    <th>Time In</th>
+                                    <th>Time Out</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($employeeAttendances as $item)
+                                    <tr>
+                                        <td>{{ $item->date }}</td>
+                                        <td>{{ $item->time_in }}</td>
+                                        <td>{{ $item->time_out }}</td>
+                                        <td>{{ $item->time_in_2 }}</td>
+                                        <td>{{ $item->time_out_2 }}</td>
+                                    </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5">
+                                        <livewire:no-data-found />
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     @push('scripts')
@@ -404,6 +462,14 @@
 
             window.addEventListener('hide-add-modal', () => {
                 $('#addModal').modal('hide');
+            });
+
+            window.addEventListener('show-attendance-modal', () => {
+                $('#attendanceModal').modal('show');
+            });
+
+            window.addEventListener('hide-attendance-modal', () => {
+                $('#attendanceModal').modal('hide');
             });
         </script>
         <script>

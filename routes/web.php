@@ -3,6 +3,7 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Compensation\AllowanceAndDeductionComponent;
 use App\Livewire\User\RoleComponent;
 use App\Livewire\User\UserComponent;
 use App\Livewire\Auth\ForgetPassword;
@@ -80,6 +81,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/tax-table', TaxTablesComponent::class)->name('tax-table');
         Route::get('/set-holiday', SetHolidayComponent::class)->name('set-holiday');
         Route::get('/nasfund', NasfundComponent::class)->name('nasfund');
+        Route::get('/compensation', AllowanceAndDeductionComponent::class)->name('allowance-and-deduction');
     });
 
     // Employee routes
@@ -136,6 +138,7 @@ Route::group(['middleware' => ['auth', 'verified', 'is_active']], function () {
         Route::get('/', AssetComponent::class)->name('asset');
         Route::get('/type', AssetTypeComponent::class)->name('asset-type');
     });
+
 });
 
 // Authentication routes

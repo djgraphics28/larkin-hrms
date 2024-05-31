@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Asset;
 use App\Models\Payroll;
+use App\Models\CompensationItem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -83,5 +84,15 @@ class Business extends Model
     public function payrolls(): HasMany
     {
         return $this->hasMany(Payroll::class, 'business_id', 'id');
+    }
+
+    /**
+     * The compensation_items that belong to the Business
+     *
+     * @return BelongsToMany
+     */
+    public function compensation_items(): BelongsToMany
+    {
+        return $this->belongsToMany(CompensationItem::class, 'business_compensation', 'business_id', 'compensation_item_id');
     }
 }

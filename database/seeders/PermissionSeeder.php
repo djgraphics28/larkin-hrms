@@ -84,6 +84,13 @@ class PermissionSeeder extends Seeder
             'edit_nasfunds',
             'delete_nasfunds',
             'export_nasfunds',
+            //Compensations (Allowances and Deductions)
+            'access_compensations',
+            'create_compensations',
+            'show_compensations',
+            'edit_compensations',
+            'delete_compensations',
+            'export_compensations',
             //Hr Management ///////////////////////////>>>>>>>>>>>>>>>
             'access_hr_management',
             //Employees
