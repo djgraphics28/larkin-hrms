@@ -21,8 +21,6 @@ class PdfDownloadController extends Controller
             ->where('is_discontinued', false)
             ->get();
 
-        $data['page_count'] = ceil(count($employees) / 15);
-
         $data['employees'] = $employees;
         $data['businessId'] = $businessId;
         $data['employerRN'] = '131934';
