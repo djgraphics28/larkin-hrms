@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Payroll;
 
+use App\Models\EmployeeHours;
 use App\Models\Payroll;
 use Livewire\Component;
 use App\Helpers\Helpers;
@@ -253,19 +254,30 @@ class PayrollComponent extends Component
                     }
 
                     $label = $employeeModel->label;
+                    $salaryRate = 0;
+                    if ($label == 'National') {
+                        $salaryRate = $employeeModel->active_salary->salary_rate;
 
-                    $pay = Helpers::computePayslip($employee, $this->selectedFortnight);
+                    } elseif ($label == 'Expatriate') {
+                        $monthlyRate = $employeeModel->active_salary->monthly_rate;
+                        $convertToHourRate = (($monthlyRate * 12) / 26) / 84;
+                        $salaryRate = $convertToHourRate;
 
-                    $gross = $pay['regular'] + $pay['overtime'] + $pay['sunday_ot'] + $pay['holiday_ot'];
-
-                    if ($gross === 0.0 || $gross === 0) {
-                        continue;
                     }
 
-                    $regular = $pay['regular'];
-                    $overtime = $pay['overtime'];
-                    $sundayOt = $pay['sunday_ot'];
-                    $holidayOt = $pay['holiday_ot'];
+                    $empHour = EmployeeHours::where('employee_id', $employee)->where('fortnight_id', $this->selectedFortnight)->first();
+                    if (!$empHour)
+                        continue;
+
+                    $regular = $empHour->regular_hr * $salaryRate;
+                    $overtime = $empHour->overtime_hr * $salaryRate;
+                    $sundayOt = $empHour->sunday_ot_hr * $salaryRate;
+                    $holidayOt = $empHour->holiday_ot_hr * $salaryRate;
+                    // $pay = Helpers::computePayslip($employee, $this->selectedFortnight);
+
+                    $gross = $regular + $overtime + $sundayOt + $holidayOt;
+
+
                     $plpAlpFp = 0;
                     $other = 0;
                     $npf = Helpers::computeEmployeeNPF($employee, $regular);

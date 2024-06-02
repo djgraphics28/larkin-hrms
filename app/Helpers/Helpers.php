@@ -824,4 +824,42 @@ class Helpers
 
         return $npf;
     }
+
+    public static function getRanges($fnId)
+    {
+        $dateRangeArray = [];
+        $isHoliday = false;
+        $isSunday = false;
+
+        $data = Fortnight::where('id', $fnId)->first();
+
+        if (!$data) {
+            return $dateRangeArray;
+        }
+
+        $startDate = Carbon::createFromFormat('Y-m-d', $data->start);
+        $endDate = Carbon::createFromFormat('Y-m-d', $data->end);
+
+        // Iterate through each day between start and end dates
+        $x = 1;
+        while ($startDate->lte($endDate)) {
+            // Format the date and day
+            $fulldate = $startDate->format('Y-m-d');
+            $formattedDate = $startDate->format('d-M');
+            $formattedDay = $startDate->format('D');
+
+            $check = Holiday::where('holiday_date', $fulldate)->first();
+            $isHoliday = $check ? true : false;
+
+            $isSunday = $formattedDay == 'Sun' || $formattedDay == 'Sun2' ? true : false;
+            // Push to the array
+            $dateRangeArray[] = ['day' => $formattedDay . ($x > 7 ? "2" : ""), 'date' => $formattedDate, "fortnight_id" => $data->id, "full_date" => $fulldate, 'is_holiday' => $isHoliday, 'is_sunday' => $isSunday];
+
+            // Move to the next day
+            $startDate->addDay();
+            $x++;
+        }
+
+        return $dateRangeArray;
+    }
 }

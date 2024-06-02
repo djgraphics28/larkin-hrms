@@ -69,22 +69,25 @@ class AttendanceLogComponent extends Component
         $this->fortnights = Fortnight::all();
 
         $this->getRanges();
+        $this->generate();
+
+
     }
 
     public function generate()
     {
+        $records = [];
         if ($this->selectedFN == '') {
             $this->records = [];
             $this->ranges = [];
         } else {
             // Get employees based on business_id and search criteria
             $employees = Employee::where('business_id', $this->businessId)
+                ->where('is_discontinued', false)
                 ->search(trim($this->search))->get();
 
             // Get date ranges
             $ranges = $this->getRanges();
-
-            $records = [];
 
             // Loop through employees to calculate records
             foreach ($employees as $data) {
