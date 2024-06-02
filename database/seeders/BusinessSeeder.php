@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Business;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class BusinessSeeder extends Seeder
@@ -13,43 +15,14 @@ class BusinessSeeder extends Seeder
      */
     public function run(): void
     {
-        $businesses = [
-            [
-                'name' => 'Larkin POM Branch',
-                'code' => 'LKP'
-            ],
-            [
-                'name' => 'Larkin Lae Branch',
-                'code' => 'LKL'
-            ],
-            [
-                'name' => 'Ad Focus',
-                'code' => 'AFP'
-            ],
-            [
-                'name' => 'Yellow Jacket POM',
-                'code' => 'YJP'
-            ],
-            [
-                'name' => 'Yellow Jacket Lae',
-                'code' => 'JYL'
-            ],
-            [
-                'name' => 'Wave Restaurant',
-                'code' => 'WRP'
-            ],
-            [
-                'name' => 'Caroline\'s Diner',
-                'code' => 'CDP'
-            ],
-        ];
+         // Get the path to the SQL file
+         $path = database_path('seeders/sqls/businesses.sql');
 
-        foreach ($businesses as $business) {
-            Business::create([
-                'name' => $business['name'],
-                'code' => $business['code'],
-            ]);
-        }
+         // Read the SQL file
+         $sql = File::get($path);
+
+         // Execute the SQL statements
+         DB::unprepared($sql);
 
         $business = Business::find(1);
         $business->departments()->attach([1,2,3,4,5,6,7,8]);

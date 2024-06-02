@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Attendance;
 
+use DateTime;
 use Carbon\Carbon;
 use Livewire\Component;
 use App\Models\Employee;
@@ -38,6 +39,11 @@ class AttendanceCreateComponent extends Component
     #[Url]
     public $selectedDesignation = '';
     public $designations = [];
+
+    public $selectAll = false;
+    public $selectedRows = [];
+
+    public $breakTimeFiller = false;
 
     public function mount()
     {
@@ -120,6 +126,15 @@ class AttendanceCreateComponent extends Component
             ->orderBy('employee_number', 'ASC')
             // ->limit(2) // Adjust limit as needed (optional with WithPagination)
             ->get();
+    }
+
+    public function updatedSelectAll($value)
+    {
+        if ($value) {
+            $this->selectedRows = $this->records->pluck('id');
+        } else {
+            $this->selectedRows = [];
+        }
     }
 
     public function getDays()
@@ -231,27 +246,65 @@ class AttendanceCreateComponent extends Component
         // }
 
         // $validatedData = $this->validate($rules, $messages);
+        try {
+            \DB::beginTransaction();
 
-        foreach ($this->attendances as $employeeId => $attendance) {
-            if (!empty($attendance['time_in'])) {
+            foreach ($this->attendances as $employeeId => $attendance) {
+                // if (!empty($attendance['time_in'])) {
 
                 // Fetch the employee and their workshift start time
-
-                // Fetch the employee and their workshift start time
-                $employee = Employee::where('employee_number',$employeeId)->first();
+                $employee = Employee::where('employee_number', $employeeId)->first();
                 $workshiftStart = $employee->workshift->start;
+                $workshiftEnd = $employee->workshift->end;
 
                 // Initialize the late in minutes variable
                 $lateInMinutes = 0;
+                $earlyTimeOutInMinutes = 0;
 
                 // Create Carbon instances for the workshift start time and the time-in
                 $workshiftStartTime = Carbon::createFromTimeString($workshiftStart);
-                $timeIn = Carbon::createFromTimeString($attendance['time_in']);
+                $workshiftEndTime = Carbon::createFromTimeString($workshiftEnd);
+                $timeIn = isset($attendance['time_in']) ? Carbon::createFromTimeString($attendance['time_in']) : null;
+                $timeOut = isset($attendance['time_out']) ? Carbon::createFromTimeString($attendance['time_out']) : null;
+                $timeIn2 = isset($attendance['time_in_2']) ? Carbon::createFromTimeString($attendance['time_in_2']) : null;
+                $timeOut2 = isset($attendance['time_out_2']) ? Carbon::createFromTimeString($attendance['time_out_2']) : null;
 
-                // Check if the time in is late
-                if ($timeIn->greaterThan($workshiftStartTime)) {
-                    // Calculate the difference in minutes
-                    $lateInMinutes = $workshiftStartTime->diffInMinutes($timeIn);
+                if ($timeIn !== null && $timeOut2 !== null) {
+                    // Check if the time in is late
+                    if ($timeIn->greaterThan($workshiftStartTime)) {
+                        // Calculate the difference in minutes
+                        $lateInMinutes = $workshiftStartTime->diffInMinutes($timeIn);
+                    }
+
+                    // Check if the time out is early
+                    if ($timeOut2->lessThan($workshiftEndTime)) {
+                        // Calculate the difference in minutes
+                        $earlyTimeOutInMinutes = $workshiftEndTime->diffInMinutes($timeOut2);
+                    }
+                } else if ($timeIn !== null && $timeOut !== null && is_null($timeIn2) && is_null($timeOut2)) {
+                    // Check if the time in is late
+                    if ($timeIn->greaterThan($workshiftStartTime)) {
+                        // Calculate the difference in minutes
+                        $lateInMinutes = $workshiftStartTime->diffInMinutes($timeIn);
+                    }
+
+                    // Check if the time out is early
+                    if ($timeOut->lessThan($workshiftEndTime)) {
+                        // Calculate the difference in minutes
+                        $earlyTimeOutInMinutes = $workshiftEndTime->diffInMinutes($timeOut);
+                    }
+                } else if ($timeIn2 !== null && $timeOut2 !== null && is_null($timeIn) && is_null($timeOut)) {
+                    // Check if the time in is late
+                    if ($timeIn2->greaterThan($workshiftStartTime)) {
+                        // Calculate the difference in minutes
+                        $lateInMinutes = $workshiftStartTime->diffInMinutes($timeIn2);
+                    }
+
+                    // Check if the time out is early
+                    if ($timeOut2->lessThan($workshiftEndTime)) {
+                        // Calculate the difference in minutes
+                        $earlyTimeOutInMinutes = $workshiftEndTime->diffInMinutes($timeOut2);
+                    }
                 }
 
                 Attendance::updateOrCreate(
@@ -270,12 +323,100 @@ class AttendanceCreateComponent extends Component
                         'time_in_2' => $attendance['time_in_2'],
                         'time_out_2' => $attendance['time_out_2'],
                         'is_break' => $attendance['is_break'],
-                        'late_in_minutes' => $lateInMinutes
+                        'late_in_minutes' => $lateInMinutes,
+                        'early_time_out_in_minutes' => $earlyTimeOutInMinutes,
                     ]
                 );
+
+                \DB::commit();
+                $this->alert('success', 'Attendance has been saved successfully!');
+            }
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            $this->alert('error', $e->getMessage());
+        }
+    }
+
+    public function autoFiller($type)
+    {
+        foreach ($this->records as $record) {
+            foreach ($this->selectedRows as $row) {
+                $employee = Employee::find($row);
+                if (!$employee) {
+                    continue; // Skip if the employee is not found
+                }
+
+                $empNo = $employee->employee_number;
+                $start = new DateTime($employee->workshift->start);
+                $end = new DateTime($employee->workshift->end);
+
+                // Assuming $start and $end are strings that can be converted to DateTime
+                $timeIn = clone $start; // Clone to ensure $start is not modified
+                $timeOut = (clone $start)->modify('+4 hours');
+                $timeOutAdjusted = (clone $end)->modify('-4 hours');
+                $timeOut2 = clone $end;
+
+                if ($type == 'whole_day') {
+                    if ($empNo == $record->employee_number) {
+                        $this->attendances[$record->employee_number] = [
+                            'time_in' => $timeIn->format('H:i'),
+                            'time_out' => null,
+                            'time_in_2' => null,
+                            'time_out_2' => $timeOut2->format('H:i'),
+                            'is_break' => false,
+                        ];
+                    }
+                } elseif ($type == 'first_half') {
+                    if ($empNo == $record->employee_number) {
+                        $this->attendances[$record->employee_number] = [
+                            'time_in' => $timeIn->format('H:i'),
+                            'time_out' => $timeOut->format('H:i'),
+                            'time_in_2' => null,
+                            'time_out_2' => null,
+                            'is_break' => false,
+                        ];
+                    }
+                } elseif ($type == 'second_half') {
+                    if ($empNo == $record->employee_number) {
+                        $this->attendances[$record->employee_number] = [
+                            'time_in' => null,
+                            'time_out' => null,
+                            'time_in_2' => $timeOutAdjusted->format('H:i'),
+                            'time_out_2' => $timeOut2->format('H:i'),
+                            'is_break' => false,
+                        ];
+                    }
+                }
             }
         }
-        sleep(2);
-        $this->alert('success', 'Attendance has been saved successfully!');
     }
+
+
+
+    // public function updatedBreakTimeFiller($value)
+    // {
+    //     if ($value) {
+    //         foreach ($this->records as $record) {
+    //             foreach ($this->selectedRows as $row) {
+    //                 $empNo = Employee::find($row)->employee_number;
+    //                 if ($empNo == $record->employee_number) {
+    //                     $this->attendances[$record->employee_number] = [
+    //                         'is_break' => true,
+    //                     ];
+    //                 }
+    //             }
+    //         }
+    //     } else {
+    //         foreach ($this->records as $record) {
+    //             foreach ($this->selectedRows as $row) {
+    //                 $empNo = Employee::find($row)->employee_number;
+    //                 if ($empNo == $record->employee_number) {
+    //                     $this->attendances[$record->employee_number] = [
+    //                         'is_break' => false,
+    //                     ];
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }

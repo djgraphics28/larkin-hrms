@@ -201,4 +201,15 @@ class Employee extends Model implements HasMedia
     {
         return $this->employee_number . ' | ' . $this->first_name . ' ' . $this->last_name;
     }
+
+    public function getActiveSalaryAttribute()
+    {
+        return $this->salaryHistories()->where('is_active', 1)->first();
+    }
+
+    public function salaryHistories(): HasMany
+    {
+        return $this->hasMany(SalaryHistory::class, 'employee_id', 'id');
+    }
+
 }

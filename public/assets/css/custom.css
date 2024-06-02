@@ -7,3 +7,8 @@
     width: 90%; /* Adjust this value to your preference */
     margin: 1.75rem auto;
 }
+
+td .bg-sunday {
+    background-color: rgb(255, 136, 136);
+    color: white;
+}

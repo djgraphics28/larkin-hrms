@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Department;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DepartmentSeeder extends Seeder
@@ -13,21 +15,13 @@ class DepartmentSeeder extends Seeder
      */
     public function run(): void
     {
-        $departments = [
-            'Administration',
-            'Human Resources',
-            'Accounting & Finance',
-            'Operations',
-            'Sales & Marketing',
-            'Purchasing',
-            'Logistics',
-            'IT',
-        ];
+        // Get the path to the SQL file
+        $path = database_path('seeders/sqls/departments.sql');
 
-        foreach ($departments as $department) {
-            Department::create([
-                'name' => $department
-            ]);
-        }
+        // Read the SQL file
+        $sql = File::get($path);
+
+        // Execute the SQL statements
+        DB::unprepared($sql);
     }
 }

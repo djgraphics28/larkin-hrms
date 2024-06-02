@@ -68,6 +68,7 @@
                                         <th class="text-center">End</th>
                                         <th class="text-center">Hours/Day</th>
                                         <th class="text-center">Hours/Fortnightly</th>
+                                        <th class="text-center">Breaktime Hours</th>
                                         <th width="30%" class="text-start">Day-Offs</th>
                                         <th class="text-center">Action</th>
                                     </tr>
@@ -94,9 +95,10 @@
                                             <td width="7%" class="text-center">
                                                 {{ date('h:i A', strtotime($data->end)) }}</td>
                                             <td class="text-center">{{ $data->number_of_hours }} hours</td>
-                                            <td class="text-center">
-                                                {{ (7 - count($data->day_offs)) * 2 * $data->number_of_hours }} hours
+                                            <td width="7%" class="text-center">
+                                                {{ $data->number_of_hours_fn }} hours
                                             </td>
+                                            <td class="text-center">{{ $data->break_time_hours }} hours</td>
                                             <td width="15%" class="text-start">
                                                 @forelse ($data->day_offs as $do)
                                                     <span class="badge badge-primary">{{ $do->day }}</span>
@@ -127,8 +129,9 @@
                                 <tfoot class="table-info">
                                     <tr>
                                         <th width="3%" class="text-start">
-                                            <div class="icheck-primary d-inline"><input id="selectAll" type="checkbox"
-                                                    wire:model.live="selectAll"><label for="selectAll"></div>
+                                            <div class="icheck-primary d-inline"><input id="selectAll"
+                                                    type="checkbox" wire:model.live="selectAll"><label
+                                                    for="selectAll"></div>
                                         </th>
                                         <th class="text-start">Workshift Title</th>
                                         <th class="text-start">Description</th>
@@ -136,6 +139,7 @@
                                         <th class="text-center">End</th>
                                         <th class="text-center">Hours/Day</th>
                                         <th class="text-center">Hours/Fortnightly</th>
+                                        <th class="text-center">Breaktime Hours</th>
                                         <th width="30%" class="text-start">Day-Offs</th>
                                         <th class="text-center">Action</th>
                                     </tr>
@@ -186,18 +190,6 @@
                             </span>
                         @enderror
                     </div>
-                    {{-- <div class="form-group">
-                            <label for="">Number of Hours Shift
-                            </label>
-                            <input wire:model="number_of_hours" type="number"
-                                class="form-control form-control-lg @error('number_of_hours') is-invalid @enderror">
-
-                            @error('number_of_hours')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div> --}}
                     <div class="row">
                         <div class="form-group col-6">
                             <label>Start:</label>
@@ -219,7 +211,11 @@
                                 </span>
                             @enderror
                         </div>
-
+                    </div>
+                    <div class="form-group">
+                        <label for="breakTimeHours">Break Time Hour(s)
+                        </label>
+                        <input id="breakTimeHours" wire:model="breakTimeHours" type="number" class="form-control form-control-lg">
                     </div>
                     <div class="row">
                         <div class="form-group" wire:ignore>

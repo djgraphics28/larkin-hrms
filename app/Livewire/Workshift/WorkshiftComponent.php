@@ -33,6 +33,8 @@ class WorkshiftComponent extends Component
     public $end;
     public $edit_id;
 
+    public $breakTimeHours = 0;
+
     protected $paginationTheme = 'bootstrap';
 
     public $selectAll = false;
@@ -96,9 +98,9 @@ class WorkshiftComponent extends Component
         $start = Carbon::parse($this->start);
         $end = Carbon::parse($this->end);
 
-        $diffInHours = $end->diffInHours($start);
+        $diffInHours = $end->diffInHours($start) - $this->breakTimeHours;
 
-        $numberOfHoursFn = $diffInHours*12;
+        $numberOfHoursFn = $diffInHours*((7 - count($this->selectedDayRows)) * 2);
 
         // if($this->number_of_hours != $diffInHours) {
         //     $this->alert('error', 'Please correct the start and end time!');
@@ -110,6 +112,7 @@ class WorkshiftComponent extends Component
             'description' => $this->description,
             'number_of_hours' => $diffInHours,
             'number_of_hours_fn' => $numberOfHoursFn,
+            'break_time_hours' => $this->breakTimeHours,
             'start' => $this->start,
             'end' => $this->end,
         ]);
@@ -147,7 +150,7 @@ class WorkshiftComponent extends Component
         $this->number_of_hours = $data->number_of_hours;
         $this->start = $data->start;
         $this->end = $data->end;
-        $this->meridiem = $data->meridiem;
+        $this->breakTimeHours = $data->break_time_hours;
         $this->selectedDayRows = $data->day_offs()->pluck('week_day_id')->toArray();
         $this->modalTitle = 'Edit Workshift';
         $this->updateMode = true;
@@ -166,15 +169,17 @@ class WorkshiftComponent extends Component
         $start = Carbon::parse($this->start);
         $end = Carbon::parse($this->end);
 
-        $diffInHours = $end->diffInHours($start);
-        $numberOfHoursFn = $diffInHours*12;
+        $diffInHours = $end->diffInHours($start) - $this->breakTimeHours;
+
+        $numberOfHoursFn = $diffInHours*((7 - count($this->selectedDayRows)) * 2);
 
         $data = Workshift::find($this->edit_id);
         $data->update([
             'title' => $this->title,
             'description' => $this->description,
             'number_of_hours' => $diffInHours,
-            'number_of_hours_fn' => $diffInHours,
+            'number_of_hours_fn' => $numberOfHoursFn,
+            'break_time_hours' => $this->breakTimeHours,
             'start' => $this->start,
             'end' => $this->end,
         ]);

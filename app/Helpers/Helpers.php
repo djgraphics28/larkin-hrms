@@ -2,8 +2,8 @@
 
 namespace App\Helpers;
 
-use App\Models\TaxTable;
 use DateTime;
+use DateInterval;
 use Carbon\Carbon;
 use App\Models\Asset;
 use App\Models\Holiday;
@@ -12,6 +12,7 @@ use App\Models\Payroll;
 use App\Models\Payslip;
 use App\Models\Business;
 use App\Models\Employee;
+use App\Models\TaxTable;
 use App\Models\Fortnight;
 use App\Models\Attendance;
 use App\Models\BusinessUser;
@@ -560,39 +561,74 @@ class Helpers
 
     public static function computeDailyHr($data)
     {
-        $workshift = Employee::find($data['employee_id'])->workshift();
+        $hours = 0;
+        $empId = $data['id'];
+        $date = $data['date'];
+        $timeIn = $data['time_in'];
+        $timeOut = $data['time_out'];
+        $timeIn2 = $data['time_in_2'];
+        $timeOut2 = $data['time_out_2'];
+        $onLeave = $data['on_leave'];
+        $lateInMinutes = $data['late_in_minutes'];
+        $earlyTimeOutInMinutes = $data['early_time_out_in_minutes'];
+        $isBreak = isset($data['is_break']) && $data['is_break'] ? 1 : 0;
 
-        $compTimeOut = new DateTime($data['date'] . ' ' . $data['time_in']);
-        $compTimeIn = new DateTime($data['date'] . ' ' . $data['time_out']);
-        $compTimeOut2 = new DateTime($data['date'] . ' ' . $data['time_in_2']);
-        $compTimeIn2 = new DateTime($data['date'] . ' ' . $data['time_out_2']);
-
-        $firstHalfHours = $compTimeOut->diff($compTimeIn);
-        $secondHalfHours = $compTimeOut2->diff($compTimeIn2);
-
-        $hourDiffTotal = $hourDiffAm->h + $hourDiffPm->h;
-
-        if (($timeOut === '' || $timeIn2 === '' || $timeOut === null || $timeIn2 === null) && $isBreak === 1) {
-            $hourDiffTotal = $compTimeOut2->diff($compTimeIn)->h - 1;
-        } elseif (($timeOut === '' || $timeIn2 === '' || $timeOut === null || $timeIn2 === null) && $isBreak === 0) {
-            $hourDiffTotal = $compTimeOut2->diff($compTimeIn)->h;
-        }
-
-        if (($timeIn !== null && $timeOut !== null) && ($timeIn2 === null && $timeOut2 === null)) {
-            $hourDiffTotal = $compTimeOut->diff($compTimeIn)->h;
-        } elseif (($timeIn === null && $timeOut === null) && ($timeIn2 !== null && $timeOut2 !== null)) {
-            $hourDiffTotal = $compTimeOut2->diff($compTimeIn2)->h;
-        }
-
-        if ($onLeave === 'second_half') {
-            $hourDiffTotal = $hourDiffAm->h + 4;
-        } elseif ($onLeave === 'first_half') {
-            $hourDiffTotal = $hourDiffPm->h + 4;
+        if (!empty($onLeave)) {
+            if ($onLeave == 'whole_day') {
+                $hours = 8;
+            } elseif ($onLeave == 'first_half' || $onLeave == 'second_half') {
+                $hours = 4;
+            }
         } else {
-            $hourDiffTotal = 8;
+            $employee = Employee::find($empId);
+            if (!$employee) {
+                return $hours; // Return 0 if employee is not found
+            }
+
+            $workshiftStart = $employee->workshift->start;
+            $workshiftEnd = $employee->workshift->end;
+            $breakTimeHours = $employee->workshift->break_time_hours;
+
+            $workshiftStartTime = new DateTime($date . ' ' . $workshiftStart);
+            $workshiftEndTime = new DateTime($date . ' ' . $workshiftEnd);
+
+            $timeIn = !empty($timeIn) ? new DateTime($date . ' ' . $timeIn) : null;
+            $timeOut = !empty($timeOut) ? new DateTime($date . ' ' . $timeOut) : null;
+            $timeIn2 = !empty($timeIn2) ? new DateTime($date . ' ' . $timeIn2) : null;
+            $timeOut2 = !empty($timeOut2) ? new DateTime($date . ' ' . $timeOut2) : null;
+
+            $computedMinutes = 0;
+
+            if ($timeIn !== null && $timeOut2 !== null) {
+                // Full day with break
+                $computedMinutes = ($timeIn->diff($timeOut2)->h * 60 + $timeIn->diff($timeOut2)->i);
+
+                if ($isBreak) {
+                    $computedMinutes -= ($breakTimeHours * 60);
+                }
+
+            } elseif ($timeIn !== null && $timeOut !== null) {
+                // First shift only
+                $computedMinutes = ($timeIn->diff($timeOut)->h * 60 + $timeIn->diff($timeOut)->i);
+            } elseif ($timeIn2 !== null && $timeOut2 !== null) {
+                // Second shift only
+                $computedMinutes = ($timeIn2->diff($timeOut2)->h * 60 + $timeIn2->diff($timeOut2)->i);
+            } else {
+                $computedMinutes = 0;
+            }
+
+            $computedMinutes -= ($lateInMinutes + $earlyTimeOutInMinutes);
+
+            $hours = self::convertMinutesToHours($computedMinutes);
         }
 
-        return $hourDiffTotal;
+        return $hours;
+    }
+
+
+    public static function convertMinutesToHours($minutes)
+    {
+        return $minutes / 60;
     }
 
     public static function getFortnightIdByDate($date)
@@ -684,11 +720,11 @@ class Helpers
         $rate = SalaryHistory::where('is_active', 1)
             ->where('employee_id', $employee->id)->first();
 
-            if ($employee->label === 'Expatriate') {
-                $employee_rate = round((($rate?->monthly_rate * 12) / 26) / 84, 2);
-            } elseif ($employee->label === 'National') {
-                $employee_rate = $rate?->salary_rate;
-            }
+        if ($employee->label === 'Expatriate') {
+            $employee_rate = round((($rate?->monthly_rate * 12) / 26) / 84, 2);
+        } elseif ($employee->label === 'National') {
+            $employee_rate = $rate?->salary_rate;
+        }
 
 
         $getHours = Attendance::selectRaw('date, time_in, time_out, time_in_2, time_out_2, is_break, late_in_minutes, DAYNAME(date) as day_name, on_leave')
@@ -705,7 +741,7 @@ class Helpers
 
         foreach ($getHours as $hours) {
             $attendance = [
-                'employee_id' => $employeeId,
+                'id' => $employeeId,
                 'date' => $hours->date,
                 'time_in' => $hours->time_in,
                 'time_out' => $hours->time_out,
@@ -714,6 +750,7 @@ class Helpers
                 'is_break' => $hours->is_break,
                 'on_leave' => $hours->on_leave,
                 'late_in_minutes' => $hours->late_in_minutes,
+                'early_time_out_in_minutes' => $hours->early_time_out_in_minutes,
             ];
 
             $computedHour = Helpers::computeDailyHr($attendance);

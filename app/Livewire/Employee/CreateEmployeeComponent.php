@@ -145,7 +145,7 @@ class CreateEmployeeComponent extends Component
         $create = Employee::create($data);
 
         // Handle salary rates if provided
-        if ($this->salary_rate !== '') {
+        if ($this->salary_rate !== '' && $this->monthly_rate === '') {
             $create->salaries()->create([
                 'monthly_rate' => null,
                 'salary_rate' => $this->salary_rate,
@@ -153,7 +153,7 @@ class CreateEmployeeComponent extends Component
             ]);
         }
 
-        if ($this->monthly_rate !== '') {
+        if ($this->monthly_rate !== '' && $this->salary_rate === '') {
             $create->salaries()->create([
                 'salary_rate' => null,
                 'monthly_rate' => $this->monthly_rate,

@@ -162,4 +162,6 @@ Route::get('/aba-download/{payrun_id}', [AbaGenerateController::class, 'generate
 
 //PDF Download
 Route::get('/nasfund-download/{businessId}/{fnId}', [PdfDownloadController::class, 'nasfund'])->name('nasfund-pdf');
+Route::get('/generate-attendance-log/{employeeIds}/{fnId}', [PdfDownloadController::class, 'attendanceLog'])->name('attendance-log-pdf');
+require __DIR__ . '/auth.php';
 require __DIR__ . '/auth.php';

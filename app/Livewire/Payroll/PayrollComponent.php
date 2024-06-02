@@ -231,74 +231,87 @@ class PayrollComponent extends Component
             $this->alert('warning', 'No employee has been selected.');
             return;
         }
+        try {
+            \DB::beginTransaction();
 
-        $payroll = Payroll::create([
-            'payroll_code' => Helpers::payrollCodeGenerator($this->businessId, $this->selectedFortnight),
-            'status' => 'For-Approval',
-            'remarks' => '',
-            'created_by' => Auth::user()->id,
-            'fortnight_id' => $this->selectedFortnight,
-            'business_id' => $this->businessId
-        ]);
+            $payroll = Payroll::create([
+                'payroll_code' => Helpers::payrollCodeGenerator($this->businessId, $this->selectedFortnight),
+                'status' => 'For-Approval',
+                'remarks' => '',
+                'created_by' => Auth::user()->id,
+                'fortnight_id' => $this->selectedFortnight,
+                'business_id' => $this->businessId
+            ]);
 
-        if ($payroll) {
-            foreach ($this->selectedEmployeeRows as $employee) {
-                //dito na lang ilalagay sir
+            if ($payroll) {
+                foreach ($this->selectedEmployeeRows as $employee) {
 
-                $label = Employee::where('id', $employee)->first()->label;
+                    $employeeModel = Employee::find($employee);
 
-                $pay = Helpers::computePayslip($employee, $this->selectedFortnight);
+                    if (!$employeeModel) {
+                        continue; // Skip if the employee is not found.
+                    }
 
-                $gross = $pay['regular'] + $pay['overtime'] + $pay['sunday_ot'] + $pay['holiday_ot'];
+                    $label = $employeeModel->label;
 
-                if ($gross === 0.0 || $gross === 0) {
-                    continue;
+                    $pay = Helpers::computePayslip($employee, $this->selectedFortnight);
+
+                    $gross = $pay['regular'] + $pay['overtime'] + $pay['sunday_ot'] + $pay['holiday_ot'];
+
+                    if ($gross === 0.0 || $gross === 0) {
+                        continue;
+                    }
+
+                    $regular = $pay['regular'];
+                    $overtime = $pay['overtime'];
+                    $sundayOt = $pay['sunday_ot'];
+                    $holidayOt = $pay['holiday_ot'];
+                    $plpAlpFp = 0;
+                    $other = 0;
+                    $npf = Helpers::computeEmployeeNPF($employee, $regular);
+                    $ncsl = 0;
+                    $cashAdv = 0;
+
+                    if ($label === 'National') {
+                        $taxable = $gross;
+                    } elseif ($label === 'Expatriate') {
+                        $taxable = $gross - ($npf + $ncsl + $cashAdv);
+                    }
+
+                    $fnTax = Helpers::computeTax($taxable);
+
+                    $payroll->payslips()->create([
+                        'employee_id' => $employee,
+                        'fortnight_id' => $this->selectedFortnight,
+                        'business_id' => $this->businessId,
+                        'regular' => $regular,
+                        'overtime' => $overtime,
+                        'sunday_ot' => $sundayOt,
+                        'holiday_ot' => $holidayOt,
+                        'plp_alp_fp' => $plpAlpFp,
+                        'other' => $other,
+                        'fn_tax' => $fnTax,
+                        'npf' => $npf,
+                        'ncsl' => $ncsl,
+                        'cash_adv' => $cashAdv
+                    ]);
                 }
+                sleep(2);
 
-                $regular = $pay['regular'];
-                $overtime = $pay['overtime'];
-                $sundayOt = $pay['sunday_ot'];
-                $holidayOt = $pay['holiday_ot'];
-                $plpAlpFp = 0;
-                $other = 0;
-                $npf = Helpers::computeEmployeeNPF($employee, $regular);
-                $ncsl = 0;
-                $cash_adv = 0;
-
-                if ($label === 'National') {
-                    $taxable = $gross;
-                } elseif ($label === 'Expatriate') {
-                    $taxable = $gross - ($npf + $ncsl + $cash_adv);
-                }
-
-                $fn_tax = Helpers::computeTax($taxable);
-
-                $payroll->payslips()->create([
-                    'employee_id' => $employee,
-                    'fortnight_id' => $this->selectedFortnight,
-                    'business_id' => $this->businessId,
-                    'regular' => $regular,
-                    'overtime' => $overtime,
-                    'sunday_ot' => $sundayOt,
-                    'holiday_ot' => $holidayOt,
-                    'plp_alp_fp' => $plpAlpFp,
-                    'other' => $other,
-                    'fn_tax' => $fnTax,
-                    'npf' => $npf,
-                    'ncsl' => $ncsl,
-                    'cash_adv' => $cashAdv
-                ]);
+                \DB::commit();
+                $this->alert('success', 'Payroll has been created successfully.');
             }
-            sleep(2);
-            $this->alert('success', 'Payroll has been created successfully.');
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            $this->alert('error', $e->getMessage());
         }
     }
 
     public function showAttendance($empNo)
     {
-        $this->employeeName = Employee::where('employee_number',$empNo)->first()->first_name;
+        $this->employeeName = Employee::where('employee_number', $empNo)->first()->first_name;
         $this->dispatch('show-attendance-modal');
-        $this->employeeAttendances = Attendance::where('employee_number', $empNo)->where('fortnight_id',$this->selectedFortnight)->orderBy('date')->get();
+        $this->employeeAttendances = Attendance::where('employee_number', $empNo)->where('fortnight_id', $this->selectedFortnight)->orderBy('date')->get();
         $this->filterEmployees();
     }
 }

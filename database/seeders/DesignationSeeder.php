@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Designation;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DesignationSeeder extends Seeder
@@ -13,74 +15,13 @@ class DesignationSeeder extends Seeder
      */
     public function run(): void
     {
-        $designations = [
-            'Admin Clerk',
-            'Bricklayer',
-            'Driver',
-            'Electrician',
-            'General Labourer',
-            'Helper',
-            'Painter',
-            'Plasterer',
-            'Plumber Helper',
-            'Tiler',
-            'Welder',
-            'Cook',
-            'Accounts Clerk',
-            'Aluminium Fitter',
-            'Cleaner',
-            'Financial Controller',
-            'G&A Fitter',
-            'Glass Cutter',
-            'Glass Fitter',
-            'Joiner',
-            'Joinery',
-            'Lead Carpenter',
-            'Leadman',
-            'Logistic Officer',
-            'Mason',
-            'Mechanic',
-            'Office Clerk',
-            'Foreman',
-            'Plumber',
-            'Security Guard',
-            'Stone Installer',
-            'Storeman',
-            'Trade Supervisor',
-            'Trade Supervisor (Finishing)',
-            'Trade Supervisor-Welding',
-            'Trade Supervisor/Coordinator (Carpentry)',
-            'Trade Supervisor/Coordinator (Electrical)',
-            'Trade Supervisor/Coordinator (Finishing)',
-            'Carpenter',
-            'Admin Director',
-            'Fabricator',
-            'Graphic Artist',
-            'Managing Director',
-            'Marketing',
-            'Operations Manager',
-            'Production Supervisor',
-            'Production Staff',
-            'Works Manager',
-            'Sales & Marketing Manager',
-            'Security Manager',
-            'General Manager',
-            'Reserved Guard',
-            'Supervisor',
-            'Kitchen Staff',
-            'Chef',
-            'Assistant Chef',
-            'Head Chef',
-            'Wait Staff',
-            'OJT',
-            'Restaurant Manager',
-            'Construction Manager',
-        ];
+       // Get the path to the SQL file
+       $path = database_path('seeders/sqls/designations.sql');
 
-        foreach ($designations as $designation) {
-            Designation::create([
-                'name' => $designation
-            ]);
-        }
+       // Read the SQL file
+       $sql = File::get($path);
+
+       // Execute the SQL statements
+       DB::unprepared($sql);
     }
 }

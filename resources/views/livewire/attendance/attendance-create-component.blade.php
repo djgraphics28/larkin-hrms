@@ -42,13 +42,13 @@
                     <div class="input-group float-right">
                         <input type="text" class="form-control mr-2" placeholder="Search Employee Number / Name"
                             wire:model.live.debounce.500ms="search">
-                            <button wire:click="store" class="btn btn-primary" wire:loading.attr="disabled">
-                                <span wire:loading.remove wire:target="store">Save Changes</span>
-                                <span wire:loading wire:target="store">
-                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Loading...</span>
-                                </span>
-                            </button>
+                        <button wire:click="store" class="btn btn-primary" wire:loading.attr="disabled">
+                            <span wire:loading.remove wire:target="store">Save Changes</span>
+                            <span wire:loading wire:target="store">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span class="visually-hidden">Loading...</span>
+                            </span>
+                        </button>
                     </div>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -59,6 +59,25 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
+            <div class="row mb-2">
+                @if (count($selectedRows) > 0 && $selectedFortnight !== '')
+                    <div class="col-md-6">
+                        <div class="btn-group" role="group" aria-label="Auto Filler Button Group">
+                            <button wire:click="autoFiller('whole_day')" type="button" class="btn btn-default mr-2">Whole Day</button>
+                            <button wire:click="autoFiller('first_half')" type="button" class="btn btn-default mr-2">First Half</button>
+                            <button wire:click="autoFiller('second_half')" type="button" class="btn btn-default mr-2">Second Half</button>
+                            {{-- <button wire:click="autoFiller('whole_day')" type="button" class="btn btn-default mr-2">With Breaktime</button> --}}
+                            {{-- <div class="custom-control custom-switch">
+                                <input type="checkbox" role="switch" class="custom-control-input"
+                                    id="BreakTimeFiller" wire:model.live="breakTimeFiller">
+                                <label class="custom-control-label" for="BreakTimeFiller"></label>
+                            </div> --}}
+                            <button type="button" class="btn btn-default">Reset</button>
+                            <p class="ml-3">{{ count($selectedRows) }} employee(s) selected</p>
+                        </div>
+                    </div>
+                @endif
+            </div>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="row">
@@ -89,6 +108,11 @@
                                 <table class="table table-sm table-striped table-hover">
                                     <thead class="table-dark" style="position: sticky; top: 0; z-index: 1;">
                                         <tr>
+                                            <th rowspan="2" width="3%" class="text-center align-middle">
+                                                <div class="icheck-primary d-inline"><input id="selectAll"
+                                                        type="checkbox" wire:model.live="selectAll"><label
+                                                        for="selectAll"></div>
+                                            </th>
                                             <th colspan="4">FN:
                                                 {{ \App\Models\Fortnight::find($selectedFortnight)->code ?? '' }} |
                                                 Date:
@@ -111,13 +135,22 @@
                                         <tr>
                                             <td colspan="10" class="text-center align-items-center">
                                                 <div wire:loading
-                                                    wire:target="search,selectedDay,selectedFortnight,selectedDepartment,selectedDesignation">
+                                                    wire:target="autoFiller,search,selectedDay,selectedFortnight,selectedDepartment,selectedDesignation">
                                                     <livewire:table-loader />
                                                 </div>
                                             </td>
                                         </tr>
                                         @forelse ($records as $index => $record)
-                                            <tr class="{{ !empty($attendances[$record->employee_number]['time_in']) && empty($attendances[$record->employee_number]['time_out_2']) ? 'bg-danger' : '' }}">
+                                            <tr
+                                                >
+                                                <td width="3%" class="text-start align-middle">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input id="record-{{ $record->id }}" type="checkbox"
+                                                            wire:model.live="selectedRows"
+                                                            value="{{ $record->id }}">
+                                                        <label for="record-{{ $record->id }}"></label>
+                                                    </div>
+                                                </td>
                                                 <td class="text-center" width="7%">{{ $record->employee_number }}
                                                 </td>
                                                 <td>{{ strtoupper($record->first_name) }}
@@ -136,7 +169,8 @@
                                                                 class="custom-control-input"
                                                                 wire:model="attendances.{{ $record->employee_number }}.is_break"
                                                                 id="attendances.{{ $record->employee_number }}.is_break">
-                                                            <label class="custom-control-label" for="attendances.{{ $record->employee_number }}.is_break"></label>
+                                                            <label class="custom-control-label"
+                                                                for="attendances.{{ $record->employee_number }}.is_break"></label>
                                                         </div>
                                                     @endif
                                                 </td>
@@ -221,12 +255,44 @@
             </div>
         </div>
     </div>
+
+    {{-- Auto filler modal --}}
+    <!-- Modal -->
+    <div class="modal fade" id="autoFillerModal" tabindex="-1" role="dialog"
+        aria-labelledby="autoFillerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="autoFillerModalLabel">Auto Filler</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
 
 @push('scripts')
     <script>
+        window.addEventListener('show-autofiller-modal', () => {
+            $('#autoFillerModal').modal('show');
+        });
+
+        window.addEventListener('hide-autofiller-modal', () => {
+            $('#autoFillerModal').modal('hide');
+        });
+
         $(function() {
             //Timepicker
             $('.timepicker').datetimepicker({
