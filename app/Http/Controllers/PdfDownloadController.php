@@ -41,8 +41,10 @@ class PdfDownloadController extends Controller
 
         $ranges = $this->getRanges($fnId);
 
+
+
         $data ['ranges'] = $ranges;
-        $data ['ranges'] = $ranges;
+        $data ['records'] = $ranges;
 
         $pdf = Pdf::loadView('pdf/attendance-log', $data);
 
